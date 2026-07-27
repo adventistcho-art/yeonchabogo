@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Fetch latest 2026 plan2026 HTML from IR busiMgr4 for 14 target departments."""
+"""Fetch latest 2026 plan2026 HTML from IR busiMgr4 for briefing target departments."""
 from __future__ import annotations
 
 import json
@@ -35,6 +35,12 @@ TARGETS: list[tuple[str, str]] = [
     ("교목처", "교목처"),
     ("인성교육원", "인성교육원"),
     ("콘서바토리", "콘서바토리"),
+    ("교수지원", "교수지원"),
+    ("교원인사", "교원인사"),
+    ("학사지원팀", "학사지원팀"),
+    ("부속실", "부속실"),
+    ("커뮤니케이션팀", "커뮤니케이션팀"),
+    ("대외협력처", "대외국제처"),
 ]
 
 LOG_PATH = Path(__file__).resolve().parent.parent / "data" / "fetch_plan2026_targets_log.json"
