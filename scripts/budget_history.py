@@ -55,6 +55,12 @@ def history_from_perf_snapshots(snapshots: dict[str, str | Path]) -> dict[str, d
     return out
 
 
+PERF_DEPT_ALIASES: dict[str, str] = {
+    "부속실": "부속팀",
+    "대외국제처": "대외협력팀",
+}
+
+
 def merge_budget_history(
     report: dict,
     history_path: Path | None = None,
@@ -89,6 +95,20 @@ def merge_budget_history(
         if b2026 is not None:
             perf_2026[dept_name] = b2026
     if perf_2026:
+        for report_name, perf_name in PERF_DEPT_ALIASES.items():
+            b2026 = perf_2026.get(perf_name)
+            if b2026 is not None:
+                perf_2026.setdefault(report_name, b2026)
         report["perfBudget2026"] = perf_2026
+
+    for dept in report.get("departments", []):
+        name = dept.get("name", "")
+        b2026 = perf_2026.get(name) or perf_2026.get(PERF_DEPT_ALIASES.get(name, ""))
+        if b2026 is None:
+            continue
+        dept["performance2026"] = {"adjustedBudget": b2026}
+        summary2026 = dept.setdefault("summary2026", {})
+        summary2026["totalBudget"] = b2026
+        summary2026["source"] = "perfGrid"
 
     return report

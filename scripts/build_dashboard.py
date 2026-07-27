@@ -85,7 +85,7 @@ def main() -> None:
         perf_snapshots,
     )
     ir_pdf_root = Path(cfg["paths"]["irPdfRoot"])
-    merged = enrich_plan2026_budgets(merged, ir_pdf_root)
+    merged = enrich_plan2026_budgets(merged, ir_pdf_root, ROOT)
 
     from copy_plan2026_html import copy_target_plan2026  # noqa: WPS433
 

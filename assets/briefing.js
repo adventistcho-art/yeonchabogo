@@ -4,7 +4,6 @@
 
   const departments = DATA.departments || [];
   const deptByName = Object.fromEntries(departments.map((d) => [d.name, d]));
-  const perfBudget2026 = DATA.perfBudget2026 || {};
 
   const PLAN2026_GROUPS = [
     {
@@ -43,6 +42,22 @@
         { label: '교목처', dept: '교목처' },
         { label: '리더십센터', dept: '인성교육원', budgetDept: '리더십센터', projectMatch: '리더십|MVP' },
         { label: '콘서바토리', dept: '콘서바토리' },
+      ],
+    },
+    {
+      title: '7. 교무처',
+      units: [
+        { label: '교수지원', dept: '교수지원' },
+        { label: '교원인사', dept: '교원인사' },
+        { label: '학사지원팀', dept: '학사지원팀' },
+      ],
+    },
+    {
+      title: '8. 브랜드전략본부',
+      units: [
+        { label: '부속실', dept: '부속실', budgetDept: '부속팀' },
+        { label: '커뮤니케이션팀', dept: '커뮤니케이션팀' },
+        { label: '대외협력팀', dept: '대외국제처', budgetDept: '대외협력팀' },
       ],
     },
   ];
@@ -98,22 +113,35 @@
     );
   }
 
-  function fundedProjectsForUnit(unit) {
-    return plan2026ProjectsForUnit(unit).filter((p) => (p.budget2026 || 0) > 0);
+  const PERF_BUDGET_ALIASES = {
+    '부속실': '부속팀',
+    '대외국제처': '대외협력팀',
+  };
+
+  function budgetDeptForUnit(unit) {
+    return unit.budgetDept || unit.dept;
   }
 
-  function irBudget2026ForUnit(unit) {
-    const key = unit.budgetDept || unit.dept;
-    const dept = deptByName[key];
-    if (dept && dept.budgetHistory && dept.budgetHistory['2026'] != null) {
-      return dept.budgetHistory['2026'];
+  function deptPerfBudget2026(deptName) {
+    const dept = deptByName[deptName];
+    if (dept?.performance2026?.adjustedBudget != null) {
+      return dept.performance2026.adjustedBudget;
     }
-    if (perfBudget2026[key] != null) return perfBudget2026[key];
+    const map = DATA.perfBudget2026 || {};
+    if (map[deptName] != null) return map[deptName];
+    const alias = PERF_BUDGET_ALIASES[deptName];
+    if (alias != null && map[alias] != null) return map[alias];
     return null;
   }
 
   function totalBudgetForUnit(unit) {
-    return fundedProjectsForUnit(unit).reduce((sum, p) => sum + (p.budget2026 || 0), 0);
+    const fromPerf = deptPerfBudget2026(budgetDeptForUnit(unit));
+    if (fromPerf != null && fromPerf > 0) return fromPerf;
+    return plan2026ProjectsForUnit(unit).reduce((sum, p) => sum + (p.budget2026 || 0), 0);
+  }
+
+  function fundedCountForUnit(unit) {
+    return plan2026ProjectsForUnit(unit).filter((p) => (p.budget2026 || 0) > 0).length;
   }
 
   function fmtBudget2026(v) {
@@ -313,19 +341,23 @@
     root.innerHTML = PLAN2026_GROUPS.map((group) => {
       const cards = group.units.map((unit) => {
         const projects = plan2026ProjectsForUnit(unit);
-        const irBudget = irBudget2026ForUnit(unit);
+        const total = totalBudgetForUnit(unit);
+        const funded = fundedCountForUnit(unit);
+        const fromPerf = deptPerfBudget2026(budgetDeptForUnit(unit));
         const missing = !deptByName[unit.dept];
-        const disabled = missing || projects.length === 0;
-        const budgetLabel = irBudget != null ? fmtCompact(irBudget) : '—';
+        const hasBudget = total > 0;
+        const disabled = missing || (!projects.length && !hasBudget);
+        const budgetLabel = total > 0 ? fmtCompact(total) : '—';
         let meta = '';
         if (missing) {
           meta = '연동된 부서 데이터가 없습니다.';
         } else if (!projects.length) {
-          meta = '2026 사업계획서 없음';
+          meta = hasBudget ? 'perfGrid 조정예산 · 2026 사업계획서 없음' : '2026 사업계획서 없음';
         } else {
           meta = projects.length + '개 사업계획서';
+          if (fromPerf) meta += ' · perfGrid 조정예산';
+          else if (funded) meta += ' · 예산 ' + funded + '건';
         }
-        if (irBudget != null) meta += ' · IR 조정예산';
         return (
           '<article class="plan2026-card' + (disabled ? ' is-empty' : '') + '">' +
             '<div class="plan2026-card-head">' +
@@ -333,11 +365,12 @@
               (missing ? '<span class="plan2026-badge warn">데이터 없음</span>' : '') +
             '</div>' +
             '<div class="plan2026-card-budget-label">2026 조정예산</div>' +
-            '<div class="plan2026-card-budget' + (irBudget != null ? '' : ' is-muted') + '">' + budgetLabel + '</div>' +
+            '<div class="plan2026-card-budget' + (total > 0 ? '' : ' is-muted') + '">' + budgetLabel + '</div>' +
             '<div class="plan2026-card-meta">' + meta + '</div>' +
             '<button type="button" class="plan2026-open-btn"' +
               ' data-unit-label="' + escAttr(unit.label) + '"' +
               ' data-unit-dept="' + escAttr(unit.dept) + '"' +
+              (unit.budgetDept ? ' data-unit-budget-dept="' + escAttr(unit.budgetDept) + '"' : '') +
               (unit.projectMatch ? ' data-unit-match="' + escAttr(unit.projectMatch) + '"' : '') +
               (disabled ? ' disabled' : '') +
             '>사업계획서 보기</button>' +
@@ -358,6 +391,7 @@
         openPlan2026ListModal({
           label: btn.dataset.unitLabel,
           dept: btn.dataset.unitDept,
+          budgetDept: btn.dataset.unitBudgetDept || '',
           projectMatch: btn.dataset.unitMatch || '',
         });
       });
@@ -366,12 +400,15 @@
 
   function openPlan2026ListModal(unit) {
     const projects = plan2026ProjectsForUnit(unit).sort((a, b) => (b.budget2026 || 0) - (a.budget2026 || 0));
-    const irBudget = irBudget2026ForUnit(unit);
+    const perfTotal = deptPerfBudget2026(budgetDeptForUnit(unit));
+    const total = perfTotal != null && perfTotal > 0 ? perfTotal : totalBudgetForUnit(unit);
+    const funded = fundedCountForUnit(unit);
 
     document.getElementById('plan2026ListTitle').textContent = unit.label + ' · 2026년 사업계획서';
     document.getElementById('plan2026ListSummary').textContent =
       projects.length + '건' +
-      (irBudget != null ? ' · IR 조정예산 ' + fmtMoney(irBudget) : '');
+      (total > 0 ? ' · 조정예산 ' + fmtMoney(total) + (perfTotal ? ' (perfGrid)' : '') : '') +
+      (!perfTotal && funded ? ' · 입력 ' + funded + '건' : '');
 
     document.getElementById('plan2026ListBody').innerHTML = projects.map((p) =>
       '<tr>' +
