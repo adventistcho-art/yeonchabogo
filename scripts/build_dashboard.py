@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Embed merged IR + submission data into index.html and briefing.html."""
 import json
+import os
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from urllib.parse import unquote, urlparse
 
 from budget_history import merge_budget_history
 from plan2026_budget import enrich_plan2026_budgets
@@ -35,7 +37,39 @@ def embed_json(html_path: Path, merged: dict) -> None:
     html_path.write_text(html[:start] + embedded + html[end:], encoding="utf-8")
 
 
+def _file_uri_to_path(href: str) -> Path:
+    path = unquote(urlparse(href).path)
+    if path.startswith("/") and len(path) > 2 and path[2] == ":":
+        path = path[1:]
+    return Path(path)
+
+
+def apply_web_plan2026_hrefs(report: dict, site_root: Path, ir_pdf_root: Path) -> int:
+    """Use site-relative paths for plan2026 HTML shipped under site_root/html/."""
+    updated = 0
+    for dept in report.get("departments", []):
+        for proj in dept.get("projects", []):
+            href = proj.get("plan2026HtmlPath")
+            if not href:
+                continue
+            if href.startswith("file:"):
+                full = _file_uri_to_path(href)
+                try:
+                    rel = full.relative_to(ir_pdf_root).as_posix()
+                except ValueError:
+                    continue
+            elif href.startswith("html/"):
+                rel = href
+            else:
+                continue
+            if (site_root / rel.replace("/", os.sep)).is_file():
+                proj["plan2026HtmlPath"] = rel
+                updated += 1
+    return updated
+
+
 def main() -> None:
+
     cfg = load_config()
     report_path = Path(cfg["paths"]["reportJson"])
     if not report_path.is_file():
@@ -52,8 +86,14 @@ def main() -> None:
     )
     ir_pdf_root = Path(cfg["paths"]["irPdfRoot"])
     merged = enrich_plan2026_budgets(merged, ir_pdf_root)
+
+    from copy_plan2026_html import copy_target_plan2026  # noqa: WPS433
+
+    copy_target_plan2026()
+    web_paths = apply_web_plan2026_hrefs(merged, ROOT, ir_pdf_root)
     kst = timezone(timedelta(hours=9))
     merged["builtAt"] = datetime.now(kst).strftime("%Y-%m-%d %H:%M")
+    merged["webPlan2026Count"] = web_paths
 
     for target in EMBED_TARGETS:
         if not target.is_file():
@@ -69,6 +109,7 @@ def main() -> None:
         f"{sm.get('approvedCount', 0)} GW approved, "
         f"{sm.get('anomalyCount', 0)} anomalies"
     )
+    print(f"Web plan2026 hrefs: {web_paths}")
 
 
 if __name__ == "__main__":
