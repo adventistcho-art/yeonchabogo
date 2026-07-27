@@ -4,6 +4,7 @@
 
   const departments = DATA.departments || [];
   const deptByName = Object.fromEntries(departments.map((d) => [d.name, d]));
+  const perfBudget2026 = DATA.perfBudget2026 || {};
 
   const PLAN2026_GROUPS = [
     {
@@ -40,7 +41,7 @@
       title: '6. 교목처',
       units: [
         { label: '교목처', dept: '교목처' },
-        { label: '리더십센터', dept: '인성교육원', projectMatch: '리더십|MVP' },
+        { label: '리더십센터', dept: '인성교육원', budgetDept: '리더십센터', projectMatch: '리더십|MVP' },
         { label: '콘서바토리', dept: '콘서바토리' },
       ],
     },
@@ -99,6 +100,16 @@
 
   function fundedProjectsForUnit(unit) {
     return plan2026ProjectsForUnit(unit).filter((p) => (p.budget2026 || 0) > 0);
+  }
+
+  function irBudget2026ForUnit(unit) {
+    const key = unit.budgetDept || unit.dept;
+    const dept = deptByName[key];
+    if (dept && dept.budgetHistory && dept.budgetHistory['2026'] != null) {
+      return dept.budgetHistory['2026'];
+    }
+    if (perfBudget2026[key] != null) return perfBudget2026[key];
+    return null;
   }
 
   function totalBudgetForUnit(unit) {
@@ -302,11 +313,10 @@
     root.innerHTML = PLAN2026_GROUPS.map((group) => {
       const cards = group.units.map((unit) => {
         const projects = plan2026ProjectsForUnit(unit);
-        const funded = fundedProjectsForUnit(unit);
-        const total = totalBudgetForUnit(unit);
+        const irBudget = irBudget2026ForUnit(unit);
         const missing = !deptByName[unit.dept];
         const disabled = missing || projects.length === 0;
-        const budgetLabel = total > 0 ? fmtCompact(total) : '—';
+        const budgetLabel = irBudget != null ? fmtCompact(irBudget) : '—';
         let meta = '';
         if (missing) {
           meta = '연동된 부서 데이터가 없습니다.';
@@ -314,15 +324,16 @@
           meta = '2026 사업계획서 없음';
         } else {
           meta = projects.length + '개 사업계획서';
-          if (funded.length) meta += ' · 예산 ' + funded.length + '건';
         }
+        if (irBudget != null) meta += ' · IR 조정예산';
         return (
           '<article class="plan2026-card' + (disabled ? ' is-empty' : '') + '">' +
             '<div class="plan2026-card-head">' +
               '<h4>' + esc(unit.label) + '</h4>' +
               (missing ? '<span class="plan2026-badge warn">데이터 없음</span>' : '') +
             '</div>' +
-            '<div class="plan2026-card-budget' + (total > 0 ? '' : ' is-muted') + '">' + budgetLabel + '</div>' +
+            '<div class="plan2026-card-budget-label">2026 조정예산</div>' +
+            '<div class="plan2026-card-budget' + (irBudget != null ? '' : ' is-muted') + '">' + budgetLabel + '</div>' +
             '<div class="plan2026-card-meta">' + meta + '</div>' +
             '<button type="button" class="plan2026-open-btn"' +
               ' data-unit-label="' + escAttr(unit.label) + '"' +
@@ -355,13 +366,12 @@
 
   function openPlan2026ListModal(unit) {
     const projects = plan2026ProjectsForUnit(unit).sort((a, b) => (b.budget2026 || 0) - (a.budget2026 || 0));
-    const funded = projects.filter((p) => (p.budget2026 || 0) > 0);
-    const total = funded.reduce((sum, p) => sum + (p.budget2026 || 0), 0);
+    const irBudget = irBudget2026ForUnit(unit);
 
     document.getElementById('plan2026ListTitle').textContent = unit.label + ' · 2026년 사업계획서';
     document.getElementById('plan2026ListSummary').textContent =
       projects.length + '건' +
-      (total > 0 ? ' · 총예산 ' + fmtMoney(total) : ' · 예산 미입력');
+      (irBudget != null ? ' · IR 조정예산 ' + fmtMoney(irBudget) : '');
 
     document.getElementById('plan2026ListBody').innerHTML = projects.map((p) =>
       '<tr>' +

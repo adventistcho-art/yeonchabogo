@@ -503,6 +503,13 @@ body {
   color: #92400e;
 }
 
+.plan2026-card-budget-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.02em;
+}
+
 .plan2026-card-budget {
   font-size: 28px;
   font-weight: 800;

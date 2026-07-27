@@ -44,11 +44,27 @@ def merge_histories(*maps: dict[str, dict[str, int]]) -> dict[str, dict[str, int
     return merged
 
 
+def search_param_for_year(page, year: int) -> str:
+    """Set deptAnnualReport search year and return API query string."""
+    if "/kuts/deptAnnualReport" not in page.url:
+        page.goto("https://ir.syu.ac.kr/kuts/deptAnnualReport", wait_until="networkidle", timeout=120000)
+        page.wait_for_timeout(3000)
+    page.evaluate(
+        """(year) => {
+            search.setItemValue('sYear', String(year));
+            searchStart();
+        }""",
+        str(year),
+    )
+    page.wait_for_timeout(5000)
+    return page.evaluate("() => search.getParam()")
+
+
 def fetch_years_via_ir(years: list[int]) -> dict[int, list[dict]]:
     if not IR_SCRIPTS.is_dir():
         raise SystemExit(f"IR scripts not found: {IR_SCRIPTS}")
     sys.path.insert(0, str(IR_SCRIPTS))
-    from scrape_ir import APIS, FETCH_ALL_JS, login, prepare_search  # type: ignore
+    from scrape_ir import APIS, FETCH_ALL_JS, login  # type: ignore
 
     from playwright.sync_api import sync_playwright
 
@@ -61,13 +77,13 @@ def fetch_years_via_ir(years: list[int]) -> dict[int, list[dict]]:
         page = browser.new_page()
         login(page, ir_cfg)
         for year in years:
-            prepare_search(page, year)
+            search_param = search_param_for_year(page, year)
             rows = page.evaluate(
                 FETCH_ALL_JS,
-                {"apiPath": APIS["perf"], "searchParam": str(year)},
+                {"apiPath": APIS["perf"], "searchParam": search_param},
             )
-            out[year] = rows
-            print(f"  {year}: {len(rows)} perf rows")
+            out[year] = [r for r in rows if str(r.get("yyyy")) == str(year)]
+            print(f"  {year}: {len(out[year])} perf rows")
         browser.close()
     return out
 
@@ -76,7 +92,7 @@ def main() -> None:
     cfg = json.loads(CONFIG.read_text(encoding="utf-8"))
     paths = cfg.get("paths", {})
     data_dir = Path(paths["reportJson"]).parent
-    years = [2023, 2024]
+    years = [2023, 2024, 2026]
     snapshots = paths.get("perfSnapshots") or {}
 
     try:

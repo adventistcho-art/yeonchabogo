@@ -82,4 +82,13 @@ def merge_budget_history(
             dept["budgetChangeRate"] = round((b_curr - b_prev) / b_prev * 100, 1)
         else:
             dept["budgetChangeRate"] = None
+
+    perf_2026: dict[str, int] = {}
+    for dept_name, years in history.items():
+        b2026 = years.get("2026")
+        if b2026 is not None:
+            perf_2026[dept_name] = b2026
+    if perf_2026:
+        report["perfBudget2026"] = perf_2026
+
     return report
