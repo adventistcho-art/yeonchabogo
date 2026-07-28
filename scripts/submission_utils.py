@@ -41,6 +41,14 @@ SENDER_SUBUNIT_TO_DEPT: dict[str, str] = {
 
 GW_SEARCH_KEYWORDS = ("연차보고서", "연차보고", "부서연차", "부서 연차")
 
+_INVALID_PDF_CHARS = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
+
+
+def safe_pdf_basename(name: str) -> str:
+    cleaned = _INVALID_PDF_CHARS.sub("_", name.replace("/", "_").replace("\\", "_"))
+    cleaned = re.sub(r"\s+", " ", cleaned).strip(" .")
+    return cleaned or "unknown"
+
 
 def ir_perf_lookup_name(dept_name: str) -> str:
     return IR_PERF_LOOKUP_ALIASES.get(dept_name, dept_name)

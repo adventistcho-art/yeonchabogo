@@ -16,7 +16,7 @@ from gw_client import (
     make_session,
     merge_gw_docs,
 )
-from submission_utils import GW_SEARCH_KEYWORDS, infer_dept
+from submission_utils import GW_SEARCH_KEYWORDS, infer_dept, safe_pdf_basename
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 CONFIG_PATH = SCRIPT_DIR / "config.json"
@@ -52,13 +52,17 @@ def preserve_legacy_entries(all_docs: list[dict], approved_json: Path) -> list[d
 
 def main() -> None:
     configure_console_encoding()
-    if len(sys.argv) < 2:
-        print("Usage: sync-approved-from-gw.py <PHPSESSID> [sekey]")
-        sys.exit(1)
+    if len(sys.argv) >= 2 and sys.argv[1] not in ("--auto-login", "-a"):
+        phpsessid = sys.argv[1]
+        sekey = sys.argv[2] if len(sys.argv) > 2 else ""
+    else:
+        from gw_login import login_gw_credentials
+
+        print("GW auto-login...", flush=True)
+        phpsessid, sekey = login_gw_credentials()
+        print("GW session OK", flush=True)
 
     target_dir, approved_json, docbox_id = load_paths()
-    phpsessid = sys.argv[1]
-    sekey = sys.argv[2] if len(sys.argv) > 2 else ""
 
     session = make_session(phpsessid, sekey)
     all_docs = fetch_yeoncha_docs(session, docbox_id=docbox_id)
@@ -69,7 +73,9 @@ def main() -> None:
     for d in all_docs:
         wid = d.get("worklistid")
         sender = d["sender"]
-        out_pdf = target_dir / f"{sender}.pdf"
+        pdf_name = f"{safe_pdf_basename(sender)}.pdf"
+        d["pdfName"] = pdf_name
+        out_pdf = target_dir / pdf_name
         if out_pdf.exists():
             continue
         if not wid:

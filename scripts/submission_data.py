@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from submission_checks import analyze_remarks, extract_plan_section_from_pdf, plan_meta
-from submission_utils import IR_PERF_LOOKUP_ALIASES, infer_dept, match_submitted_for_dept
+from submission_utils import IR_PERF_LOOKUP_ALIASES, infer_dept, match_submitted_for_dept, safe_pdf_basename
 
 DEPT_CONTACTS: dict[str, dict[str, str]] = {
     "IR센터": {"name": "정진수", "email": "positive@syu.ac.kr"},
@@ -124,16 +124,23 @@ def _load_approved(
     for item in meta.get("approved", []):
         sender = item.get("sender", "")
         dept = item.get("dept") or infer_dept(item.get("title", ""), sender, dept_names)
-        pdf_path = submission_dir / f"{sender}.pdf"
+        pdf_name = item.get("pdfName") or f"{safe_pdf_basename(sender)}.pdf"
+        pdf_path = submission_dir / pdf_name
+        if not pdf_path.is_file() and sender:
+            legacy = submission_dir / f"{sender}.pdf"
+            if legacy.is_file():
+                pdf_path = legacy
+                pdf_name = legacy.name
         enriched = {
             **item,
             "dept": dept,
+            "pdfName": pdf_name,
             "hasPdf": pdf_path.is_file(),
             "pdfHref": _file_href(pdf_path),
         }
         approved_list.append(enriched)
         if dept:
-            approved_by_dept.setdefault(dept, []).append(sender)
+            approved_by_dept.setdefault(dept, []).append(Path(pdf_name).stem)
 
     return meta, approved_list, approved_by_dept
 
@@ -183,9 +190,21 @@ def merge_submission_into_report(report: dict, cfg: dict) -> dict:
 
         for base in sorted(matches):
             pdf_path = submission_dir / f"{base}.pdf"
-            meta_item = sender_meta.get(base, {})
+            meta_item = {}
+            for item in approved_meta.get("approved", []):
+                sender = item.get("sender", "")
+                item_base = Path(item.get("pdfName") or f"{safe_pdf_basename(sender)}.pdf").stem
+                if item_base == base or sender == base:
+                    meta_item = item
+                    if not pdf_path.is_file():
+                        alt = submission_dir / (item.get("pdfName") or f"{safe_pdf_basename(sender)}.pdf")
+                        if alt.is_file():
+                            pdf_path = alt
+                    break
+            if not meta_item:
+                meta_item = sender_meta.get(base, {})
             files.append({
-                "name": f"{base}.pdf",
+                "name": pdf_path.name if pdf_path.name else f"{base}.pdf",
                 "href": _file_href(pdf_path),
                 "hasPdf": pdf_path.is_file(),
                 "gwSource": meta_item.get("gwSource", ""),

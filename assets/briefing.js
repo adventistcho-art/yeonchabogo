@@ -101,6 +101,14 @@
         { label: '구매팀', dept: '구매팀' },
       ],
     },
+    {
+      title: '16. 교육혁신원',
+      units: [
+        { label: '교수학습개발팀', dept: '교수학습개발팀' },
+        { label: '비교과통합센터', dept: '비교과통합센터' },
+        { label: '원격교육지원센터', dept: '원격교육지원센터' },
+      ],
+    },
   ];
 
   let selectedDept = null;
