@@ -94,6 +94,14 @@
         { label: '경영대학원(교학)', dept: '경영대학원(교학)' },
       ],
     },
+    {
+      title: '15. 재무처',
+      units: [
+        { label: '예산팀', dept: '예산팀' },
+        { label: '재무팀', dept: '재무팀' },
+        { label: '구매팀', dept: '구매팀' },
+      ],
+    },
   ];
 
   let selectedDept = null;

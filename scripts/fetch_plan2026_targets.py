@@ -51,6 +51,9 @@ TARGETS: list[tuple[str, str]] = [
     ("일반대학원(교학)", "일반대학원(교학)"),
     ("신학대학원(교학)", "신학대학원(교학)"),
     ("경영대학원(교학)", "경영대학원(교학)"),
+    ("예산팀", "예산팀"),
+    ("재무팀", "재무팀"),
+    ("구매팀", "구매팀"),
 ]
 
 LOG_PATH = Path(__file__).resolve().parent.parent / "data" / "fetch_plan2026_targets_log.json"
