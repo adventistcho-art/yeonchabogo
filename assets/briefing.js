@@ -18,7 +18,7 @@
     },
     {
       title: '2. 총무인사팀',
-      units: [{ label: '총무인사팀', dept: '총무과' }],
+      units: [{ label: '총무인사팀', dept: '총무인사팀' }],
     },
     {
       title: '3. 기획처',
@@ -58,6 +58,40 @@
         { label: '부속실', dept: '부속실', budgetDept: '부속팀' },
         { label: '커뮤니케이션팀', dept: '커뮤니케이션팀' },
         { label: '대외협력팀', dept: '대외국제처', budgetDept: '대외협력팀' },
+      ],
+    },
+    {
+      title: '9. 연구처',
+      units: [{ label: '연구산학팀', dept: '연구산학팀' }],
+    },
+    {
+      title: '10. AI융합교육원',
+      units: [{ label: '소프트웨어중심대학사업단', dept: '소프트웨어중심대학사업단' }],
+    },
+    {
+      title: '11. 학술정보원',
+      units: [
+        { label: '학술정보팀', dept: '학술정보팀' },
+        { label: '정보전산팀', dept: '정보전산팀' },
+      ],
+    },
+    {
+      title: '12. 대학일자리본부',
+      units: [
+        { label: '취업진로지원센터', dept: '취업진로지원센터' },
+        { label: '스타트업지원센터', dept: '창업교육센터' },
+      ],
+    },
+    {
+      title: '13. 국제처',
+      units: [{ label: '국제교육원', dept: '국제교육원' }],
+    },
+    {
+      title: '14. 대학원',
+      units: [
+        { label: '일반대학원(교학)', dept: '일반대학원(교학)' },
+        { label: '신학대학원(교학)', dept: '신학대학원(교학)' },
+        { label: '경영대학원(교학)', dept: '경영대학원(교학)' },
       ],
     },
   ];
@@ -105,25 +139,26 @@
     return new RegExp(unit.projectMatch).test(project.name || '');
   }
 
-  function plan2026ProjectsForUnit(unit) {
-    const dept = deptByName[unit.dept];
-    if (!dept) return [];
-    return (dept.projects || []).filter(
-      (p) => p.plan2026HtmlPath && projectMatchesUnit(p, unit)
-    );
-  }
+  const DEPT_ALIASES = {
+    '총무인사팀': '총무과',
+  };
 
   const PERF_BUDGET_ALIASES = {
     '부속실': '부속팀',
     '대외국제처': '대외협력팀',
+    '총무인사팀': '총무과',
   };
 
+  function resolveDeptName(name) {
+    return DEPT_ALIASES[name] || name;
+  }
+
   function budgetDeptForUnit(unit) {
-    return unit.budgetDept || unit.dept;
+    return resolveDeptName(unit.budgetDept || unit.dept);
   }
 
   function deptPerfBudget2026(deptName) {
-    const dept = deptByName[deptName];
+    const dept = deptByName[resolveDeptName(deptName)];
     if (dept?.performance2026?.adjustedBudget != null) {
       return dept.performance2026.adjustedBudget;
     }
@@ -132,6 +167,14 @@
     const alias = PERF_BUDGET_ALIASES[deptName];
     if (alias != null && map[alias] != null) return map[alias];
     return null;
+  }
+
+  function plan2026ProjectsForUnit(unit) {
+    const dept = deptByName[resolveDeptName(unit.dept)];
+    if (!dept) return [];
+    return (dept.projects || []).filter(
+      (p) => p.plan2026HtmlPath && projectMatchesUnit(p, unit)
+    );
   }
 
   function totalBudgetForUnit(unit) {
@@ -283,9 +326,16 @@
     });
   }
 
+  function annualReport2025Href(dept) {
+    return dept.annualReport2025PdfHref
+      || dept.submission?.annualReport2025PdfHref
+      || dept.annualReport2025IrPdfHref
+      || '';
+  }
+
   function renderDocs(dept) {
     const href24 = dept.annualReport2024PdfHref || '';
-    const href25 = dept.submission?.annualReport2025PdfHref || '';
+    const href25 = annualReport2025Href(dept);
     const row = document.getElementById('docBar');
     row.innerHTML = docChip('24 연차', href24) + docChip('25 연차', href25);
     bindDocButtons(row, dept);
@@ -343,8 +393,7 @@
         const projects = plan2026ProjectsForUnit(unit);
         const total = totalBudgetForUnit(unit);
         const funded = fundedCountForUnit(unit);
-        const fromPerf = deptPerfBudget2026(budgetDeptForUnit(unit));
-        const missing = !deptByName[unit.dept];
+        const missing = !deptByName[resolveDeptName(unit.dept)];
         const hasBudget = total > 0;
         const disabled = missing || (!projects.length && !hasBudget);
         const budgetLabel = total > 0 ? fmtCompact(total) : '—';
@@ -352,11 +401,10 @@
         if (missing) {
           meta = '연동된 부서 데이터가 없습니다.';
         } else if (!projects.length) {
-          meta = hasBudget ? 'perfGrid 조정예산 · 2026 사업계획서 없음' : '2026 사업계획서 없음';
+          meta = '2026 사업계획서 없음';
         } else {
           meta = projects.length + '개 사업계획서';
-          if (fromPerf) meta += ' · perfGrid 조정예산';
-          else if (funded) meta += ' · 예산 ' + funded + '건';
+          if (funded) meta += ' · 예산 ' + funded + '건';
         }
         return (
           '<article class="plan2026-card' + (disabled ? ' is-empty' : '') + '">' +
@@ -400,15 +448,14 @@
 
   function openPlan2026ListModal(unit) {
     const projects = plan2026ProjectsForUnit(unit).sort((a, b) => (b.budget2026 || 0) - (a.budget2026 || 0));
-    const perfTotal = deptPerfBudget2026(budgetDeptForUnit(unit));
-    const total = perfTotal != null && perfTotal > 0 ? perfTotal : totalBudgetForUnit(unit);
+    const total = totalBudgetForUnit(unit);
     const funded = fundedCountForUnit(unit);
 
     document.getElementById('plan2026ListTitle').textContent = unit.label + ' · 2026년 사업계획서';
     document.getElementById('plan2026ListSummary').textContent =
       projects.length + '건' +
-      (total > 0 ? ' · 조정예산 ' + fmtMoney(total) + (perfTotal ? ' (perfGrid)' : '') : '') +
-      (!perfTotal && funded ? ' · 입력 ' + funded + '건' : '');
+      (total > 0 ? ' · 조정예산 ' + fmtMoney(total) : '') +
+      (funded ? ' · 입력 ' + funded + '건' : '');
 
     document.getElementById('plan2026ListBody').innerHTML = projects.map((p) =>
       '<tr>' +

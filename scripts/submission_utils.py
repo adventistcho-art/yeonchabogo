@@ -13,6 +13,21 @@ DEPT_FILE_ALIASES: dict[str, list[str]] = {
     "교수학습개발팀": ["교수학습개발센터", "교수학습개발"],
     "커뮤니케이션팀": ["커뮤니케이션"],
     "학사지원팀": ["학사지원"],
+    "인성교육원": ["리더십센터", "리더십"],
+}
+
+# IR perf/연차보고서 조회 시 report 부서명 -> IR budgOrgnNm
+IR_PERF_LOOKUP_ALIASES: dict[str, str] = {
+    "인성교육원": "리더십센터",
+    "부속실": "부속팀",
+    "대외국제처": "대외협력팀",
+}
+
+# IR comment/list deptNm lookup (성과관리계획 bigo)
+IR_COMMENT_LOOKUP_ALIASES: dict[str, str] = {
+    "인성교육원": "리더십센터",
+    "교육미디어지원팀": "시설관리팀",
+    "교수지원": "교수지원팀",
 }
 
 SENDER_SUBUNIT_TO_DEPT: dict[str, str] = {
@@ -25,6 +40,10 @@ SENDER_SUBUNIT_TO_DEPT: dict[str, str] = {
 }
 
 GW_SEARCH_KEYWORDS = ("연차보고서", "연차보고", "부서연차", "부서 연차")
+
+
+def ir_perf_lookup_name(dept_name: str) -> str:
+    return IR_PERF_LOOKUP_ALIASES.get(dept_name, dept_name)
 
 
 def core_name(name: str) -> str:
@@ -75,11 +94,12 @@ def match_submitted_for_dept(
     for file in submitted_files:
         c = core_name(file)
         if any(term in file or c in term or term == c for term in search_terms):
-            matches.append(file)
+            if file not in matches:
+                matches.append(file)
 
     for sender in approved_by_dept.get(dept, []):
         base = sender[:-4] if sender.lower().endswith(".pdf") else sender
-        if base in submitted_files and base not in matches:
+        if base not in matches:
             matches.append(base)
 
     return matches

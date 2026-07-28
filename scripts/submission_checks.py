@@ -14,6 +14,11 @@ PLAN_SECTION_MARKERS = (
     "부서연차평가성과관리계획(안)",
 )
 
+PLAN_SECTION_START_RE = re.compile(
+    r"부서연차평가\s*성과관리계획\s*(?:\(\s*안\s*\))?",
+    re.IGNORECASE,
+)
+
 
 def normalize_text(text: str) -> str:
     return re.sub(r"\s+", "", text or "")
@@ -38,6 +43,39 @@ def extract_pdf_text(pdf_path: Path) -> str:
         return "".join((page.extract_text() or "") for page in reader.pages)
     except Exception:
         return ""
+
+
+def extract_plan_section_from_pdf(pdf_path: Path) -> str | None:
+    """Extract 성과관리계획 body text from a submitted 연차보고서25 PDF."""
+    if not pdf_path.is_file():
+        return None
+    text = extract_pdf_text(pdf_path)
+    if not pdf_text_is_readable(text):
+        return None
+
+    match = None
+    for pattern in (
+        PLAN_SECTION_START_RE,
+        re.compile(r"성과관리계획\s*\(\s*2026", re.IGNORECASE),
+    ):
+        match = pattern.search(text)
+        if match:
+            break
+    if not match:
+        return None
+
+    section = text[match.end() :].strip()
+    section = re.split(
+        r"\n\s*□\s*부서연차보고|\n\s*□\s*성과지표관리|\n\s*□\s*사업환류",
+        section,
+        maxsplit=1,
+    )[0].strip()
+    section = re.sub(r"\n{3,}", "\n\n", section)
+    if len(section) < MIN_PLAN_LENGTH:
+        return None
+    if re.fullmatch(r"[\d.\s]+", section):
+        return None
+    return section
 
 
 def pdf_has_plan_section(pdf_path: Path) -> bool | None:
@@ -79,6 +117,7 @@ def analyze_remarks(
 ) -> list[str]:
     remarks: list[str] = []
     meta = plan_meta(evaluation.get("performancePlan2026"))
+    plan_source = (evaluation.get("performancePlan2026Source") or "ir_comment").strip()
     status = submission.get("status")
     files = submission.get("files") or []
 
@@ -106,7 +145,12 @@ def analyze_remarks(
                 f"IR 성과관리계획(2026) 내용이 비정상적으로 짧음 ('{meta['raw']}')"
             )
         elif not meta["hasContent"]:
-            remarks.append("공문 제출했으나 IR 성과관리계획(2026) 미입력")
+            if plan_source == "submission_pdf":
+                pass
+            else:
+                remarks.append("공문 제출했으나 IR 성과관리계획(2026) 미입력")
+        elif plan_source == "submission_pdf" and meta["isSubstantive"]:
+            pass
 
     elif status == "not_submitted":
         if meta["isSubstantive"]:

@@ -55,10 +55,7 @@ def history_from_perf_snapshots(snapshots: dict[str, str | Path]) -> dict[str, d
     return out
 
 
-PERF_DEPT_ALIASES: dict[str, str] = {
-    "부속실": "부속팀",
-    "대외국제처": "대외협력팀",
-}
+from submission_utils import IR_PERF_LOOKUP_ALIASES
 
 
 def merge_budget_history(
@@ -95,7 +92,7 @@ def merge_budget_history(
         if b2026 is not None:
             perf_2026[dept_name] = b2026
     if perf_2026:
-        for report_name, perf_name in PERF_DEPT_ALIASES.items():
+        for report_name, perf_name in IR_PERF_LOOKUP_ALIASES.items():
             b2026 = perf_2026.get(perf_name)
             if b2026 is not None:
                 perf_2026.setdefault(report_name, b2026)
@@ -103,7 +100,7 @@ def merge_budget_history(
 
     for dept in report.get("departments", []):
         name = dept.get("name", "")
-        b2026 = perf_2026.get(name) or perf_2026.get(PERF_DEPT_ALIASES.get(name, ""))
+        b2026 = perf_2026.get(name) or perf_2026.get(IR_PERF_LOOKUP_ALIASES.get(name, ""))
         if b2026 is None:
             continue
         dept["performance2026"] = {"adjustedBudget": b2026}

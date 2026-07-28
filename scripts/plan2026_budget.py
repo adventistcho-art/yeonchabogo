@@ -52,6 +52,16 @@ def _resolve_plan_path(
     return None
 
 
+def _project_budget_fallback(proj: dict) -> int | None:
+    raw = proj.get("budget")
+    if raw is None:
+        return None
+    if isinstance(raw, (int, float)):
+        return int(raw)
+    digits = re.sub(r"[^\d]", "", str(raw))
+    return int(digits) if digits else None
+
+
 def enrich_plan2026_budgets(
     report: dict,
     ir_pdf_root: Path | None = None,
@@ -69,24 +79,28 @@ def enrich_plan2026_budgets(
                 try:
                     text = path.read_text(encoding="utf-8", errors="replace")
                     val = parse_plan2026_budget(text)
-                    budget2026 = val if val > 0 else 0
+                    if val > 0:
+                        budget2026 = val
                 except OSError:
                     budget2026 = None
+            if not budget2026:
+                fallback = _project_budget_fallback(proj)
+                budget2026 = fallback if fallback else 0
             proj["budget2026"] = budget2026
             if budget2026 and budget2026 > 0:
                 total += budget2026
                 funded += 1
-        dept["summary2026"] = {
-            "totalBudget": (
-                dept.get("performance2026", {}).get("adjustedBudget")
-                if dept.get("summary2026", {}).get("source") == "perfGrid"
-                else total
-            ),
+        summary2026: dict[str, Any] = {
+            "totalBudget": total,
             "fundedProjectCount": funded,
         }
-        if dept.get("performance2026", {}).get("adjustedBudget") is not None:
-            dept["summary2026"]["source"] = "perfGrid"
-            dept["summary2026"]["totalBudget"] = dept["performance2026"]["adjustedBudget"]
+        perf2026 = dept.get("performance2026", {}).get("adjustedBudget")
+        if perf2026 is not None:
+            summary2026["source"] = "perfGrid"
+            summary2026["totalBudget"] = perf2026
+        elif total > 0:
+            summary2026["source"] = "plan2026Html"
+        dept["summary2026"] = summary2026
     return report
 
 

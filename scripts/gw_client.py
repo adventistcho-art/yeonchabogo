@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 import sys
 from datetime import datetime
+from pathlib import Path
 from urllib.parse import parse_qs, urlencode, urlparse
 
 import requests
@@ -13,6 +14,8 @@ from bs4 import BeautifulSoup
 from submission_utils import GW_SEARCH_KEYWORDS, infer_dept
 
 BASE_INBOX_URL = "https://gw.syu.ac.kr/officialDoc/official_doc_receive_inside.html"
+DOCBOX_OFFICIAL_URL = "https://gw.syu.ac.kr/docbox/docBoxOfficialDoc.html"
+INTEGRATED_DOCBOX_ID = "3399"
 VIEW_URL = "https://gw.syu.ac.kr/officialDoc/official_doc_view.html"
 APPROVE_URL = "https://gw.syu.ac.kr/officialDoc/sign_write_process.html"
 WORKPATH_URL = "https://gw.syu.ac.kr/workflow/workpathjson.php"
@@ -75,12 +78,27 @@ def extract_worklist_id(tr, row_text: str) -> str | None:
 def parse_view_link(onclick: str) -> dict[str, str]:
     m = re.search(r"location\.href='([^']+)'", onclick or "")
     if not m:
+        m = re.search(r'location\.href="([^"]+)"', onclick or "")
+    if not m:
         return {}
     qs = parse_qs(urlparse(m.group(1)).query)
     return {k: v[0] for k, v in qs.items()}
 
 
-def parse_inbox_docs(html: str, *, title_filter: re.Pattern[str] | None = None) -> list[dict]:
+def _row_sender_title(tr) -> tuple[str, str]:
+    offi = tr.select_one("span.txtDropOffi")
+    if offi:
+        sender = offi.get_text(strip=True)
+        title_el = tr.select_one("a.workflowName")
+        if title_el:
+            return sender, title_el.get_text(strip=True) or title_el.get("title", "")
+    tds = tr.select("td")
+    if len(tds) >= 4:
+        return tds[2].get_text(strip=True), tds[3].get_text(strip=True)
+    return "", ""
+
+
+def parse_inbox_docs(html: str, *, title_filter: re.Pattern[str] | None = None, source: str = "") -> list[dict]:
     title_filter = title_filter or re.compile(r"연차|부서연차", re.I)
     soup = BeautifulSoup(html, "html.parser")
     docs: dict[str, dict] = {}
@@ -90,12 +108,11 @@ def parse_inbox_docs(html: str, *, title_filter: re.Pattern[str] | None = None) 
         if len(tds) < 4:
             continue
 
-        sender = tds[2].get_text(strip=True)
-        title = tds[3].get_text(strip=True)
+        sender, title = _row_sender_title(tr)
         if not sender or not title or not title_filter.search(title + sender):
             continue
 
-        onclick = tds[3].get("onclick") or ""
+        onclick = (tds[3].get("onclick") if len(tds) > 3 else "") or tr.get("onclick") or ""
         view = parse_view_link(onclick)
         wid = extract_worklist_id(tr, tr.get("onclick") or "") or view.get("worklistid")
         key = wid or sender
@@ -107,6 +124,7 @@ def parse_inbox_docs(html: str, *, title_filter: re.Pattern[str] | None = None) 
             "title": title,
             "sender": sender,
             "dept": infer_dept(title, sender, IR_TARGET),
+            "gwSource": source,
         }
     return list(docs.values())
 
@@ -132,6 +150,96 @@ def fetch_inbox(
     r = session.get(url, timeout=60)
     r.raise_for_status()
     return r.text
+
+
+def fetch_docbox(session: requests.Session, boxid: str, keyword: str = "") -> str:
+    params = {
+        "boxid": boxid,
+        "search": "workflowname",
+        "conts": keyword,
+        "startdate": "2025-07-20",
+        "enddate": datetime.now().strftime("%Y-%m-%d"),
+        "searchPeriod": "1y",
+        "listnum": "50",
+    }
+    url = DOCBOX_OFFICIAL_URL + "?" + urlencode(params, encoding="utf-8")
+    r = session.get(url, timeout=60)
+    r.raise_for_status()
+    return r.text
+
+
+def merge_gw_docs(*doc_lists: list[dict]) -> list[dict]:
+    merged: dict[str, dict] = {}
+    for docs in doc_lists:
+        for d in docs:
+            key = d.get("worklistid") or d["sender"]
+            if key not in merged:
+                merged[key] = d
+                continue
+            prev = merged[key]
+            for field in ("worklistid", "workflowid", "dept", "gwSource"):
+                if not prev.get(field) and d.get(field):
+                    prev[field] = d[field]
+            if d.get("gwSource") and prev.get("gwSource") and d["gwSource"] not in prev["gwSource"]:
+                prev["gwSource"] = prev["gwSource"] + "+" + d["gwSource"]
+    return sorted(merged.values(), key=lambda x: (x.get("worklistid") or "", x["sender"]), reverse=True)
+
+
+def fetch_yeoncha_docs(session: requests.Session, *, docbox_id: str = INTEGRATED_DOCBOX_ID) -> list[dict]:
+    """결재할·결재한 공문 + 통합문서함에서 연차보고서 공문 수집."""
+    all_docs: list[dict] = []
+
+    for kw in GW_SEARCH_KEYWORDS:
+        html = fetch_inbox(session, "SCHED", kw, boxid="202")
+        found = parse_inbox_docs(html, source="결재할문서함")
+        all_docs = merge_gw_docs(all_docs, found)
+
+    for kw in GW_SEARCH_KEYWORDS:
+        html = fetch_inbox(session, "SENT", kw)
+        found = parse_inbox_docs(html, source="결재한문서함")
+        all_docs = merge_gw_docs(all_docs, found)
+
+    html = fetch_inbox(session, "SENT", "")
+    found = parse_inbox_docs(html, source="결재한문서함")
+    all_docs = merge_gw_docs(all_docs, found)
+
+    for kw in GW_SEARCH_KEYWORDS:
+        html = fetch_docbox(session, docbox_id, kw)
+        found = parse_inbox_docs(html, source="통합문서함")
+        all_docs = merge_gw_docs(all_docs, found)
+
+    html = fetch_docbox(session, docbox_id, "")
+    found = parse_inbox_docs(html, source="통합문서함")
+    all_docs = merge_gw_docs(all_docs, found)
+
+    return all_docs
+
+
+def download_submission_pdf(
+    session: requests.Session,
+    worklistid: str,
+    out_path: Path,
+    *,
+    phpsessid: str,
+    sekey: str = "",
+) -> bool:
+    import zipfile
+    from io import BytesIO
+    from urllib.parse import quote
+
+    url = f"https://gw.syu.ac.kr/workflow/sign_download_zip.html?worklistid={worklistid}&PHPSESSID={phpsessid}"
+    if sekey:
+        url += f"&sekey={quote(sekey, safe='')}"
+    r = session.get(url, timeout=60)
+    if r.status_code != 200 or not r.content.startswith(b"PK"):
+        return False
+    with zipfile.ZipFile(BytesIO(r.content)) as zf:
+        pdfs = [n for n in zf.namelist() if n.lower().endswith(".pdf")]
+        if not pdfs:
+            return False
+        with zf.open(pdfs[0]) as src, out_path.open("wb") as dst:
+            dst.write(src.read())
+    return True
 
 
 def fetch_pending_yeoncha_docs(session: requests.Session) -> list[dict]:

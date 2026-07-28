@@ -32,11 +32,20 @@ pip install -r requirements.txt
 
 ## 1. 그룹웨어 공문 동기화 (선택)
 
+브라우저에서 gw.syu.ac.kr 로그인 후 개발자도구 → Application → Cookies → `PHPSESSID` 복사.
+
 ```powershell
 python sync-approved-from-gw.py <PHPSESSID> [sekey]
 ```
 
-→ `F:\...\부서공문제출\approved_submissions.json` 및 PDF 갱신
+다음 위치에서 연차보고서 공문을 수집합니다.
+
+- **결재할문서함** (내부수신)
+- **결재한문서함** (내부수신, 검색어 병합)
+- **통합문서함** (boxid 3399, `config.json` → `gw.integratedDocboxId`)
+
+→ `F:\...\부서공문제출\approved_submissions.json` 갱신 및 PDF 다운로드  
+→ GW에 확인된 부서는 **로컬 PDF 없어도 제출**로 표시 (PDF는 이후 sync 시 받음)
 
 ## 2. 대시보드 빌드
 

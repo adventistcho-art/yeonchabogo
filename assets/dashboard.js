@@ -50,7 +50,10 @@
       'IR 생성: ' + (DATA.generatedAt || '-') + '<br>' +
       '사업 HTML 동기화: ' + (DATA.htmlSyncedAt || '-') + '<br>' +
       '2026 계획 HTML: ' + (DATA.plan2026SyncedAt || '-') + '<br>' +
+      '성과관리계획 HTML: ' + (DATA.generatedAt || '-') +
+      (DATA.performancePlanHtmlCount != null ? ' (' + DATA.performancePlanHtmlCount + '건)' : '') + '<br>' +
       '2024 연차보고 PDF: ' + (DATA.annualReport2024SyncedAt || '-') + '<br>' +
+      '2025 연차보고 PDF: ' + (DATA.annualReport2025SyncedAt || '-') + '<br>' +
       '공문 동기화: ' + (submissionMeta.updated || '-') +
       (submissionMeta.source ? ' (' + esc(submissionMeta.source) + ')' : '') + '<br>' +
       '빌드: ' + (DATA.builtAt || '-');
@@ -64,9 +67,13 @@
     let filesHtml = '';
     if (sub.files && sub.files.length) {
       filesHtml = '<div class="submission-files">' +
-        sub.files.map((f) => f.href
-          ? '<a href="' + escAttr(f.href) + '" target="_blank" rel="noopener">' + esc(f.name) + '</a>'
-          : esc(f.name)).join('<br>') +
+        sub.files.map((f) => {
+          if (f.href) {
+            return '<a href="' + escAttr(f.href) + '" target="_blank" rel="noopener">' + esc(f.name) + '</a>';
+          }
+          const src = f.gwSource ? ' <span class="tag">(' + esc(f.gwSource) + ', PDF대기)</span>' : '';
+          return esc(f.name) + src;
+        }).join('<br>') +
         '</div>';
     }
     return '<td class="center-cell"><span class="status ' + cls + '">' + label + '</span>' + filesHtml + '</td>';
@@ -101,16 +108,49 @@
       '</td>';
   }
 
+  function annualReport2025Href(dept) {
+    return dept.annualReport2025PdfHref
+      || dept.submission?.annualReport2025PdfHref
+      || dept.annualReport2025IrPdfHref
+      || '';
+  }
+
   function annualReportCell(dept) {
     const href24 = dept.annualReport2024PdfHref || '';
-    const href25 = dept.submission?.annualReport2025PdfHref || '';
+    const href25 = annualReport2025Href(dept);
+    const src25 = dept.annualReport2025PdfSource === 'ir' ? ' title="IR 연차보고서"' : '';
     const btn24 = href24
       ? '<button type="button" class="btn btn-sm btn-annual-doc" data-dept="' + escAttr(dept.name) + '" data-href="' + escAttr(href24) + '" data-year="24">연차보고서24</button>'
       : '<button type="button" class="btn btn-sm" disabled title="2024 연차보고 PDF 없음">연차보고서24</button>';
     const btn25 = href25
-      ? '<button type="button" class="btn btn-sm btn-annual-doc" data-dept="' + escAttr(dept.name) + '" data-href="' + escAttr(href25) + '" data-year="25">연차보고서25</button>'
-      : '<button type="button" class="btn btn-sm" disabled title="2025 공문 PDF 없음">연차보고서25</button>';
+      ? '<button type="button" class="btn btn-sm btn-annual-doc" data-dept="' + escAttr(dept.name) + '" data-href="' + escAttr(href25) + '" data-year="25"' + src25 + '>연차보고서25</button>'
+      : '<button type="button" class="btn btn-sm" disabled title="2025 연차보고 PDF 없음">연차보고서25</button>';
     return '<td class="center-cell plan-result-cell"><div class="btn-row">' + btn24 + btn25 + '</div></td>';
+  }
+
+  function performancePlanCell(dept) {
+    const planMeta = dept.evaluation.performancePlan2026Meta || {};
+    const href = dept.performancePlan2026HtmlPath || '';
+    const pdf25 = annualReport2025Href(dept);
+    const submitted = dept.submission?.status === 'submitted';
+    const canView = planMeta.isSubstantive || (submitted && !!pdf25);
+    const disabled = canView ? '' : 'disabled';
+    const sourceHint = planMeta.source === 'submission_pdf'
+      ? ' title="연차보고서25 PDF에서 반영"'
+      : (submitted && pdf25 && !planMeta.isSubstantive ? ' title="연차보고서25 PDF에서 확인"' : '');
+
+    if (href && planMeta.isSubstantive) {
+      return '<td class="center-cell plan-result-cell">' +
+        '<button type="button" class="btn btn-sm btn-plan-html" data-dept="' + escAttr(dept.name) + '" data-href="' +
+        escAttr(href) + '" ' + disabled + sourceHint + '>보기</button></td>';
+    }
+    if (submitted && pdf25) {
+      return '<td class="center-cell plan-result-cell">' +
+        '<button type="button" class="btn btn-sm btn-plan-pdf" data-dept="' + escAttr(dept.name) + '" data-href="' +
+        escAttr(pdf25) + '" ' + disabled + sourceHint + '>보기</button></td>';
+    }
+    return '<td class="center-cell"><button class="btn btn-plan" data-dept="' + escAttr(dept.name) + '" ' +
+      disabled + '>보기</button></td>';
   }
 
   function renderMain(depts) {
@@ -119,9 +159,6 @@
 
     tbody.innerHTML = sorted.map((d) => {
       const bt = d.summary.byType || {};
-      const plan = d.evaluation.performancePlan2026 || '-';
-      const planMeta = d.evaluation.performancePlan2026Meta || {};
-      const planDisabled = planMeta.isSubstantive ? '' : 'disabled';
       const typeStr = (bt['성과관리사업'] || 0) + ' / ' + (bt['항례적사업'] || 0) + ' / ' + (bt['지정안됨'] || 0);
 
       return '<tr>' +
@@ -132,7 +169,7 @@
         '<td class="num-cell">' + esc(String(d.evaluation.budgetExecRate)) + '</td>' +
         '<td class="num-cell">' + esc(String(d.evaluation.projectExecRate)) + '</td>' +
         annualReportCell(d) +
-        '<td class="center-cell"><button class="btn btn-plan" data-dept="' + escAttr(d.name) + '" ' + planDisabled + '>보기</button></td>' +
+        performancePlanCell(d) +
         '<td class="center-cell type-counts">' + typeStr + '</td>' +
         '<td class="center-cell"><button class="btn btn-detail" data-dept="' + escAttr(d.name) + '">보기 (' + d.summary.projectCount + ')</button></td>' +
         remarksCell(d) +
@@ -144,6 +181,18 @@
       btn.addEventListener('click', () => {
         const yearLabel = btn.dataset.year === '24' ? '2024' : '2025';
         openHtmlModal((btn.dataset.dept || '') + ' - ' + yearLabel + ' 연차보고서', btn.dataset.href);
+      });
+    });
+
+    tbody.querySelectorAll('.btn-plan-html').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        openHtmlModal((btn.dataset.dept || '') + ' - 성과관리계획(2026년 반영)', btn.dataset.href);
+      });
+    });
+
+    tbody.querySelectorAll('.btn-plan-pdf').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        openHtmlModal((btn.dataset.dept || '') + ' - 성과관리계획(2026년 반영, 연차보고서25)', btn.dataset.href);
       });
     });
 

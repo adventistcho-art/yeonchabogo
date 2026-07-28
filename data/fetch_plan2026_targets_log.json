@@ -1,0 +1,246 @@
+{
+  "targets": [
+    {
+      "suffix": "건축・안전관리팀",
+      "dept": "건축・안전관리팀",
+      "matched": 33,
+      "downloaded": 0,
+      "skipped": 33,
+      "failed": 0
+    },
+    {
+      "suffix": "교육미디어지원팀",
+      "dept": "교육미디어지원팀",
+      "matched": 14,
+      "downloaded": 0,
+      "skipped": 14,
+      "failed": 0
+    },
+    {
+      "suffix": "조경미화팀",
+      "dept": "조경미화팀",
+      "matched": 14,
+      "downloaded": 0,
+      "skipped": 14,
+      "failed": 0
+    },
+    {
+      "suffix": "전기통신팀",
+      "dept": "전기통신팀",
+      "matched": 10,
+      "downloaded": 0,
+      "skipped": 10,
+      "failed": 0
+    },
+    {
+      "suffix": "관재팀",
+      "dept": "관재팀",
+      "matched": 19,
+      "downloaded": 0,
+      "skipped": 19,
+      "failed": 0
+    },
+    {
+      "suffix": "총무과",
+      "dept": "총무과",
+      "matched": 55,
+      "downloaded": 0,
+      "skipped": 55,
+      "failed": 0
+    },
+    {
+      "suffix": "기획처",
+      "dept": "기획처",
+      "matched": 66,
+      "downloaded": 0,
+      "skipped": 66,
+      "failed": 0
+    },
+    {
+      "suffix": "IR센터",
+      "dept": "IR센터",
+      "matched": 4,
+      "downloaded": 0,
+      "skipped": 4,
+      "failed": 0
+    },
+    {
+      "suffix": "학생복지팀",
+      "dept": "학생복지팀",
+      "matched": 117,
+      "downloaded": 0,
+      "skipped": 117,
+      "failed": 0
+    },
+    {
+      "suffix": "장애학생지원센터",
+      "dept": "장애학생지원센터",
+      "matched": 8,
+      "downloaded": 0,
+      "skipped": 8,
+      "failed": 0
+    },
+    {
+      "suffix": "학생상담센터",
+      "dept": "학생상담센터",
+      "matched": 14,
+      "downloaded": 0,
+      "skipped": 14,
+      "failed": 0
+    },
+    {
+      "suffix": "교목처",
+      "dept": "교목처",
+      "matched": 40,
+      "downloaded": 0,
+      "skipped": 40,
+      "failed": 0
+    },
+    {
+      "suffix": "인성교육원",
+      "dept": "인성교육원",
+      "matched": 13,
+      "downloaded": 0,
+      "skipped": 13,
+      "failed": 0
+    },
+    {
+      "suffix": "콘서바토리",
+      "dept": "콘서바토리",
+      "matched": 5,
+      "downloaded": 0,
+      "skipped": 5,
+      "failed": 0
+    },
+    {
+      "suffix": "교수지원",
+      "dept": "교수지원",
+      "matched": 35,
+      "downloaded": 27,
+      "skipped": 8,
+      "failed": 0
+    },
+    {
+      "suffix": "교원인사",
+      "dept": "교원인사",
+      "matched": 7,
+      "downloaded": 5,
+      "skipped": 2,
+      "failed": 0
+    },
+    {
+      "suffix": "학사지원팀",
+      "dept": "학사지원팀",
+      "matched": 19,
+      "downloaded": 17,
+      "skipped": 2,
+      "failed": 0
+    },
+    {
+      "suffix": "부속실",
+      "dept": "부속실",
+      "matched": 18,
+      "downloaded": 11,
+      "skipped": 7,
+      "failed": 0
+    },
+    {
+      "suffix": "커뮤니케이션팀",
+      "dept": "커뮤니케이션팀",
+      "matched": 12,
+      "downloaded": 6,
+      "skipped": 6,
+      "failed": 0
+    },
+    {
+      "suffix": "대외협력처",
+      "dept": "대외국제처",
+      "matched": 38,
+      "downloaded": 38,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "suffix": "연구산학팀",
+      "dept": "연구산학팀",
+      "matched": 20,
+      "downloaded": 11,
+      "skipped": 9,
+      "failed": 0
+    },
+    {
+      "suffix": "소프트웨어중심대학사업단",
+      "dept": "소프트웨어중심대학사업단",
+      "matched": 2,
+      "downloaded": 0,
+      "skipped": 2,
+      "failed": 0
+    },
+    {
+      "suffix": "학술정보팀",
+      "dept": "학술정보팀",
+      "matched": 17,
+      "downloaded": 14,
+      "skipped": 3,
+      "failed": 0
+    },
+    {
+      "suffix": "정보전산팀",
+      "dept": "정보전산팀",
+      "matched": 19,
+      "downloaded": 10,
+      "skipped": 9,
+      "failed": 0
+    },
+    {
+      "suffix": "취업진로지원센터",
+      "dept": "취업진로지원센터",
+      "matched": 54,
+      "downloaded": 28,
+      "skipped": 26,
+      "failed": 0
+    },
+    {
+      "suffix": "창업교육센터",
+      "dept": "창업교육센터",
+      "matched": 14,
+      "downloaded": 9,
+      "skipped": 5,
+      "failed": 0
+    },
+    {
+      "suffix": "국제교육원",
+      "dept": "국제교육원",
+      "matched": 29,
+      "downloaded": 20,
+      "skipped": 9,
+      "failed": 0
+    },
+    {
+      "suffix": "일반대학원(교학)",
+      "dept": "일반대학원(교학)",
+      "matched": 30,
+      "downloaded": 0,
+      "skipped": 30,
+      "failed": 0
+    },
+    {
+      "suffix": "신학대학원(교학)",
+      "dept": "신학대학원(교학)",
+      "matched": 15,
+      "downloaded": 0,
+      "skipped": 15,
+      "failed": 0
+    },
+    {
+      "suffix": "경영대학원(교학)",
+      "dept": "경영대학원(교학)",
+      "matched": 8,
+      "downloaded": 0,
+      "skipped": 8,
+      "failed": 0
+    }
+  ],
+  "force": false,
+  "planYear": 2026
+}

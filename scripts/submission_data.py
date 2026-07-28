@@ -2,13 +2,14 @@
 """Merge groupware submission status into IR report data."""
 from __future__ import annotations
 
+import html as html_module
 import json
 import os
 from pathlib import Path
 from typing import Any
 
-from submission_checks import analyze_remarks, plan_meta
-from submission_utils import infer_dept, match_submitted_for_dept
+from submission_checks import analyze_remarks, extract_plan_section_from_pdf, plan_meta
+from submission_utils import IR_PERF_LOOKUP_ALIASES, infer_dept, match_submitted_for_dept
 
 DEPT_CONTACTS: dict[str, dict[str, str]] = {
     "IR센터": {"name": "정진수", "email": "positive@syu.ac.kr"},
@@ -53,6 +54,58 @@ def _file_href(path: Path) -> str:
     return ""
 
 
+def _annual_report_candidates(
+    dept: dict,
+    ir_pdf_root: Path,
+    *,
+    year: int,
+    path_key: str,
+) -> list[Path]:
+    name = dept.get("name", "")
+    paths: list[Path] = []
+    rel = dept.get(path_key)
+    if rel:
+        paths.append(ir_pdf_root / rel.replace("/", os.sep))
+    paths.append(ir_pdf_root / "annual_reports" / str(year) / f"{name}.pdf")
+    alias = IR_PERF_LOOKUP_ALIASES.get(name)
+    if alias:
+        paths.append(ir_pdf_root / "annual_reports" / str(year) / f"{alias}.pdf")
+    seen: set[str] = set()
+    ordered: list[Path] = []
+    for path in paths:
+        key = str(path)
+        if key in seen:
+            continue
+        seen.add(key)
+        ordered.append(path)
+    return ordered
+
+
+def _resolve_annual_report_href(dept: dict, ir_pdf_root: Path, *, year: int, path_key: str) -> str:
+    for path in _annual_report_candidates(dept, ir_pdf_root, year=year, path_key=path_key):
+        if path.is_file() and path.stat().st_size > 1000:
+            return _file_href(path)
+    return ""
+
+
+def _annual_report_2024_candidates(dept: dict, ir_pdf_root: Path) -> list[Path]:
+    return _annual_report_candidates(
+        dept, ir_pdf_root, year=2024, path_key="annualReport2024PdfPath"
+    )
+
+
+def _resolve_annual_report_2024_href(dept: dict, ir_pdf_root: Path) -> str:
+    return _resolve_annual_report_href(
+        dept, ir_pdf_root, year=2024, path_key="annualReport2024PdfPath"
+    )
+
+
+def _resolve_annual_report_2025_ir_href(dept: dict, ir_pdf_root: Path) -> str:
+    return _resolve_annual_report_href(
+        dept, ir_pdf_root, year=2025, path_key="annualReport2025PdfPath"
+    )
+
+
 def _load_approved(
     submission_dir: Path,
     dept_names: list[str],
@@ -85,6 +138,26 @@ def _load_approved(
     return meta, approved_list, approved_by_dept
 
 
+def _enrich_performance_plan_from_submission(dept: dict, submission_dir: Path) -> None:
+    """When IR comment is empty, reflect 성과관리계획 from 연차보고서25 PDF."""
+    evaluation = dept.setdefault("evaluation", {})
+    if plan_meta(evaluation.get("performancePlan2026")).get("isSubstantive"):
+        evaluation.setdefault("performancePlan2026Source", "ir_comment")
+        return
+
+    for f in (dept.get("submission") or {}).get("files") or []:
+        pdf_name = f.get("name", "")
+        if not pdf_name.lower().endswith(".pdf"):
+            continue
+        extracted = extract_plan_section_from_pdf(submission_dir / pdf_name)
+        if not extracted:
+            continue
+        evaluation["performancePlan2026"] = extracted
+        evaluation["performancePlan2026Html"] = f"<pre>{html_module.escape(extracted)}</pre>"
+        evaluation["performancePlan2026Source"] = "submission_pdf"
+        return
+
+
 def merge_submission_into_report(report: dict, cfg: dict) -> dict:
     submission_dir = Path(cfg["paths"]["submissionDir"])
     ir_pdf_root = Path(cfg["paths"]["irPdfRoot"])
@@ -103,11 +176,20 @@ def merge_submission_into_report(report: dict, cfg: dict) -> dict:
         name = dept["name"]
         matches = match_submitted_for_dept(name, submitted_files, approved_by_dept)
         files = []
+        sender_meta: dict[str, dict] = {}
+        for item in approved_meta.get("approved", []):
+            if item.get("dept") == name and item.get("sender"):
+                sender_meta[item["sender"]] = item
+
         for base in sorted(matches):
             pdf_path = submission_dir / f"{base}.pdf"
+            meta_item = sender_meta.get(base, {})
             files.append({
                 "name": f"{base}.pdf",
                 "href": _file_href(pdf_path),
+                "hasPdf": pdf_path.is_file(),
+                "gwSource": meta_item.get("gwSource", ""),
+                "worklistid": meta_item.get("worklistid", ""),
             })
 
         contact = DEPT_CONTACTS.get(name, {})
@@ -123,27 +205,42 @@ def merge_submission_into_report(report: dict, cfg: dict) -> dict:
                 "email": contact.get("email", ""),
             },
         }
-        remarks = analyze_remarks(name, dept.get("evaluation", {}), submission, submission_dir)
-        submission["remarks"] = remarks
-        submission["hasAnomaly"] = len(remarks) > 0
         if files:
-            submission["annualReport2025PdfHref"] = files[0].get("href", "")
+            submission["annualReport2025PdfHref"] = next(
+                (f.get("href") or "" for f in files if f.get("hasPdf") and f.get("href")),
+                "",
+            )
         else:
             submission["annualReport2025PdfHref"] = ""
         dept["submission"] = submission
 
-        annual_rel = dept.get("annualReport2024PdfPath")
-        if annual_rel:
-            annual_full = ir_pdf_root / annual_rel.replace("/", os.sep)
-            dept["annualReport2024PdfHref"] = _file_href(annual_full)
+        _enrich_performance_plan_from_submission(dept, submission_dir)
+
+        remarks = analyze_remarks(name, dept.get("evaluation", {}), submission, submission_dir)
+        submission["remarks"] = remarks
+        submission["hasAnomaly"] = len(remarks) > 0
+
+        dept["annualReport2024PdfHref"] = _resolve_annual_report_2024_href(dept, ir_pdf_root)
+        gw_annual25 = submission.get("annualReport2025PdfHref") or ""
+        ir_annual25 = _resolve_annual_report_2025_ir_href(dept, ir_pdf_root)
+        dept["annualReport2025IrPdfHref"] = ir_annual25
+        if gw_annual25:
+            dept["annualReport2025PdfHref"] = gw_annual25
+            dept["annualReport2025PdfSource"] = "gw"
+        elif ir_annual25:
+            dept["annualReport2025PdfHref"] = ir_annual25
+            dept["annualReport2025PdfSource"] = "ir"
         else:
-            dept["annualReport2024PdfHref"] = ""
+            dept["annualReport2025PdfHref"] = ""
+            dept["annualReport2025PdfSource"] = ""
 
         pm = plan_meta(dept.get("evaluation", {}).get("performancePlan2026"))
+        pm["source"] = dept.get("evaluation", {}).get("performancePlan2026Source", "ir_comment")
         dept.setdefault("evaluation", {})["performancePlan2026Meta"] = pm
 
         for project in dept.get("projects", []):
-            for key in ("planHtmlPath", "plan2026HtmlPath", "resultHtmlPath", "pdfPath"):
+            # plan2026HtmlPath stays as html/... for web embed (see build_dashboard.apply_web_plan2026_hrefs)
+            for key in ("planHtmlPath", "resultHtmlPath", "pdfPath"):
                 rel = project.get(key)
                 if not rel:
                     continue
