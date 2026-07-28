@@ -20,7 +20,6 @@ from scrape_ir import (  # type: ignore  # noqa: E402
 )
 
 TARGETS = [
-    ("예산팀", "예산팀"),
     ("재무팀", "재무팀"),
     ("구매팀", "구매팀"),
 ]
