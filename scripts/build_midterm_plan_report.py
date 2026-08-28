@@ -81,7 +81,7 @@ META = {
     "40000": {
         "no": "2-1",
         "area": "Ⅱ. 학생 미래비전",
-        "strategy": "역량기반 교육 통합관리 체계 구축-MVP 교육 성과관리 강화지수",
+        "strategy": "역량기반 교육 통합관리 체계 구축",
         "cat": "Ⅱ. 학생주도 미래 설계 및 MVP인재 구현을 위한 종합지원 체계",
         "tasks": [
             ("01 인재육성 거버넌스", "인재육성체계 통합관리 거버넌스 이행률"),
@@ -210,6 +210,11 @@ AREAS = [
         "ids": ["91000", "100000", "110000"],
     },
 ]
+
+
+def strategy_heading(meta, idx):
+    """중점전략-성과지표 한 줄 제목 (하이픈 앞뒤 공백 없음)."""
+    return f"{meta['strategy']}-{idx['name']}"
 
 
 def cap(actual, target):
@@ -761,10 +766,17 @@ CSS = """
     .down { color: #7a2e24; }
     .flat { color: #444; }
     .index-title {
-      display: flex; align-items: baseline; gap: 4mm;
+      display: flex; align-items: baseline; gap: 2.2mm;
       border-bottom: .7mm solid #111; padding-bottom: 2.5mm; margin-bottom: 5mm;
     }
-    .index-title span { font-size: 9pt; color: #555; min-width: 18mm; }
+    .index-title span { font-size: 9pt; color: #555; flex: 0 0 12mm; min-width: 12mm; }
+    .index-title h2 {
+      flex: 1 1 auto; min-width: 0; margin: 0; font-size: 10.5pt; font-weight: 700;
+      white-space: nowrap; letter-spacing: -0.045em; line-height: 1.25;
+    }
+    .link-table .strategy-heading {
+      font-size: 8pt; letter-spacing: -0.03em;
+    }
     .plan-narrative {
       border: .25mm solid #555; padding: 4mm;
       white-space: normal; font-size: 9pt; line-height: 1.55;
@@ -817,6 +829,7 @@ def period_target(comp, years):
 
 def render_index(iid, idx):
     meta = META[iid]
+    heading = strategy_heading(meta, idx)
     s24 = SCORE_2024[iid]
     s25 = float(idx["score"])
     strat_no = meta["no"].split("-")[1]
@@ -884,7 +897,7 @@ def render_index(iid, idx):
 
     return f"""
   <section class="index-section">
-    <header class="index-title"><span>{meta['no']}</span><h2>{meta['strategy']}</h2></header>
+    <header class="index-title"><span>{meta['no']}</span><h2>{heading}</h2></header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -902,7 +915,7 @@ def render_index(iid, idx):
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan">{strat_no}. {meta['strategy']}</td>
+          <td class="link-plan strategy-heading">{strat_no}. {heading}</td>
           <td class="indicator-name">{idx['name']}</td>
         </tr>
         {''.join(task_html)}
@@ -982,7 +995,7 @@ def main():
         else:
             area_cell = ""
         summary_rows.append(
-            f"<tr>{area_cell}<td>{meta['strategy']}</td><td>{idx['name']}</td>"
+            f"<tr>{area_cell}<td>{strategy_heading(meta, idx)}</td><td>{idx['name']}</td>"
             f'<td class="num">{s24:.1f}</td>{delta_html(s24, s25)}</tr>'
         )
 
