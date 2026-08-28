@@ -46,16 +46,16 @@
     .down { color: #7a2e24; }
     .flat { color: #444; }
     .index-title {
-      display: flex; align-items: baseline; gap: 2.2mm;
+      display: flex; align-items: flex-start; gap: 4mm;
       border-bottom: .7mm solid #111; padding-bottom: 2.5mm; margin-bottom: 5mm;
     }
-    .index-title span { font-size: 9pt; color: #555; flex: 0 0 12mm; min-width: 12mm; }
+    .index-title > span { font-size: 11pt; color: #555; min-width: 16mm; line-height: 1.35; padding-top: .4mm; }
+    .index-heading { flex: 1 1 auto; min-width: 0; }
     .index-title h2 {
-      flex: 1 1 auto; min-width: 0; margin: 0; font-size: 10.5pt; font-weight: 700;
-      white-space: nowrap; letter-spacing: -0.045em; line-height: 1.25;
+      margin: 0; font-size: 15pt; font-weight: 700; line-height: 1.35;
     }
-    .link-table .strategy-heading {
-      font-size: 8pt; letter-spacing: -0.03em;
+    .index-title .index-indicator {
+      margin: 1mm 0 0; font-size: 13pt; font-weight: 700; color: #222; line-height: 1.35;
     }
     .plan-narrative {
       border: .25mm solid #555; padding: 4mm;
@@ -302,16 +302,13 @@
       margin: 0 0 1.5mm;
     }
     #vol-midterm .index-title {
-      display: flex; align-items: baseline; gap: 2mm;
+      display: flex; align-items: flex-start; gap: 3.5mm;
       margin-bottom: 2.4mm; padding-bottom: 1.5mm;
     }
-    #vol-midterm .index-title span { flex: 0 0 11mm; min-width: 11mm; }
-    #vol-midterm .index-title h2 {
-      flex: 1 1 auto; min-width: 0; margin: 0; font-size: 10.5pt;
-      white-space: nowrap; letter-spacing: -0.05em; line-height: 1.25;
-    }
-    #vol-midterm .link-table .strategy-heading {
-      font-size: 7.8pt; letter-spacing: -0.03em;
+    #vol-midterm .index-title > span { min-width: 15mm; font-size: 10.5pt; }
+    #vol-midterm .index-title h2 { margin: 0; font-size: 14.5pt; line-height: 1.32; }
+    #vol-midterm .index-title .index-indicator {
+      margin: 0.8mm 0 0; font-size: 12.5pt; font-weight: 700; line-height: 1.32;
     }
     #vol-midterm .index-section h3 { margin: 2.2mm 0 1.1mm; }
     #vol-midterm .index-section th,
@@ -337,7 +334,8 @@
     #vol-midterm .index-section.index-fit-page .index-title {
       margin-bottom: 1.6mm; padding-bottom: 1.1mm;
     }
-    #vol-midterm .index-section.index-fit-page .index-title h2 { font-size: 9.6pt; }
+    #vol-midterm .index-section.index-fit-page .index-title h2 { font-size: 13.5pt; }
+    #vol-midterm .index-section.index-fit-page .index-indicator { font-size: 11.5pt; }
     #vol-midterm .index-section.index-fit-page h3 { margin: 1.5mm 0 0.7mm; font-size: 11pt; }
     #vol-midterm .index-section.index-fit-page table { margin: 0 0 1mm; }
     #vol-midterm .index-section.index-fit-page th,
@@ -524,46 +522,9 @@
       }
     }
   }
-  function fitNowrap(el, startPt, minPt) {
-    el.style.whiteSpace = "nowrap";
-    var avail = el.clientWidth;
-    if (avail < 40) return;
-    var probe = el.cloneNode(true);
-    var cs = getComputedStyle(el);
-    probe.style.position = "absolute";
-    probe.style.left = "-9999px";
-    probe.style.top = "0";
-    probe.style.width = "auto";
-    probe.style.maxWidth = "none";
-    probe.style.flex = "none";
-    probe.style.minWidth = "0";
-    probe.style.whiteSpace = "nowrap";
-    probe.style.display = "inline-block";
-    probe.style.fontFamily = cs.fontFamily;
-    probe.style.fontWeight = cs.fontWeight;
-    probe.style.letterSpacing = cs.letterSpacing;
-    document.body.appendChild(probe);
-    var size = startPt;
-    el.style.fontSize = size + "pt";
-    probe.style.fontSize = size + "pt";
-    var n = 0;
-    while (probe.getBoundingClientRect().width > avail + 1 && size > minPt && n < 32) {
-      size -= 0.15;
-      el.style.fontSize = size + "pt";
-      probe.style.fontSize = size + "pt";
-      n++;
-    }
-    probe.remove();
-  }
-  function fitIndexTitles() {
-    document.querySelectorAll("#vol-midterm .index-title h2").forEach(function (h2) {
-      fitNowrap(h2, 10.5, 7.2);
-    });
-  }
   window.__preparePrint = function () {
     if (document.body.dataset.printSplit === "1") return;
     document.body.dataset.printSplit = "1";
-    fitIndexTitles();
     var pagePx = 267 * 96 / 25.4;
     document.querySelectorAll("#vol-midterm .index-section").forEach(function (sec) {
       var prev = sec.previousElementSibling;
@@ -828,7 +789,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td rowspan="3" class="group-cell">고등교육<br>선도</td><td>융합·유연화 기반 미래형 교육 운영 체계 혁신-MVP Edu-Framework 혁신 지수</td><td>MVP Edu-Framework 혁신 지수</td><td class="num">85.3</td><td class="num up">89.1 (+3.8)</td></tr><tr><td>미래사회 역량 함양을 위한 교과교육 혁신-MVP 교과교육 혁신 지수</td><td>MVP 교과교육 혁신 지수</td><td class="num">75.5</td><td class="num up">96.6 (+21.1)</td></tr><tr><td>교육관리체계 혁신-스마트 융합형 교육방법 혁신 지수</td><td>스마트 융합형 교육방법 혁신 지수</td><td class="num">61.7</td><td class="num up">100.0 (+38.3)</td></tr><tr><td rowspan="3" class="group-cell">학생<br>미래비전</td><td>역량기반 교육 통합관리 체계 구축-MVP 교육 성과관리 강화 지수</td><td>MVP 교육 성과관리 강화 지수</td><td class="num">100.0</td><td class="num flat">100.0 (0.0)</td></tr><tr><td>학생의 성장과 성공을 위한 학업생활 종합지원-MVP 인재 성장 지수</td><td>MVP 인재 성장 지수</td><td class="num">94.6</td><td class="num up">98.1 (+3.5)</td></tr><tr><td>사회 기여 MVP 인재를 완성하는 진로·취창업 지원-MVP 인재 사회기여 역량 지수</td><td>MVP 인재 사회기여 역량 지수</td><td class="num">88.8</td><td class="num down">71.9 (−16.9)</td></tr><tr><td rowspan="3" class="group-cell">사회<br>가치창출</td><td>사회문제해결과 미래혁신을 위한 실용연구 역량 강화-사회가치 창출 연구역량 강화 지수</td><td>사회가치 창출 연구역량 강화 지수</td><td class="num">93.1</td><td class="num up">100.0 (+6.9)</td></tr><tr><td>소통형 산학협력 네트워크 추진 강화-사회가치 창출 산학협력 혁신 지수</td><td>사회가치 창출 산학협력 혁신 지수</td><td class="num">91.1</td><td class="num down">91.0 (−0.1)</td></tr><tr><td>사회적 가치 구현을 위한 공유·협력-사회 가치창출 공유·협력 혁신 지수</td><td>사회 가치창출 공유·협력 혁신 지수</td><td class="num">64.2</td><td class="num up">82.4 (+18.2)</td></tr><tr><td rowspan="3" class="group-cell">지속가능<br>경영</td><td>국내외 입학자원 확보 및 학생 유지 관리-적정 규모화 관리 지수</td><td>적정 규모화 관리 지수</td><td class="num">71.2</td><td class="num down">69.6 (−1.6)</td></tr><tr><td>재정 건전성 확보-재정 건전성 확보 지수</td><td>재정 건전성 확보 지수</td><td class="num">96.6</td><td class="num up">100.0 (+3.4)</td></tr><tr><td>행정관리 역량 강화-데이터 기반 대학 경영체계 구축 지수</td><td>데이터 기반 대학 경영체계 구축 지수</td><td class="num">89.6</td><td class="num up">98.0 (+8.4)</td></tr>
+        <tr><td rowspan="3" class="group-cell">고등교육<br>선도</td><td>융합·유연화 기반 미래형 교육 운영 체계 혁신</td><td>MVP Edu-Framework 혁신 지수</td><td class="num">85.3</td><td class="num up">89.1 (+3.8)</td></tr><tr><td>미래사회 역량 함양을 위한 교과교육 혁신</td><td>MVP 교과교육 혁신 지수</td><td class="num">75.5</td><td class="num up">96.6 (+21.1)</td></tr><tr><td>교육관리체계 혁신</td><td>스마트 융합형 교육방법 혁신 지수</td><td class="num">61.7</td><td class="num up">100.0 (+38.3)</td></tr><tr><td rowspan="3" class="group-cell">학생<br>미래비전</td><td>역량기반 교육 통합관리 체계 구축</td><td>MVP 교육 성과관리 강화 지수</td><td class="num">100.0</td><td class="num flat">100.0 (0.0)</td></tr><tr><td>학생의 성장과 성공을 위한 학업생활 종합지원</td><td>MVP 인재 성장 지수</td><td class="num">94.6</td><td class="num up">98.1 (+3.5)</td></tr><tr><td>사회 기여 MVP 인재를 완성하는 진로·취창업 지원</td><td>MVP 인재 사회기여 역량 지수</td><td class="num">88.8</td><td class="num down">71.9 (−16.9)</td></tr><tr><td rowspan="3" class="group-cell">사회<br>가치창출</td><td>사회문제해결과 미래혁신을 위한 실용연구 역량 강화</td><td>사회가치 창출 연구역량 강화 지수</td><td class="num">93.1</td><td class="num up">100.0 (+6.9)</td></tr><tr><td>소통형 산학협력 네트워크 추진 강화</td><td>사회가치 창출 산학협력 혁신 지수</td><td class="num">91.1</td><td class="num down">91.0 (−0.1)</td></tr><tr><td>사회적 가치 구현을 위한 공유·협력</td><td>사회 가치창출 공유·협력 혁신 지수</td><td class="num">64.2</td><td class="num up">82.4 (+18.2)</td></tr><tr><td rowspan="3" class="group-cell">지속가능<br>경영</td><td>국내외 입학자원 확보 및 학생 유지 관리</td><td>적정 규모화 관리 지수</td><td class="num">71.2</td><td class="num down">69.6 (−1.6)</td></tr><tr><td>재정 건전성 확보</td><td>재정 건전성 확보 지수</td><td class="num">96.6</td><td class="num up">100.0 (+3.4)</td></tr><tr><td>행정관리 역량 강화</td><td>데이터 기반 대학 경영체계 구축 지수</td><td class="num">89.6</td><td class="num up">98.0 (+8.4)</td></tr>
       </tbody>
     </table>
 
@@ -881,7 +842,13 @@
   </section>
             
   <section class="index-section">
-    <header class="index-title"><span>1-1</span><h2>융합·유연화 기반 미래형 교육 운영 체계 혁신-MVP Edu-Framework 혁신 지수</h2></header>
+    <header class="index-title">
+      <span>1-1</span>
+      <div class="index-heading">
+        <h2>융합·유연화 기반 미래형 교육 운영 체계 혁신</h2>
+        <p class="index-indicator">MVP Edu-Framework 혁신 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -899,7 +866,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">1. 융합·유연화 기반 미래형 교육 운영 체계 혁신-MVP Edu-Framework 혁신 지수</td>
+          <td class="link-plan">1. 융합·유연화 기반 미래형 교육 운영 체계 혁신</td>
           <td class="indicator-name">MVP Edu-Framework 혁신 지수</td>
         </tr>
         <tr><td rowspan="5" class="link-label">실행과제</td><td class="link-plan">01 미래교육 대비 학사제도 개선</td><td class="indicator-name">미래형 학사제도 참여학생 비율</td></tr><tr><td class="link-plan">02 미래교육환경 대비 학사구조 개선</td><td class="indicator-name">융합형 교과목 개발 건수</td></tr><tr><td class="link-plan">03 우수교원 확보</td><td class="indicator-name">적정 전임교원확보율</td></tr><tr><td class="link-plan">04 교원 역량 강화</td><td class="indicator-name">교원 교수법 역량강화 참여인원</td></tr><tr><td class="link-plan">05 교원 역량강화 프로그램</td><td class="indicator-name">교원 역량강화 프로그램 참여시간</td></tr>
@@ -1042,7 +1009,13 @@
   </section>
     
   <section class="index-section">
-    <header class="index-title"><span>1-2</span><h2>미래사회 역량 함양을 위한 교과교육 혁신-MVP 교과교육 혁신 지수</h2></header>
+    <header class="index-title">
+      <span>1-2</span>
+      <div class="index-heading">
+        <h2>미래사회 역량 함양을 위한 교과교육 혁신</h2>
+        <p class="index-indicator">MVP 교과교육 혁신 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -1060,7 +1033,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">2. 미래사회 역량 함양을 위한 교과교육 혁신-MVP 교과교육 혁신 지수</td>
+          <td class="link-plan">2. 미래사회 역량 함양을 위한 교과교육 혁신</td>
           <td class="indicator-name">MVP 교과교육 혁신 지수</td>
         </tr>
         <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 변혁적 역량 기반 핵심역량 체계 구축</td><td class="indicator-name">SU 핵심역량 지표</td></tr><tr><td class="link-plan">02 교양교육 혁신</td><td class="indicator-name">디지털·융합 교양 교과목 개설 비율</td></tr><tr><td class="link-plan">03 전공능력 관리체계</td><td class="indicator-name">SU 전공능력 지표</td></tr><tr><td class="link-plan">04 전공교육 혁신</td><td class="indicator-name">혁신형 전공 교과목 개발·개편 비율</td></tr>
@@ -1186,7 +1159,13 @@
   </section>
     
   <section class="index-section">
-    <header class="index-title"><span>1-3</span><h2>교육관리체계 혁신-스마트 융합형 교육방법 혁신 지수</h2></header>
+    <header class="index-title">
+      <span>1-3</span>
+      <div class="index-heading">
+        <h2>교육관리체계 혁신</h2>
+        <p class="index-indicator">스마트 융합형 교육방법 혁신 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -1204,7 +1183,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">3. 교육관리체계 혁신-스마트 융합형 교육방법 혁신 지수</td>
+          <td class="link-plan">3. 교육관리체계 혁신</td>
           <td class="indicator-name">스마트 융합형 교육방법 혁신 지수</td>
         </tr>
         <tr><td rowspan="3" class="link-label">실행과제</td><td class="link-plan">01 SU-MVP교수법의 대학 대표브랜드화</td><td class="indicator-name">SU-MVP교수법 적용 교과 비율 (30%)</td></tr><tr><td class="link-plan">02 에듀테크 첨단교육 인프라 확충</td><td class="indicator-name">에듀테크 기반 강의실 개선 건수 (30%)</td></tr><tr><td class="link-plan">03 교육 콘텐츠 개발 및 지식정보자원화</td><td class="indicator-name">교육콘텐츠 신규 개발 건수 (40%)</td></tr>
@@ -1335,7 +1314,13 @@
   </section>
             
   <section class="index-section">
-    <header class="index-title"><span>2-1</span><h2>역량기반 교육 통합관리 체계 구축-MVP 교육 성과관리 강화 지수</h2></header>
+    <header class="index-title">
+      <span>2-1</span>
+      <div class="index-heading">
+        <h2>역량기반 교육 통합관리 체계 구축</h2>
+        <p class="index-indicator">MVP 교육 성과관리 강화 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -1353,7 +1338,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">1. 역량기반 교육 통합관리 체계 구축-MVP 교육 성과관리 강화 지수</td>
+          <td class="link-plan">1. 역량기반 교육 통합관리 체계 구축</td>
           <td class="indicator-name">MVP 교육 성과관리 강화 지수</td>
         </tr>
         <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 인재육성 거버넌스</td><td class="indicator-name">인재육성체계 통합관리 거버넌스 이행률</td></tr><tr><td class="link-plan">02 교육과정 질 관리</td><td class="indicator-name">교육과정 질 관리 인증 교과목 누적 비율</td></tr><tr><td class="link-plan">03 비교과 참여</td><td class="indicator-name">비교과 프로그램 참여율</td></tr><tr><td class="link-plan">04 인성교육</td><td class="indicator-name">대학 교육이념 연계 인성교육 프로그램 참여 비율</td></tr>
@@ -1478,7 +1463,13 @@
   </section>
     
   <section class="index-section">
-    <header class="index-title"><span>2-2</span><h2>학생의 성장과 성공을 위한 학업생활 종합지원-MVP 인재 성장 지수</h2></header>
+    <header class="index-title">
+      <span>2-2</span>
+      <div class="index-heading">
+        <h2>학생의 성장과 성공을 위한 학업생활 종합지원</h2>
+        <p class="index-indicator">MVP 인재 성장 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -1496,7 +1487,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">2. 학생의 성장과 성공을 위한 학업생활 종합지원-MVP 인재 성장 지수</td>
+          <td class="link-plan">2. 학생의 성장과 성공을 위한 학업생활 종합지원</td>
           <td class="indicator-name">MVP 인재 성장 지수</td>
         </tr>
         <tr><td rowspan="5" class="link-label">실행과제</td><td class="link-plan">01 역량증진</td><td class="indicator-name">학생역량증진 활동지수</td></tr><tr><td class="link-plan">02 개별화 교육</td><td class="indicator-name">학생 1인당 개별화 교육 지원 건수</td></tr><tr><td class="link-plan">03 학습역량</td><td class="indicator-name">학습역량강화 성장지수</td></tr><tr><td class="link-plan">04 혁신 프로그램</td><td class="indicator-name">혁신형 학습역량·정서심리 프로그램 신규개발 수</td></tr><tr><td class="link-plan">05 학업생활 만족</td><td class="indicator-name">학생 학업생활 만족도</td></tr>
@@ -1638,7 +1629,13 @@
   </section>
     
   <section class="index-section">
-    <header class="index-title"><span>2-3</span><h2>사회 기여 MVP 인재를 완성하는 진로·취창업 지원-MVP 인재 사회기여 역량 지수</h2></header>
+    <header class="index-title">
+      <span>2-3</span>
+      <div class="index-heading">
+        <h2>사회 기여 MVP 인재를 완성하는 진로·취창업 지원</h2>
+        <p class="index-indicator">MVP 인재 사회기여 역량 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -1656,7 +1653,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">3. 사회 기여 MVP 인재를 완성하는 진로·취창업 지원-MVP 인재 사회기여 역량 지수</td>
+          <td class="link-plan">3. 사회 기여 MVP 인재를 완성하는 진로·취창업 지원</td>
           <td class="indicator-name">MVP 인재 사회기여 역량 지수</td>
         </tr>
         <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 진로탄력성 기반 진로개발 지원</td><td class="indicator-name">진로·취창업 프로그램 개발·개편 비율</td></tr><tr><td class="link-plan">02 졸업생 맞춤형 취업 지원</td><td class="indicator-name">혁신형 진로·취창업 프로그램 신규개발 수</td></tr><tr><td class="link-plan">03 지역사회 맞춤형 창업 지원</td><td class="indicator-name">진로개발 및 창업 지원 교과목 운영 건수</td></tr><tr><td class="link-plan">04 삼육 MVP 인증의 공신력 강화</td><td class="indicator-name">삼육 MVP 인증획득 학생 비율</td></tr>
@@ -1803,7 +1800,13 @@
   </section>
             
   <section class="index-section">
-    <header class="index-title"><span>3-1</span><h2>사회문제해결과 미래혁신을 위한 실용연구 역량 강화-사회가치 창출 연구역량 강화 지수</h2></header>
+    <header class="index-title">
+      <span>3-1</span>
+      <div class="index-heading">
+        <h2>사회문제해결과 미래혁신을 위한 실용연구 역량 강화</h2>
+        <p class="index-indicator">사회가치 창출 연구역량 강화 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -1821,7 +1824,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">1. 사회문제해결과 미래혁신을 위한 실용연구 역량 강화-사회가치 창출 연구역량 강화 지수</td>
+          <td class="link-plan">1. 사회문제해결과 미래혁신을 위한 실용연구 역량 강화</td>
           <td class="indicator-name">사회가치 창출 연구역량 강화 지수</td>
         </tr>
         <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 국제논문</td><td class="indicator-name">전임교원 1인당 국제논문 수</td></tr><tr><td class="link-plan">02 연구역량 계획</td><td class="indicator-name">연구역량 강화 개선계획 이행률</td></tr><tr><td class="link-plan">03 융합연구</td><td class="indicator-name">학제간 및 국제 융합연구 수행 건수</td></tr><tr><td class="link-plan">04 대학원 혁신</td><td class="indicator-name">대학원 교육 혁신 건수</td></tr>
@@ -1946,7 +1949,13 @@
   </section>
     
   <section class="index-section">
-    <header class="index-title"><span>3-2</span><h2>소통형 산학협력 네트워크 추진 강화-사회가치 창출 산학협력 혁신 지수</h2></header>
+    <header class="index-title">
+      <span>3-2</span>
+      <div class="index-heading">
+        <h2>소통형 산학협력 네트워크 추진 강화</h2>
+        <p class="index-indicator">사회가치 창출 산학협력 혁신 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -1964,7 +1973,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">2. 소통형 산학협력 네트워크 추진 강화-사회가치 창출 산학협력 혁신 지수</td>
+          <td class="link-plan">2. 소통형 산학협력 네트워크 추진 강화</td>
           <td class="indicator-name">사회가치 창출 산학협력 혁신 지수</td>
         </tr>
         <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 산학연계교육</td><td class="indicator-name">산학연계교육 참여자 비율</td></tr><tr><td class="link-plan">02 가족회사</td><td class="indicator-name">산학협력 가족회사 확보 건수</td></tr><tr><td class="link-plan">03 산업체 만족도</td><td class="indicator-name">산업체 만족도</td></tr><tr><td class="link-plan">04 산학 역량강화</td><td class="indicator-name">산학협력 역량강화 개선과제 이행률</td></tr>
@@ -2091,7 +2100,13 @@
   </section>
     
   <section class="index-section">
-    <header class="index-title"><span>3-3</span><h2>사회적 가치 구현을 위한 공유·협력-사회 가치창출 공유·협력 혁신 지수</h2></header>
+    <header class="index-title">
+      <span>3-3</span>
+      <div class="index-heading">
+        <h2>사회적 가치 구현을 위한 공유·협력</h2>
+        <p class="index-indicator">사회 가치창출 공유·협력 혁신 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -2109,7 +2124,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">3. 사회적 가치 구현을 위한 공유·협력-사회 가치창출 공유·협력 혁신 지수</td>
+          <td class="link-plan">3. 사회적 가치 구현을 위한 공유·협력</td>
           <td class="indicator-name">사회 가치창출 공유·협력 혁신 지수</td>
         </tr>
         <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 서비스러닝</td><td class="indicator-name">서비스러닝 교육 만족도</td></tr><tr><td class="link-plan">02 대외협력</td><td class="indicator-name">대외협력 협약 체결 건수</td></tr><tr><td class="link-plan">03 평생교육</td><td class="indicator-name">평생교육 프로그램 참여자 수</td></tr><tr><td class="link-plan">04 교육국제화</td><td class="indicator-name">SU-edx 교육국제화 프로그램 참여 학생 비율</td></tr>
@@ -2256,7 +2271,13 @@
   </section>
             
   <section class="index-section">
-    <header class="index-title"><span>4-1</span><h2>국내외 입학자원 확보 및 학생 유지 관리-적정 규모화 관리 지수</h2></header>
+    <header class="index-title">
+      <span>4-1</span>
+      <div class="index-heading">
+        <h2>국내외 입학자원 확보 및 학생 유지 관리</h2>
+        <p class="index-indicator">적정 규모화 관리 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -2274,7 +2295,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">1. 국내외 입학자원 확보 및 학생 유지 관리-적정 규모화 관리 지수</td>
+          <td class="link-plan">1. 국내외 입학자원 확보 및 학생 유지 관리</td>
           <td class="indicator-name">적정 규모화 관리 지수</td>
         </tr>
         <tr><td rowspan="2" class="link-label">실행과제</td><td class="link-plan">01 입학 마스터플랜 및 신입생 FYE</td><td class="indicator-name">신입생 교육 만족도 (50%)</td></tr><tr><td class="link-plan">02 외국인 유학생 유치 및 정착 지원</td><td class="indicator-name">외국인 유학생 수 (50%)</td></tr>
@@ -2367,7 +2388,13 @@
   </section>
     
   <section class="index-section">
-    <header class="index-title"><span>4-2</span><h2>재정 건전성 확보-재정 건전성 확보 지수</h2></header>
+    <header class="index-title">
+      <span>4-2</span>
+      <div class="index-heading">
+        <h2>재정 건전성 확보</h2>
+        <p class="index-indicator">재정 건전성 확보 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -2385,7 +2412,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">2. 재정 건전성 확보-재정 건전성 확보 지수</td>
+          <td class="link-plan">2. 재정 건전성 확보</td>
           <td class="indicator-name">재정 건전성 확보 지수</td>
         </tr>
         <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 재정수입 확충</td><td class="indicator-name">재정수입 확충 계획 이행률 (25%)</td></tr><tr><td class="link-plan">02 등록금 외 수입 확대</td><td class="indicator-name">등록금 외 수입(중장기) 목표 달성률 (25%)</td></tr><tr><td class="link-plan">03 기부금 수입 확대</td><td class="indicator-name">기부금 수입(중장기) 목표 달성률 (25%)</td></tr><tr><td class="link-plan">04 예산 집행 효율화</td><td class="indicator-name">예산 집행률 (25%)</td></tr>
@@ -2510,7 +2537,13 @@
   </section>
     
   <section class="index-section">
-    <header class="index-title"><span>4-3</span><h2>행정관리 역량 강화-데이터 기반 대학 경영체계 구축 지수</h2></header>
+    <header class="index-title">
+      <span>4-3</span>
+      <div class="index-heading">
+        <h2>행정관리 역량 강화</h2>
+        <p class="index-indicator">데이터 기반 대학 경영체계 구축 지수</p>
+      </div>
+    </header>
 
     <h3>■ 중장기발전계획-성과지표 연계</h3>
     <table class="link-table">
@@ -2528,7 +2561,7 @@
         </tr>
         <tr>
           <td class="link-label">12대 중점전략</td>
-          <td class="link-plan strategy-heading">3. 행정관리 역량 강화-데이터 기반 대학 경영체계 구축 지수</td>
+          <td class="link-plan">3. 행정관리 역량 강화</td>
           <td class="indicator-name">데이터 기반 대학 경영체계 구축 지수</td>
         </tr>
         <tr><td rowspan="5" class="link-label">실행과제</td><td class="link-plan">01 의사결정 참여</td><td class="indicator-name">교원·직원 1인당 대학 내 의사결정 활동 참여 건수 (20%)</td></tr><tr><td class="link-plan">02 캠퍼스 여건</td><td class="indicator-name">캠퍼스 시설 종합 만족도 (20%)</td></tr><tr><td class="link-plan">03 교직원 역량</td><td class="indicator-name">교직원 1인당 교육훈련 참여 건수 (20%)</td></tr><tr><td class="link-plan">04 정보화</td><td class="indicator-name">정보화 인프라 고도화 계획 이행률 (20%)</td></tr><tr><td class="link-plan">05 외부 수요자</td><td class="indicator-name">외부 수요자 만족도(산업체·학부모·지역사회) (20%)</td></tr>

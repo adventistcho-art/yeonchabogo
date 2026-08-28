@@ -100,16 +100,13 @@ COMBINED_CSS = """
       margin: 0 0 1.5mm;
     }
     #vol-midterm .index-title {
-      display: flex; align-items: baseline; gap: 2mm;
+      display: flex; align-items: flex-start; gap: 3.5mm;
       margin-bottom: 2.4mm; padding-bottom: 1.5mm;
     }
-    #vol-midterm .index-title span { flex: 0 0 11mm; min-width: 11mm; }
-    #vol-midterm .index-title h2 {
-      flex: 1 1 auto; min-width: 0; margin: 0; font-size: 10.5pt;
-      white-space: nowrap; letter-spacing: -0.05em; line-height: 1.25;
-    }
-    #vol-midterm .link-table .strategy-heading {
-      font-size: 7.8pt; letter-spacing: -0.03em;
+    #vol-midterm .index-title > span { min-width: 15mm; font-size: 10.5pt; }
+    #vol-midterm .index-title h2 { margin: 0; font-size: 14.5pt; line-height: 1.32; }
+    #vol-midterm .index-title .index-indicator {
+      margin: 0.8mm 0 0; font-size: 12.5pt; font-weight: 700; line-height: 1.32;
     }
     #vol-midterm .index-section h3 { margin: 2.2mm 0 1.1mm; }
     #vol-midterm .index-section th,
@@ -135,7 +132,8 @@ COMBINED_CSS = """
     #vol-midterm .index-section.index-fit-page .index-title {
       margin-bottom: 1.6mm; padding-bottom: 1.1mm;
     }
-    #vol-midterm .index-section.index-fit-page .index-title h2 { font-size: 9.6pt; }
+    #vol-midterm .index-section.index-fit-page .index-title h2 { font-size: 13.5pt; }
+    #vol-midterm .index-section.index-fit-page .index-indicator { font-size: 11.5pt; }
     #vol-midterm .index-section.index-fit-page h3 { margin: 1.5mm 0 0.7mm; font-size: 11pt; }
     #vol-midterm .index-section.index-fit-page table { margin: 0 0 1mm; }
     #vol-midterm .index-section.index-fit-page th,
@@ -322,46 +320,9 @@ PREPARE_PRINT_JS = r"""
       }
     }
   }
-  function fitNowrap(el, startPt, minPt) {
-    el.style.whiteSpace = "nowrap";
-    var avail = el.clientWidth;
-    if (avail < 40) return;
-    var probe = el.cloneNode(true);
-    var cs = getComputedStyle(el);
-    probe.style.position = "absolute";
-    probe.style.left = "-9999px";
-    probe.style.top = "0";
-    probe.style.width = "auto";
-    probe.style.maxWidth = "none";
-    probe.style.flex = "none";
-    probe.style.minWidth = "0";
-    probe.style.whiteSpace = "nowrap";
-    probe.style.display = "inline-block";
-    probe.style.fontFamily = cs.fontFamily;
-    probe.style.fontWeight = cs.fontWeight;
-    probe.style.letterSpacing = cs.letterSpacing;
-    document.body.appendChild(probe);
-    var size = startPt;
-    el.style.fontSize = size + "pt";
-    probe.style.fontSize = size + "pt";
-    var n = 0;
-    while (probe.getBoundingClientRect().width > avail + 1 && size > minPt && n < 32) {
-      size -= 0.15;
-      el.style.fontSize = size + "pt";
-      probe.style.fontSize = size + "pt";
-      n++;
-    }
-    probe.remove();
-  }
-  function fitIndexTitles() {
-    document.querySelectorAll("#vol-midterm .index-title h2").forEach(function (h2) {
-      fitNowrap(h2, 10.5, 7.2);
-    });
-  }
   window.__preparePrint = function () {
     if (document.body.dataset.printSplit === "1") return;
     document.body.dataset.printSplit = "1";
-    fitIndexTitles();
     var pagePx = 267 * 96 / 25.4;
     document.querySelectorAll("#vol-midterm .index-section").forEach(function (sec) {
       var prev = sec.previousElementSibling;
