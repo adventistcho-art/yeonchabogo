@@ -796,6 +796,7 @@ CSS = """
     .score-head .pts .delta { font-size: 12.5pt; margin-left: 0; }
     .score-head .prev { font-size: 8pt; font-weight: 400; margin-left: 3.5mm; color: #444; }
     .col-y24 { background: #f7f7f7; }
+    .col-y25t { font-weight: 700; }
     .col-y25a { background: #eef6ef; }
     .formula-sys { font-weight: 700; font-variant-numeric: tabular-nums; }
     .formula-vars { margin-top: .7mm; font-size: 7.2pt; color: #333; line-height: 1.4; }
@@ -865,7 +866,7 @@ def render_index(iid, idx):
             <td class="num">{fmt_u(a22, unit)}</td>
             <td class="num">{fmt_u(a23, unit)}</td>
             <td class="num col-y24">{fmt_u(a24_hist, unit)}</td>
-            <td class="num">{fmt_u(t25, unit)}</td>
+            <td class="num col-y25t">{fmt_u(t25, unit)}</td>
             <td class="num">{fmt_u(t2627, unit)}</td>
             <td class="num">{fmt_u(t2830, unit)}</td>
             </tr>"""
@@ -933,7 +934,7 @@ def render_index(iid, idx):
         </tr>
         <tr>
           <th>2022</th><th>2023</th><th>2024</th>
-          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+          <th class="col-y25t">2025</th><th>’26~’27</th><th>’28~’30</th>
         </tr>
       </thead>
       <tbody>
