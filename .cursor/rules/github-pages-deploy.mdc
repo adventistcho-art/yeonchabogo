@@ -1,0 +1,14 @@
+---
+description: Push user-facing changes to GitHub Pages after finishing work
+alwaysApply: true
+---
+
+# GitHub Pages 배포
+
+이 저장소는 `origin/master` 루트가 GitHub Pages다.
+주소: https://adventistcho-art.github.io/yeonchabogo/
+
+사용자 요청 작업을 끝낸 뒤에는 **별도 지시가 없어도** 관련 파일을 커밋하고 `git push origin master` 한다. 대시보드·브리핑·연차평가 보고서(HTML/PDF)·생성 스크립트 수정은 배포 대상이다.
+
+- 시크릿(`.env`, 쿠키, 비밀번호), `data/probe_*`, `reports/_preview_pages/`, `*수정본*.pdf`는 커밋하지 않는다.
+- Pages는 master 푸시로 갱신된다. 배포만 요청하면 커밋 후 푸시한다.

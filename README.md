@@ -35,6 +35,8 @@ pip install -r requirements.txt
 브라우저에서 gw.syu.ac.kr 로그인 후 개발자도구 → Application → Cookies → `PHPSESSID` 복사.
 
 ```powershell
+python sync-approved-from-gw.py --auto-login
+# 또는
 python sync-approved-from-gw.py <PHPSESSID> [sekey]
 ```
 
@@ -84,3 +86,29 @@ python scrape_ir.py
 - 테스트: `python scrape_ir.py --plan2026-only --limit-plan2026 5`
 
 이후 yeonchabogo에서 `python build_dashboard.py` 를 다시 실행하세요.
+
+## 부서별 연차평가 합본 보고서
+
+`index.html`에 embed된 데이터를 기준으로 참고 양식과 유사한 A4 합본 PDF를 생성합니다.
+
+```powershell
+cd "C:\Users\SYU\Documents\커서도전\yeonchabogo"
+python scripts\build_annual_evaluation_report.py
+python scripts\validate_annual_evaluation_report.py
+```
+
+결과물은 `reports/`에 생성됩니다. GitHub Pages 합본:
+
+- https://adventistcho-art.github.io/yeonchabogo/reports/
+- https://adventistcho-art.github.io/yeonchabogo/reports/2025학년도_연차평가_보고서.pdf
+
+`master`에 푸시하면 Pages가 갱신됩니다.
+
+- `2025학년도_부서연차평가_보고서_합본.html`
+- `2025학년도_부서연차평가_보고서_합본.pdf`
+- `2025학년도_부서연차평가_보고서_합본_데이터검증.html/json`
+- `2025학년도_부서연차평가_보고서_합본_출력검증.json`
+
+전년도 실적·종합등급은 `2024부서별데이터.xlsx`를 불러온 뒤 최종 발간 합본 PDF와
+대조한 확정값을 우선 사용합니다. 두 자료가 다르면 최종 PDF의 `해당없음`과 종합등급을
+적용하며, 전년도 명단에 없는 신규·변경 부서만 `자료없음`으로 표시합니다.

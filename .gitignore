@@ -7,3 +7,8 @@ venv/
 *.log
 .DS_Store
 Thumbs.db
+reports/_preview_pages/
+reports/*수정본*.pdf
+reports/*_생성중.pdf
+data/probe_budget_exec/
+data/_probe*

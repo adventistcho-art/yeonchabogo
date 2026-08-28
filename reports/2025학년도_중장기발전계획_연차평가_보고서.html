@@ -1,0 +1,2065 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>2025학년도 중장기발전계획 연차평가 보고서</title>
+  <style>
+    @page { size: A4; margin: 14mm 11mm 16mm; }
+    * { box-sizing: border-box; }
+    html { font-family: "Malgun Gothic", "Noto Sans KR", sans-serif; color: #111; }
+    body { margin: 0; font-size: 9.2pt; line-height: 1.48; }
+    .cover {
+      height: 255mm; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      break-after: page;
+    }
+    .cover .year { font-size: 15pt; letter-spacing: .12em; margin-bottom: 12mm; }
+    .cover h1 { font-size: 24pt; margin: 0; letter-spacing: -.04em; line-height: 1.35; }
+    .cover .subtitle { margin-top: 8mm; font-size: 13pt; color: #444; }
+    .cover .date { margin-top: 56mm; font-size: 13pt; }
+    .cover .office { margin-top: 7mm; font-size: 16pt; font-weight: 700; }
+    .intro-page, .summary-section, .index-section { break-after: page; }
+    .overall-section { break-before: page; }
+    .area-section { break-inside: avoid; margin-bottom: 5mm; }
+    h1.report-title { text-align: center; font-size: 19pt; margin: 0 0 8mm; }
+    h2 { margin: 0 0 3mm; font-size: 15pt; }
+    h3 { margin: 6mm 0 2.5mm; font-size: 11.5pt; }
+    .area-kicker { font-size: 9pt; color: #555; letter-spacing: .08em; margin-bottom: 2mm; }
+    .notice {
+      margin: 0 0 3.5mm; padding: 2.5mm 3mm; border-left: 3px solid #777;
+      background: #f4f4f4; color: #444; font-size: 8pt; line-height: 1.5;
+    }
+    .toc { margin: 0; padding: 0; list-style: none; }
+    .toc li { margin: 0 0 4mm; border-bottom: .3mm solid #aaa; padding-bottom: 2mm; }
+    .toc strong { display: block; font-size: 10.5pt; }
+    .toc span { display: block; margin-top: 1mm; color: #444; font-size: 8.5pt; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 0 0 4mm; }
+    thead { display: table-header-group; }
+    th, td { border: .25mm solid #555; padding: 1.7mm 1.5mm; vertical-align: middle; word-break: keep-all; overflow-wrap: anywhere; }
+    th { background: #ececec; text-align: center; font-weight: 700; }
+    tbody tr { break-inside: avoid-page; }
+    .group-cell { text-align: center; font-weight: 700; background: #f7f7f7; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .grade { text-align: center; font-weight: 700; }
+    .up { color: #1d4d2c; }
+    .down { color: #7a2e24; }
+    .flat { color: #444; }
+    .index-title {
+      display: flex; align-items: baseline; gap: 4mm;
+      border-bottom: .7mm solid #111; padding-bottom: 2.5mm; margin-bottom: 5mm;
+    }
+    .index-title span { font-size: 9pt; color: #555; min-width: 18mm; }
+    .plan-narrative {
+      border: .25mm solid #555; padding: 4mm;
+      white-space: normal; font-size: 9pt; line-height: 1.55;
+    }
+    .analysis p { margin: 0 0 1.2mm; }
+    .analysis p:last-child { margin-bottom: 0; }
+    .analysis p.sub { padding-left: 4.5mm; }
+    .analysis-cell { text-align: left; font-size: 8.2pt; line-height: 1.45; }
+    .chart-box { margin: 1mm 0 4mm; padding: 2.5mm 2mm 2mm; border: .25mm solid #bbb; background: #fafafa; break-inside: avoid; }
+    .chart-cap { text-align: center; font-size: 8pt; color: #555; margin: 1.5mm 0 0; }
+    .reflux-table { font-size: 8.1pt; }
+    .reflux-table td:nth-child(1) { text-align: center; }
+    .reflux-table td:nth-child(2) { font-weight: 700; }
+    .sub-table { font-size: 8pt; }
+    .link-table .link-label { text-align: center; font-weight: 700; background: #f3f3f3; }
+    .link-table .link-plan { text-align: left; }
+    .score-head th {
+      background: #d8d8d8; font-size: 11pt; text-align: left;
+      padding: 2.4mm 3mm;
+    }
+    .score-head .pts { float: right; font-size: 12.5pt; font-weight: 700; }
+    .score-head .pts .delta { font-size: 12.5pt; margin-left: 0; }
+    .score-head .prev { font-size: 8pt; font-weight: 400; margin-left: 3.5mm; color: #444; }
+    .col-y24 { background: #f7f7f7; }
+    .col-y25a { background: #eef6ef; }
+    .formula-sys { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .formula-vars { margin-top: .7mm; font-size: 7.2pt; color: #333; line-height: 1.4; }
+    .indicator-name { font-weight: 700; }
+    @media screen {
+      body { max-width: 210mm; margin: 0 auto; padding: 12mm; background: white; }
+      .intro-page, .summary-section, .area-section, .index-section, .cover, .overall-section {
+        border-bottom: 1px dashed #aaa; padding-bottom: 10mm; margin-bottom: 10mm;
+      }
+    }
+</style>
+</head>
+<body>
+  <section class="cover">
+    <div class="year">2025학년도</div>
+    <h1>중장기발전계획<br>연차평가 보고서</h1>
+    <div class="subtitle">『SU-GLORY 플랜 2030』 성과관리종합지수 분석</div>
+    <div class="date">2026. 08. 27.</div>
+    <div class="office">기획처</div>
+  </section>
+
+  <section class="intro-page">
+    <h1 class="report-title">목차</h1>
+    <ul class="toc">
+      <li><strong>성과관리종합지수 총괄</strong><span>12개 지수 점수 및 영역별 평균 (2024→2025)</span></li>
+      <li><strong>Ⅰ. 고등교육 선도</strong><span>MVP Edu-Framework 혁신, MVP 교과교육 혁신, 스마트 융합형 교육방법 혁신</span></li>
+      <li><strong>Ⅱ. 학생 미래비전</strong><span>MVP 교육 성과관리 강화, MVP 인재 성장, MVP 인재 사회기여 역량</span></li>
+      <li><strong>Ⅲ. 사회 가치창출</strong><span>연구역량 강화, 산학협력 혁신, 공유·협력 혁신</span></li>
+      <li><strong>Ⅳ. 지속가능 경영</strong><span>적정 규모화 관리, 재정 건전성 확보, 데이터 기반 대학 경영체계 구축</span></li>
+      <li><strong>종합 분석</strong><span>영역별 추이, 향후 환류사항</span></li>
+    </ul>
+  </section>
+
+  <section class="summary-section">
+    <h1 class="report-title">2025학년도 중장기발전계획 성과관리종합지수 결과</h1>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:14%">발전방향</th>
+          <th style="width:28%">발전전략</th>
+          <th style="width:30%">성과관리종합지수</th>
+          <th style="width:14%">2024</th>
+          <th style="width:14%">2025</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="3" class="group-cell">고등교육<br>선도</td><td>융합·유연화 기반 미래형 교육 운영 체계 혁신</td><td>MVP Edu-Framework 혁신 지수</td><td class="num">85.3</td><td class="num up">89.1 (+3.8)</td></tr><tr><td>미래사회 역량 함양을 위한 교과교육 혁신</td><td>MVP 교과교육 혁신 지수</td><td class="num">75.5</td><td class="num up">96.6 (+21.1)</td></tr><tr><td>교육관리체계 혁신</td><td>스마트 융합형 교육방법 혁신 지수</td><td class="num">61.7</td><td class="num up">100.0 (+38.3)</td></tr><tr><td rowspan="3" class="group-cell">학생<br>미래비전</td><td>역량기반 교육 통합관리 체계 구축</td><td>MVP 교육 성과관리 강화 지수</td><td class="num">100.0</td><td class="num flat">100.0 (0.0)</td></tr><tr><td>학생의 성장과 성공을 위한 학업생활 종합지원</td><td>MVP 인재 성장 지수</td><td class="num">94.6</td><td class="num up">98.1 (+3.5)</td></tr><tr><td>사회 기여 MVP 인재를 완성하는 진로·취창업 지원</td><td>MVP 인재 사회기여 역량 지수</td><td class="num">88.8</td><td class="num down">71.9 (−16.9)</td></tr><tr><td rowspan="3" class="group-cell">사회<br>가치창출</td><td>사회문제해결과 미래혁신을 위한 실용연구 역량 강화</td><td>사회가치 창출 연구역량 강화 지수</td><td class="num">93.1</td><td class="num up">100.0 (+6.9)</td></tr><tr><td>소통형 산학협력 네트워크 추진 강화</td><td>사회가치 창출 산학협력 혁신 지수</td><td class="num">91.1</td><td class="num down">91.0 (−0.1)</td></tr><tr><td>사회적 가치 구현을 위한 공유·협력</td><td>사회 가치창출 공유·협력 혁신 지수</td><td class="num">64.2</td><td class="num up">82.4 (+18.2)</td></tr><tr><td rowspan="3" class="group-cell">지속가능<br>경영</td><td>국내외 입학자원 확보 및 학생 유지 관리</td><td>적정 규모화 관리 지수</td><td class="num">71.2</td><td class="num down">69.6 (−1.6)</td></tr><tr><td>재정 건전성 확보</td><td>재정 건전성 확보 지수</td><td class="num">96.6</td><td class="num up">100.0 (+3.4)</td></tr><tr><td>행정관리 역량 강화</td><td>데이터 기반 대학 경영체계 구축 지수</td><td class="num">89.6</td><td class="num up">98.0 (+8.4)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 영역별 평균</h3>
+    <table>
+      <thead>
+        <tr><th>영역</th><th>2024</th><th>2025</th><th>증감</th><th>분석</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ⅰ. 고등교육 선도</td><td class="num">74.2</td><td class="num">95.2</td><td class="grade up">+21.0</td><td class="analysis-cell">○ 최대 상승<br>- 스마트 교육방법·교과혁신 견인</td></tr>
+        <tr><td>Ⅱ. 학생 미래비전</td><td class="num">94.5</td><td class="num">90.0</td><td class="grade down">−4.5</td><td class="analysis-cell">○ 성과관리·성장 유지<br>- 사회기여 하락이 영역 평균 압박</td></tr>
+        <tr><td>Ⅲ. 사회 가치창출</td><td class="num">82.8</td><td class="num">91.1</td><td class="grade up">+8.3</td><td class="analysis-cell">○ 연구 만점, 공유·협력 견인<br>- 산학협력 보합, 평생교육·SU-edx 목표 미달</td></tr>
+        <tr><td>Ⅳ. 지속가능 경영</td><td class="num">85.8</td><td class="num">89.2</td><td class="grade up">+3.4</td><td class="analysis-cell">○ 재정·경영체계 우수<br>- 유학생 규모화 미달</td></tr>
+        <tr><td class="group-cell">전체 평균</td><td class="num">84.3</td><td class="num">91.4</td><td class="grade up">+7.1</td><td class="analysis-cell">○ 12개 중 8개 상승<br>- 2개 보합, 2개 하락</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 취약 하위 지표 (2025 목표 대비 달성률 70% 미만)</h3>
+    <table class="sub-table">
+      <thead><tr><th>지수</th><th>하위 지표</th><th>2025 실적</th><th>2025 목표</th><th>달성률</th><th>담당</th></tr></thead>
+      <tbody>
+        <tr><td>사회기여</td><td>삼육 MVP 인증획득 학생 비율</td><td class="num">0.48%</td><td class="num">1.89%</td><td class="num down">25.4%</td><td>비교과통합센터</td></tr>
+        <tr><td>규모화</td><td>외국인 유학생 수</td><td class="num">550명</td><td class="num">1,400명</td><td class="num down">39.3%</td><td>국제처·대학원</td></tr>
+        <tr><td>공유·협력</td><td>평생교육 프로그램 참여자 수</td><td class="num">7,049명</td><td class="num">11,084명</td><td class="num down">63.6%</td><td>평생교육원·체육문화센터</td></tr>
+        <tr><td>공유·협력</td><td>SU-edx 참여 학생 비율</td><td class="num">0.52%</td><td class="num">0.78%</td><td class="num down">66.4%</td><td>국제처</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  
+  <section class="area-section">
+    <div class="area-kicker">『SU-GLORY 플랜 2030』 종합성과관리지수 분석</div>
+    <h2>1. 「Ⅰ. 고등교육 선도」 영역</h2>
+    
+    <h3>■ 영역 요약</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:46%">성과관리종합지수</th>
+          <th style="width:18%">2024</th>
+          <th style="width:18%">2025</th>
+          <th style="width:18%">증감</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>MVP Edu-Framework 혁신</td><td class="num">85.3</td><td class="num">89.1</td><td class="grade up">+3.8</td></tr><tr><td>MVP 교과교육 혁신</td><td class="num">75.5</td><td class="num">96.6</td><td class="grade up">+21.1</td></tr><tr><td>스마트 융합형 교육방법 혁신</td><td class="num">61.7</td><td class="num">100.0</td><td class="grade up">+38.3</td></tr><tr><td class="group-cell">영역 평균</td><td class="num">74.2</td><td class="num">95.2</td><td class="grade up">+21.0</td></tr>
+      </tbody>
+    </table>
+    
+  </section>
+            
+  <section class="index-section">
+    <header class="index-title"><span>1-1</span><h2>융합·유연화 기반 미래형 교육 운영 체계 혁신</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅰ. 미래교육을 선도하는 MVP 교육혁신</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">1. 융합·유연화 기반 미래형 교육 운영 체계 혁신</td>
+          <td class="indicator-name">MVP Edu-Framework 혁신 지수</td>
+        </tr>
+        <tr><td rowspan="5" class="link-label">실행과제</td><td class="link-plan">01 미래교육 대비 학사제도 개선</td><td class="indicator-name">미래형 학사제도 참여학생 비율</td></tr><tr><td class="link-plan">02 미래교육환경 대비 학사구조 개선</td><td class="indicator-name">융합형 교과목 개발 건수</td></tr><tr><td class="link-plan">03 우수교원 확보</td><td class="indicator-name">적정 전임교원확보율</td></tr><tr><td class="link-plan">04 교원 역량 강화</td><td class="indicator-name">교원 교수법 역량강화 참여인원</td></tr><tr><td class="link-plan">05 교원 역량강화 프로그램</td><td class="indicator-name">교원 역량강화 프로그램 참여시간</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>미래형 학사제도 참여학생 비율</td>
+            <td class="num">20%</td>
+            <td class="num">20%</td>
+            <td class="num">15%</td>
+            <td class="num col-y24">27.38%</td>
+            <td class="num">25%</td>
+            <td class="num">33%</td>
+            <td class="num">45%</td>
+            </tr><tr>
+            <td>융합형 교과목 개발 건수</td>
+            <td class="num">20%</td>
+            <td class="num">0%</td>
+            <td class="num">0.05%</td>
+            <td class="num col-y24">0.10%</td>
+            <td class="num">0.30%</td>
+            <td class="num">1%</td>
+            <td class="num">2%</td>
+            </tr><tr>
+            <td>교원 교수법 역량강화 참여인원</td>
+            <td class="num">20%</td>
+            <td class="num">36명</td>
+            <td class="num">33명</td>
+            <td class="num col-y24">64명</td>
+            <td class="num">41명</td>
+            <td class="num">44명</td>
+            <td class="num">49명</td>
+            </tr><tr>
+            <td>교원 역량강화 프로그램 참여 시간</td>
+            <td class="num">20%</td>
+            <td class="num">2.26 시간/인</td>
+            <td class="num">2.05 시간/인</td>
+            <td class="num col-y24">2.32 시간/인</td>
+            <td class="num">3.88 시간/인</td>
+            <td class="num">4.33 시간/인</td>
+            <td class="num">5 시간/인</td>
+            </tr><tr>
+            <td>적정 전임교원확보율</td>
+            <td class="num">20%</td>
+            <td class="num">155.84 지수</td>
+            <td class="num">149.62 지수</td>
+            <td class="num col-y24">80.5 지수</td>
+            <td class="num">153.41 지수</td>
+            <td class="num">154.96 지수</td>
+            <td class="num">157.3 지수</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            MVP Edu-Framework 혁신 지수 실적(2025)
+            <span class="pts">
+              89.1점<span class="delta up">(+3.8점)</span>
+              <span class="prev">2024년 85.3점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>미래형 학사제도 참여학생 비율</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">27.38%</td>
+            <td class="num col-y25a">44.82%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 학년도별 미래형 학사제도 참여 학생 수<br>B: 학부 재학생 수</div></td>
+            <td>학사지원팀</td>
+            </tr><tr>
+            <td>융합형 교과목 개발 건수</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">0.10%</td>
+            <td class="num col-y25a">0.13%</td>
+            <td><div class="formula-sys">(A + B) / C × 100</div><div class="formula-vars">A: 학년도별 융합형 교과목(전공) 개발 건수<br>B: 학년도별 융합형 교과목(교양) 개발 건수<br>C: 개설 교과목 수(전공+교양)</div></td>
+            <td>학사지원팀<br>교양교육원</td>
+            </tr><tr>
+            <td>교원 교수법 역량강화 참여인원</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">64명</td>
+            <td class="num col-y25a">43명</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 교원 교수법 역량강화 참여인원(교원 교수법 아카데미 프로그램 연간 참여 인원)</div></td>
+            <td>교수학습개발센터</td>
+            </tr><tr>
+            <td>교원 역량강화 프로그램 참여 시간</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">2.32 시간/인</td>
+            <td class="num col-y25a">4.13 시간/인</td>
+            <td><div class="formula-sys">A / B</div><div class="formula-vars">A: 교원 역량강화 프로그램 참여 시간(교원별, 프로그램별 누적)<br>B: 전임교원 수</div></td>
+            <td>교수학습개발센터<br>교수지원팀</td>
+            </tr><tr>
+            <td>적정 전임교원확보율</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">80.5 지수</td>
+            <td class="num col-y25a">76.21 지수</td>
+            <td><div class="formula-sys">(A×0.6) + (B×0.4)</div><div class="formula-vars">A: 과거 5년 평균 대비 전임교원확보율<br>B: 전체 전임교원 중 정년트랙전임교원 확보 비율</div></td>
+            <td>교수지원팀</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 85.3점 → 89.1점(+3.8점)</p>
+        <p class="sub">- 학사제도 참여율 27.38% → 44.82%(4,601/10,265명), 목표 상회</p>
+        <p class="sub">- 융합형 교과 0.10% → 0.13%, 중장기 ’25 목표(0.3%) 대비 취약</p>
+        <p class="sub">- 교수법 참여인원 64명 → 43명(목표 달성), 1인당 참여시간 2.32시간 → 4.13시간</p>
+        <p class="sub">- 전임교원 복합지수 76.21, 2025 목표(80.50) 대비 94.7%, 구성지표 목표(152.5) 대비 50.0%</p>
+    </div>
+  </section>
+    
+  <section class="index-section">
+    <header class="index-title"><span>1-2</span><h2>미래사회 역량 함양을 위한 교과교육 혁신</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅰ. 미래교육을 선도하는 MVP 교육혁신</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">2. 미래사회 역량 함양을 위한 교과교육 혁신</td>
+          <td class="indicator-name">MVP 교과교육 혁신 지수</td>
+        </tr>
+        <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 변혁적 역량 기반 핵심역량 체계 구축</td><td class="indicator-name">SU 핵심역량 지표</td></tr><tr><td class="link-plan">02 교양교육 혁신</td><td class="indicator-name">디지털·융합 교양 교과목 개설 비율</td></tr><tr><td class="link-plan">03 전공능력 관리체계</td><td class="indicator-name">SU 전공능력 지표</td></tr><tr><td class="link-plan">04 전공교육 혁신</td><td class="indicator-name">혁신형 전공 교과목 개발·개편 비율</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>SU 핵심역량 지표</td>
+            <td class="num">25%</td>
+            <td class="num">53.10%</td>
+            <td class="num">53.20%</td>
+            <td class="num col-y24">53.20%</td>
+            <td class="num">53.40%</td>
+            <td class="num">53.50%</td>
+            <td class="num">53.70%</td>
+            </tr><tr>
+            <td>디지털·융합 교양 교과목 개설 비율</td>
+            <td class="num">25%</td>
+            <td class="num">4.48%</td>
+            <td class="num">4.69%</td>
+            <td class="num col-y24">5.34%</td>
+            <td class="num">7%</td>
+            <td class="num">8%</td>
+            <td class="num">9.50%</td>
+            </tr><tr>
+            <td>SU 전공능력 지표</td>
+            <td class="num">25%</td>
+            <td class="num">—</td>
+            <td class="num">2.82 점</td>
+            <td class="num col-y24">2.96 점</td>
+            <td class="num">2.58 점</td>
+            <td class="num">2.58 점</td>
+            <td class="num">2.58 점</td>
+            </tr><tr>
+            <td>혁신형 전공 교과목 개발·개편 비율</td>
+            <td class="num">25%</td>
+            <td class="num">7%</td>
+            <td class="num">14%</td>
+            <td class="num col-y24">4.25%</td>
+            <td class="num">23%</td>
+            <td class="num">27%</td>
+            <td class="num">33%</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            MVP 교과교육 혁신 지수 실적(2025)
+            <span class="pts">
+              96.6점<span class="delta up">(+21.1점)</span>
+              <span class="prev">2024년 75.5점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>SU 핵심역량 지표</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">53.20%</td>
+            <td class="num col-y25a">58.50%</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: SU-핵심역량진단 도구에 의한 핵심역량 점수 목표 달성도</div></td>
+            <td>IR센터</td>
+            </tr><tr>
+            <td>디지털·융합 교양 교과목 개설 비율</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">5.34%</td>
+            <td class="num col-y25a">5.64%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 디지털·융합 개설 교과목(교양) 수<br>B: 학년도별 개설 교과목 수(교양)</div></td>
+            <td>교양교육원</td>
+            </tr><tr>
+            <td>SU 전공능력 지표</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">2.96 점</td>
+            <td class="num col-y25a">3.43 점</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 전공능력 진단도구에 의한 학과별 전공 능력 점수 평균의 목표 달성도</div></td>
+            <td>학사지원팀</td>
+            </tr><tr>
+            <td>혁신형 전공 교과목 개발·개편 비율</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">4.25%</td>
+            <td class="num col-y25a">27.68%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 개발·개편 교과목(전공) 수<br>B: 학년도별 개설 교과목 수(전공)</div></td>
+            <td>학사지원팀</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 75.5점 → 96.6점(+21.1점)</p>
+        <p class="sub">- 혁신형 전공 교과 4.0% → 27.68%(328/1,185과목), 목표(21.25%) 상회</p>
+        <p class="sub">- SU 핵심역량 58.5점, SU 전공능력 3.43점 — 목표 달성</p>
+        <p class="sub">- 디지털·융합 교양 5.64%(11/195), 목표(6.52%) 대비 86.5%</p>
+    </div>
+  </section>
+    
+  <section class="index-section">
+    <header class="index-title"><span>1-3</span><h2>교육관리체계 혁신</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅰ. 미래교육을 선도하는 MVP 교육혁신</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">3. 교육관리체계 혁신</td>
+          <td class="indicator-name">스마트 융합형 교육방법 혁신 지수</td>
+        </tr>
+        <tr><td rowspan="3" class="link-label">실행과제</td><td class="link-plan">01 SU-MVP교수법의 대학 대표브랜드화</td><td class="indicator-name">SU-MVP교수법 적용 교과 비율 (30%)</td></tr><tr><td class="link-plan">02 에듀테크 첨단교육 인프라 확충</td><td class="indicator-name">에듀테크 기반 강의실 개선 건수 (30%)</td></tr><tr><td class="link-plan">03 교육 콘텐츠 개발 및 지식정보자원화</td><td class="indicator-name">교육콘텐츠 신규 개발 건수 (40%)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>SU-MVP교수법 적용 교과 비율</td>
+            <td class="num">30%</td>
+            <td class="num">5%</td>
+            <td class="num">7%</td>
+            <td class="num col-y24">5.02%</td>
+            <td class="num">7.50%</td>
+            <td class="num">8%</td>
+            <td class="num">8.80%</td>
+            </tr><tr>
+            <td>에듀테크 기반 강의실 개선 건수</td>
+            <td class="num">30%</td>
+            <td class="num">2건</td>
+            <td class="num">3건</td>
+            <td class="num col-y24">5건</td>
+            <td class="num">6건</td>
+            <td class="num">9건</td>
+            <td class="num">10건</td>
+            </tr><tr>
+            <td>교육콘텐츠 신규 개발 건수</td>
+            <td class="num">40%</td>
+            <td class="num">450차시</td>
+            <td class="num">500차시</td>
+            <td class="num col-y24">90차시</td>
+            <td class="num">600차시</td>
+            <td class="num">600차시</td>
+            <td class="num">600차시</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            스마트 융합형 교육방법 혁신 지수 실적(2025)
+            <span class="pts">
+              100.0점<span class="delta up">(+38.3점)</span>
+              <span class="prev">2024년 61.7점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>SU-MVP교수법 적용 교과 비율</td>
+            <td class="num">30%</td>
+            <td class="num col-y24">5.02%</td>
+            <td class="num col-y25a">12.91%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: SU-MVP교수법 적용 교과목 수<br>B: 학년도별 개설 교과목 수(전공)</div></td>
+            <td>교수학습개발센터<br>학사지원팀</td>
+            </tr><tr>
+            <td>에듀테크 기반 강의실 개선 건수</td>
+            <td class="num">30%</td>
+            <td class="num col-y24">5건</td>
+            <td class="num col-y25a">8건</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 기존 강의실의 개선 또는 신규 구축 건 수</div></td>
+            <td>원격교육지원센터</td>
+            </tr><tr>
+            <td>교육콘텐츠 신규 개발 건수</td>
+            <td class="num">40%</td>
+            <td class="num col-y24">90차시</td>
+            <td class="num col-y25a">874차시</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 신규개발된 콘텐츠의 총 영상 클립 수(차시)</div></td>
+            <td>원격교육지원센터</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 61.7점 → 100.0점(+38.3점)</p>
+        <p class="sub">- 교육콘텐츠 90차시 → 874차시, 목표(550차시) 상회</p>
+        <p class="sub">- SU-MVP교수법 적용 교과 5% → 12.91%(153/1,185), 목표(6.11%) 상회</p>
+        <p class="sub">- 에듀테크 강의실 개선 5건 → 8건</p>
+    </div>
+  </section>
+    
+  <section class="area-section">
+    <div class="area-kicker">『SU-GLORY 플랜 2030』 종합성과관리지수 분석</div>
+    <h2>2. 「Ⅱ. 학생 미래비전」 영역</h2>
+    
+    <h3>■ 영역 요약</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:46%">성과관리종합지수</th>
+          <th style="width:18%">2024</th>
+          <th style="width:18%">2025</th>
+          <th style="width:18%">증감</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>MVP 교육 성과관리 강화</td><td class="num">100.0</td><td class="num">100.0</td><td class="grade flat">0.0</td></tr><tr><td>MVP 인재 성장</td><td class="num">94.6</td><td class="num">98.1</td><td class="grade up">+3.5</td></tr><tr><td>MVP 인재 사회기여 역량</td><td class="num">88.8</td><td class="num">71.9</td><td class="grade down">−16.9</td></tr><tr><td class="group-cell">영역 평균</td><td class="num">94.5</td><td class="num">90.0</td><td class="grade down">−4.5</td></tr>
+      </tbody>
+    </table>
+    
+  </section>
+            
+  <section class="index-section">
+    <header class="index-title"><span>2-1</span><h2>역량기반 교육 통합관리 체계 구축</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅱ. 학생주도 미래 설계 및 MVP인재 구현을 위한 종합지원 체계</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">1. 역량기반 교육 통합관리 체계 구축</td>
+          <td class="indicator-name">MVP 교육 성과관리 강화 지수</td>
+        </tr>
+        <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 인재육성 거버넌스</td><td class="indicator-name">인재육성체계 통합관리 거버넌스 이행률</td></tr><tr><td class="link-plan">02 교육과정 질 관리</td><td class="indicator-name">교육과정 질 관리 인증 교과목 누적 비율</td></tr><tr><td class="link-plan">03 비교과 참여</td><td class="indicator-name">비교과 프로그램 참여율</td></tr><tr><td class="link-plan">04 인성교육</td><td class="indicator-name">대학 교육이념 연계 인성교육 프로그램 참여 비율</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>인재육성체계 통합관리 거버넌스 이행률</td>
+            <td class="num">25%</td>
+            <td class="num">100%</td>
+            <td class="num">100%</td>
+            <td class="num col-y24">100%</td>
+            <td class="num">90%</td>
+            <td class="num">90%</td>
+            <td class="num">95%</td>
+            </tr><tr>
+            <td>교육과정 질 관리 인증 교과목 누적 비율</td>
+            <td class="num">25%</td>
+            <td class="num">22.98</td>
+            <td class="num">27.68</td>
+            <td class="num col-y24">26.95</td>
+            <td class="num">26</td>
+            <td class="num">26</td>
+            <td class="num">26</td>
+            </tr><tr>
+            <td>비교과 프로그램 참여율</td>
+            <td class="num">25%</td>
+            <td class="num">842.2%</td>
+            <td class="num">675.3%</td>
+            <td class="num col-y24">831.3%</td>
+            <td class="num">841%</td>
+            <td class="num">973%</td>
+            <td class="num">1171%</td>
+            </tr><tr>
+            <td>대학 교육이념 연계 인성교육 프로그램 참여 비율</td>
+            <td class="num">25%</td>
+            <td class="num">27.18%</td>
+            <td class="num">26.07%</td>
+            <td class="num col-y24">38.59%</td>
+            <td class="num">25%</td>
+            <td class="num">40%</td>
+            <td class="num">49%</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            MVP 교육 성과관리 강화 지수 실적(2025)
+            <span class="pts">
+              100.0점
+              <span class="prev">2024년 100.0점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>인재육성체계 통합관리 거버넌스 이행률</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">100%</td>
+            <td class="num col-y25a">100%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 학년도별 인재육성 체계 통합관리 거버넌스 구축·고도화 활동 실행 건수<br>B: 활동 계획 건수(법령상 위원회)</div></td>
+            <td>기획처</td>
+            </tr><tr>
+            <td>교육과정 질 관리 인증 교과목 누적 비율</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">26.95</td>
+            <td class="num col-y25a">63.46</td>
+            <td><div class="formula-sys">A / B</div><div class="formula-vars">A: 교육과정 질 관리 인증 누적 교과목 수(신규 획득, 인증 유지 교과목)<br>B: 전임교원 평균 교과목 수(1, 2학기 평균)</div></td>
+            <td>교육인증센터<br>학사지원팀</td>
+            </tr><tr>
+            <td>비교과 프로그램 참여율</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">831.3%</td>
+            <td class="num col-y25a">852.7%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 학년도별 비교과 프로그램 참여 학생 수<br>B: 학부 재학생 수(1·2학기 평균)</div></td>
+            <td>비교과통합센터<br>학사지원팀</td>
+            </tr><tr>
+            <td>대학 교육이념 연계 인성교육 프로그램 참여 비율</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">38.59%</td>
+            <td class="num col-y25a">37.33%</td>
+            <td><div class="formula-sys">(A + B) / D × 100</div><div class="formula-vars">A: 학년도별 인성교육 프로그램(비교과) 참여 학생 수 (제자훈련, 소그룹 수련회, 공동체리더교육)<br>B: 학년도별 인성교육 프로그램(비교과) 참여 학생 수 Challenge Project, HOEP CAMP, MVP CAMP(공동체리더교육 포함), MVP+교육, People's Grocery+, U2CAN(콘써바토리)<br>D: 학부 재학생 수(1·2학기 평균)</div></td>
+            <td>교목처<br>리더십센터<br>학사지원팀</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 100.0점 유지</p>
+        <p class="sub">- 거버넌스 이행 21/21, 비교과 참여율 852.7%, 인성교육 37.33% — 목표 상회</p>
+        <p class="sub">- 질 관리 인증 63.46(인증 교과 165과목 / 전임교원 평균 교과 2.6과목)</p>
+    </div>
+  </section>
+    
+  <section class="index-section">
+    <header class="index-title"><span>2-2</span><h2>학생의 성장과 성공을 위한 학업생활 종합지원</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅱ. 학생주도 미래 설계 및 MVP인재 구현을 위한 종합지원 체계</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">2. 학생의 성장과 성공을 위한 학업생활 종합지원</td>
+          <td class="indicator-name">MVP 인재 성장 지수</td>
+        </tr>
+        <tr><td rowspan="5" class="link-label">실행과제</td><td class="link-plan">01 역량증진</td><td class="indicator-name">학생역량증진 활동지수</td></tr><tr><td class="link-plan">02 개별화 교육</td><td class="indicator-name">학생 1인당 개별화 교육 지원 건수</td></tr><tr><td class="link-plan">03 학습역량</td><td class="indicator-name">학습역량강화 성장지수</td></tr><tr><td class="link-plan">04 혁신 프로그램</td><td class="indicator-name">혁신형 학습역량·정서심리 프로그램 신규개발 수</td></tr><tr><td class="link-plan">05 학업생활 만족</td><td class="indicator-name">학생 학업생활 만족도</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>학생역량증진 활동지수</td>
+            <td class="num">20%</td>
+            <td class="num">9.48%</td>
+            <td class="num">7.85%</td>
+            <td class="num col-y24">8.05%</td>
+            <td class="num">8.87%</td>
+            <td class="num">9.05%</td>
+            <td class="num">9.32%</td>
+            </tr><tr>
+            <td>학생 1인당 개별화 교육 지원 건수</td>
+            <td class="num">20%</td>
+            <td class="num">20.17%</td>
+            <td class="num">20.75%</td>
+            <td class="num col-y24">211.5%</td>
+            <td class="num">19.46%</td>
+            <td class="num">19.65%</td>
+            <td class="num">19.94%</td>
+            </tr><tr>
+            <td>학습역량강화 성장지수</td>
+            <td class="num">20%</td>
+            <td class="num">39.09 점</td>
+            <td class="num">38.26 점</td>
+            <td class="num col-y24">37.82 점</td>
+            <td class="num">38.9 점</td>
+            <td class="num">40 점</td>
+            <td class="num">41.7 점</td>
+            </tr><tr>
+            <td>혁신형 학습역량·정서심리 프로그램 신규개발 수</td>
+            <td class="num">20%</td>
+            <td class="num">1건</td>
+            <td class="num">3건</td>
+            <td class="num col-y24">3건</td>
+            <td class="num">6건</td>
+            <td class="num">8건</td>
+            <td class="num">11건</td>
+            </tr><tr>
+            <td>학생 학업생활 만족도</td>
+            <td class="num">20%</td>
+            <td class="num">77%</td>
+            <td class="num">76%</td>
+            <td class="num col-y24">65.72%</td>
+            <td class="num">78%</td>
+            <td class="num">80%</td>
+            <td class="num">83%</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            MVP 인재 성장 지수 실적(2025)
+            <span class="pts">
+              98.1점<span class="delta up">(+3.5점)</span>
+              <span class="prev">2024년 94.6점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>학생역량증진 활동지수</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">8.05%</td>
+            <td class="num col-y25a">13.62%</td>
+            <td><div class="formula-sys">(A/B×100×0.4) + (C/B×100×0.6)</div><div class="formula-vars">A: 성장형 학습역량 프로그램 참여자<br>B: 해당년도 재학생 수<br>C: 협력형 학습역량 프로그램 참여자</div></td>
+            <td>교수학습개발센터<br>학사지원팀</td>
+            </tr><tr>
+            <td>학생 1인당 개별화 교육 지원 건수</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">211.5%</td>
+            <td class="num col-y25a">228.8%</td>
+            <td><div class="formula-sys">(A + B) / C × 100</div><div class="formula-vars">A: 정서·심리 프로그램 참여 실적(건수)<br>B: 진로 및 취업 상담 및 프로그램 실적(건수)<br>C: 재학생 수</div></td>
+            <td>학생상담센터<br>취업진로지원센터<br>학사지원팀</td>
+            </tr><tr>
+            <td>학습역량강화 성장지수</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">37.82 점</td>
+            <td class="num col-y25a">38.55 점</td>
+            <td><div class="formula-sys">(A+B)/2×0.5 + (C+D)/2×0.5</div><div class="formula-vars">A: 학습참여 — 협력학습<br>B: 학습참여 — 자기주도학습<br>C: 학습자심리 — 학업적자기효능감<br>D: 학습자심리 — 학업동기</div></td>
+            <td>교수학습개발센터</td>
+            </tr><tr>
+            <td>혁신형 학습역량·정서심리 프로그램 신규개발 수</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">3건</td>
+            <td class="num col-y25a">3건</td>
+            <td><div class="formula-sys">A + B</div><div class="formula-vars">A: 혁신학습법 특강 건수(과거연도합산)<br>B: XR 등 에듀테크 기반 정서심리프로그램 개발건수(과거연도합산)</div></td>
+            <td>교수학습개발센터<br>학생상담센터</td>
+            </tr><tr>
+            <td>학생 학업생활 만족도</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">65.72%</td>
+            <td class="num col-y25a">69%</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 학년도별 교육수요자 만족도 조사 점수 중 학생 복지 등 학업생활 관련 점수 평균</div></td>
+            <td>IR센터</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 94.6점 → 98.1점(+3.5점)</p>
+        <p class="sub">- 역량증진 8.05 → 13.62, 개별화 교육 211.5 → 228.8건/인 — 목표 상회</p>
+        <p class="sub">- 학습역량강화 성장지수 38.55점, 목표(38.68) 대비 99.7%</p>
+        <p class="sub">- 학업생활 만족도 75점 → 69점, 목표(71.5) 대비 96.5%</p>
+    </div>
+  </section>
+    
+  <section class="index-section">
+    <header class="index-title"><span>2-3</span><h2>사회 기여 MVP 인재를 완성하는 진로·취창업 지원</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅱ. 학생주도 미래 설계 및 MVP인재 구현을 위한 종합지원 체계</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">3. 사회 기여 MVP 인재를 완성하는 진로·취창업 지원</td>
+          <td class="indicator-name">MVP 인재 사회기여 역량 지수</td>
+        </tr>
+        <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 진로탄력성 기반 진로개발 지원</td><td class="indicator-name">진로·취창업 프로그램 개발·개편 비율</td></tr><tr><td class="link-plan">02 졸업생 맞춤형 취업 지원</td><td class="indicator-name">혁신형 진로·취창업 프로그램 신규개발 수</td></tr><tr><td class="link-plan">03 지역사회 맞춤형 창업 지원</td><td class="indicator-name">진로개발 및 창업 지원 교과목 운영 건수</td></tr><tr><td class="link-plan">04 삼육 MVP 인증의 공신력 강화</td><td class="indicator-name">삼육 MVP 인증획득 학생 비율</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>진로·취창업 프로그램 개발·개편 비율</td>
+            <td class="num">25%</td>
+            <td class="num">32%</td>
+            <td class="num">35%</td>
+            <td class="num col-y24">34%</td>
+            <td class="num">45%</td>
+            <td class="num">46%</td>
+            <td class="num">48%</td>
+            </tr><tr>
+            <td>혁신형 진로·취창업 프로그램 신규개발 수</td>
+            <td class="num">25%</td>
+            <td class="num">1건</td>
+            <td class="num">2건</td>
+            <td class="num col-y24">2건</td>
+            <td class="num">3건</td>
+            <td class="num">4건</td>
+            <td class="num">6건</td>
+            </tr><tr>
+            <td>진로개발 및 창업 지원 교과목 운영 건수</td>
+            <td class="num">25%</td>
+            <td class="num">45건</td>
+            <td class="num">42건</td>
+            <td class="num col-y24">39건</td>
+            <td class="num">41건</td>
+            <td class="num">43건</td>
+            <td class="num">46건</td>
+            </tr><tr>
+            <td>삼육 MVP 인증획득 학생 비율</td>
+            <td class="num">25%</td>
+            <td class="num">1.71%</td>
+            <td class="num">2.13%</td>
+            <td class="num col-y24">1.12%</td>
+            <td class="num">2.30%</td>
+            <td class="num">2.50%</td>
+            <td class="num">2.80%</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            MVP 인재 사회기여 역량 지수 실적(2025)
+            <span class="pts">
+              71.9점<span class="delta down">(−16.9점)</span>
+              <span class="prev">2024년 88.8점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>진로·취창업 프로그램 개발·개편 비율</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">34%</td>
+            <td class="num col-y25a">22.34%</td>
+            <td><div class="formula-sys">(A + B) / (C + D) × 100</div><div class="formula-vars">A: 개발·개편 진로·취업 프로그램 수<br>C: 학년도별 개설 프로그램 수(진로·취업)<br>D: 학년도별 개설 프로그램 수(창업)<br>B: 개발∙개편 창업 프로그램 수</div></td>
+            <td>취업진로지원센터<br>스타트업지원센터</td>
+            </tr><tr>
+            <td>혁신형 진로·취창업 프로그램 신규개발 수</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">2건</td>
+            <td class="num col-y25a">2건</td>
+            <td><div class="formula-sys">A+B</div><div class="formula-vars">A: XR 등 에듀테크 기반 진로·취창업 프로그램 개발(진로·취업)<br>B: XR 등 에듀테크 기반 진로·취창업 프로그램 개발(창업)</div></td>
+            <td>취업진로지원센터<br>스타트업지원센터</td>
+            </tr><tr>
+            <td>진로개발 및 창업 지원 교과목 운영 건수</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">39건</td>
+            <td class="num col-y25a">39건</td>
+            <td><div class="formula-sys">A + B</div><div class="formula-vars">A: 진로∙취업 교과목 개설건수<br>B: 창업 교과목 개설건수</div></td>
+            <td>취업진로지원센터<br>스타트업지원센터</td>
+            </tr><tr>
+            <td>삼육 MVP 인증획득 학생 비율</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">1.12%</td>
+            <td class="num col-y25a">0.48%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 삼육 MVP 인증 세부 영역 중 1개이상 인증 획득 졸업생 수<br>B: 학년도별 졸업생 수</div></td>
+            <td>비교과통합센터<br>학사지원팀</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 88.8점 → 71.9점(−16.9점)</p>
+        <p class="sub">- 삼육 MVP 인증 1.12% → 0.48%(6/1,249명), 목표(1.89%) 대비 25.4%</p>
+        <p class="sub">- 진로·취창업 프로그램 개편 34% → 22.3%, 2025 목표(17.3%)는 달성, 구성지표 목표(36%) 대비 62.1%</p>
+        <p class="sub">- 혁신형 신규개발 2건, 취창업 교과 39건 — 목표 달성</p>
+    </div>
+  </section>
+    
+  <section class="area-section">
+    <div class="area-kicker">『SU-GLORY 플랜 2030』 종합성과관리지수 분석</div>
+    <h2>3. 「Ⅲ. 사회 가치창출」 영역</h2>
+    
+    <h3>■ 영역 요약</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:46%">성과관리종합지수</th>
+          <th style="width:18%">2024</th>
+          <th style="width:18%">2025</th>
+          <th style="width:18%">증감</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>사회가치 창출 연구역량 강화</td><td class="num">93.1</td><td class="num">100.0</td><td class="grade up">+6.9</td></tr><tr><td>사회가치 창출 산학협력 혁신</td><td class="num">91.1</td><td class="num">91.0</td><td class="grade down">−0.1</td></tr><tr><td>사회 가치창출 공유·협력 혁신</td><td class="num">64.2</td><td class="num">82.4</td><td class="grade up">+18.2</td></tr><tr><td class="group-cell">영역 평균</td><td class="num">82.8</td><td class="num">91.1</td><td class="grade up">+8.3</td></tr>
+      </tbody>
+    </table>
+    
+  </section>
+            
+  <section class="index-section">
+    <header class="index-title"><span>3-1</span><h2>사회문제해결과 미래혁신을 위한 실용연구 역량 강화</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅲ. 공유·협력 사회기여, 융합·초연결 산학협력, 현장기반 실용연구 혁신</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">1. 사회문제해결과 미래혁신을 위한 실용연구 역량 강화</td>
+          <td class="indicator-name">사회가치 창출 연구역량 강화 지수</td>
+        </tr>
+        <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 국제논문</td><td class="indicator-name">전임교원 1인당 국제논문 수</td></tr><tr><td class="link-plan">02 연구역량 계획</td><td class="indicator-name">연구역량 강화 개선계획 이행률</td></tr><tr><td class="link-plan">03 융합연구</td><td class="indicator-name">학제간 및 국제 융합연구 수행 건수</td></tr><tr><td class="link-plan">04 대학원 혁신</td><td class="indicator-name">대학원 교육 혁신 건수</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>전임교원 1인당 국제논문 수</td>
+            <td class="num">25%</td>
+            <td class="num">0.28편/인</td>
+            <td class="num">0.28편/인</td>
+            <td class="num col-y24">0.38편/인</td>
+            <td class="num">0.29편/인</td>
+            <td class="num">0.3편/인</td>
+            <td class="num">0.32편/인</td>
+            </tr><tr>
+            <td>연구역량 강화 개선계획 이행률</td>
+            <td class="num">25%</td>
+            <td class="num">100%</td>
+            <td class="num">100%</td>
+            <td class="num col-y24">100%</td>
+            <td class="num">100%</td>
+            <td class="num">100%</td>
+            <td class="num">100%</td>
+            </tr><tr>
+            <td>학제간 및 국제 융합연구 수행 건수</td>
+            <td class="num">25%</td>
+            <td class="num">0%</td>
+            <td class="num">6.80%</td>
+            <td class="num col-y24">8.64%</td>
+            <td class="num">11.02%</td>
+            <td class="num">11.46%</td>
+            <td class="num">12.12%</td>
+            </tr><tr>
+            <td>대학원 교육 혁신 건수</td>
+            <td class="num">25%</td>
+            <td class="num">15건</td>
+            <td class="num">16건</td>
+            <td class="num col-y24">13건</td>
+            <td class="num">19건</td>
+            <td class="num">23건</td>
+            <td class="num">29건</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            사회가치 창출 연구역량 강화 지수 실적(2025)
+            <span class="pts">
+              100.0점<span class="delta up">(+6.9점)</span>
+              <span class="prev">2024년 93.1점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>전임교원 1인당 국제논문 수</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">0.38편/인</td>
+            <td class="num col-y25a">0.29편/인</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 전임교원 1인당 국제논문(SCI/SSCI/A&HCI) 수</div></td>
+            <td>연구처</td>
+            </tr><tr>
+            <td>연구역량 강화 개선계획 이행률</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">100%</td>
+            <td class="num col-y25a">100%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 학년도별 연구역량 강화 활동 실행 건수<br>B: 활동 계획 건수</div></td>
+            <td>연구처</td>
+            </tr><tr>
+            <td>학제간 및 국제 융합연구 수행 건수</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">8.64%</td>
+            <td class="num col-y25a">13%</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 해외공동연구 수행 건수</div></td>
+            <td>연구처</td>
+            </tr><tr>
+            <td>대학원 교육 혁신 건수</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">13건</td>
+            <td class="num col-y25a">20건</td>
+            <td><div class="formula-sys">A + B + C</div><div class="formula-vars">A: 교과 혁신건수<br>B: 비교과 프로그램 수<br>C: 영어트랙 건수</div></td>
+            <td>대학원 교학팀</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 93.1점 → 100.0점(+6.9점)</p>
+        <p class="sub">- 국제논문 0.29편, 연구역량 이행 6/6, 융합연구 13건 — 목표 달성</p>
+        <p class="sub">- 대학원 교육 혁신 13건 → 20건, 2025 목표(22건) 대비 90.9%</p>
+    </div>
+  </section>
+    
+  <section class="index-section">
+    <header class="index-title"><span>3-2</span><h2>소통형 산학협력 네트워크 추진 강화</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅲ. 공유·협력 사회기여, 융합·초연결 산학협력, 현장기반 실용연구 혁신</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">2. 소통형 산학협력 네트워크 추진 강화</td>
+          <td class="indicator-name">사회가치 창출 산학협력 혁신 지수</td>
+        </tr>
+        <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 산학연계교육</td><td class="indicator-name">산학연계교육 참여자 비율</td></tr><tr><td class="link-plan">02 가족회사</td><td class="indicator-name">산학협력 가족회사 확보 건수</td></tr><tr><td class="link-plan">03 산업체 만족도</td><td class="indicator-name">산업체 만족도</td></tr><tr><td class="link-plan">04 산학 역량강화</td><td class="indicator-name">산학협력 역량강화 개선과제 이행률</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>산학연계교육 참여자 비율</td>
+            <td class="num">25%</td>
+            <td class="num">11.61%</td>
+            <td class="num">18.88%</td>
+            <td class="num col-y24">18.19%</td>
+            <td class="num">16%</td>
+            <td class="num">20%</td>
+            <td class="num">26%</td>
+            </tr><tr>
+            <td>산학협력 가족회사 확보 건수</td>
+            <td class="num">25%</td>
+            <td class="num">400개</td>
+            <td class="num">410개</td>
+            <td class="num col-y24">432개</td>
+            <td class="num">530개</td>
+            <td class="num">550개</td>
+            <td class="num">580개</td>
+            </tr><tr>
+            <td>산업체 만족도</td>
+            <td class="num">25%</td>
+            <td class="num">72 점</td>
+            <td class="num">73 점</td>
+            <td class="num col-y24">69.61 점</td>
+            <td class="num">74 점</td>
+            <td class="num">75 점</td>
+            <td class="num">76.5 점</td>
+            </tr><tr>
+            <td>산학협력 역량강화 개선과제 이행률</td>
+            <td class="num">25%</td>
+            <td class="num">100%</td>
+            <td class="num">100%</td>
+            <td class="num col-y24">86.67%</td>
+            <td class="num">90%</td>
+            <td class="num">90%</td>
+            <td class="num">95%</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            사회가치 창출 산학협력 혁신 지수 실적(2025)
+            <span class="pts">
+              91.0점<span class="delta down">(−0.1점)</span>
+              <span class="prev">2024년 91.1점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>산학연계교육 참여자 비율</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">18.19%</td>
+            <td class="num col-y25a">13.46%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 산학협력 연계교육* 참여 학생 수<br>B: 재학생 수</div></td>
+            <td>학사지원팀</td>
+            </tr><tr>
+            <td>산학협력 가족회사 확보 건수</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">432개</td>
+            <td class="num col-y25a">465개</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 학년도 말 기준 산학협력 가족회사 수</div></td>
+            <td>산학협력단</td>
+            </tr><tr>
+            <td>산업체 만족도</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">69.61 점</td>
+            <td class="num col-y25a">76 점</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 산업체 대상 만족도 조사 점수</div></td>
+            <td>IR센터</td>
+            </tr><tr>
+            <td>산학협력 역량강화 개선과제 이행률</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">86.67%</td>
+            <td class="num col-y25a">73.75%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 학년도별 산학협력 역량 강화 활동 실행 건수<br>B: 학년도별 산학협력 역량 강화 활동 활동 계획 건수</div></td>
+            <td>산학협력단</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 91.1점 → 91.0점(보합)</p>
+        <p class="sub">- 산학연계교육 18.19% → 13.46%, 목표(11.05%) 상회</p>
+        <p class="sub">- 산업체 만족도 69.61점 → 76점, 목표(74점) 상회</p>
+        <p class="sub">- 가족회사 432건 → 465건, 목표(516건) 대비 90.1%</p>
+        <p class="sub">- 산학협력 역량강화 이행률 87% → 73.75%(59/80)</p>
+    </div>
+  </section>
+    
+  <section class="index-section">
+    <header class="index-title"><span>3-3</span><h2>사회적 가치 구현을 위한 공유·협력</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅲ. 공유·협력 사회기여, 융합·초연결 산학협력, 현장기반 실용연구 혁신</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">3. 사회적 가치 구현을 위한 공유·협력</td>
+          <td class="indicator-name">사회 가치창출 공유·협력 혁신 지수</td>
+        </tr>
+        <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 서비스러닝</td><td class="indicator-name">서비스러닝 교육 만족도</td></tr><tr><td class="link-plan">02 대외협력</td><td class="indicator-name">대외협력 협약 체결 건수</td></tr><tr><td class="link-plan">03 평생교육</td><td class="indicator-name">평생교육 프로그램 참여자 수</td></tr><tr><td class="link-plan">04 교육국제화</td><td class="indicator-name">SU-edx 교육국제화 프로그램 참여 학생 비율</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>서비스러닝 교육 만족도</td>
+            <td class="num">25%</td>
+            <td class="num">0 점</td>
+            <td class="num">92.08 점</td>
+            <td class="num col-y24">94.91 점</td>
+            <td class="num">90 점</td>
+            <td class="num">88.8 점</td>
+            <td class="num">90 점</td>
+            </tr><tr>
+            <td>대외협력 협약 체결 건수</td>
+            <td class="num">25%</td>
+            <td class="num">7건</td>
+            <td class="num">10건</td>
+            <td class="num col-y24">6건</td>
+            <td class="num">16건</td>
+            <td class="num">22건</td>
+            <td class="num">31건</td>
+            </tr><tr>
+            <td>평생교육 프로그램 참여자 수</td>
+            <td class="num">25%</td>
+            <td class="num">10,974명</td>
+            <td class="num">11,029명</td>
+            <td class="num col-y24">6,892명</td>
+            <td class="num">11,139명</td>
+            <td class="num">11,249명</td>
+            <td class="num">11,414명</td>
+            </tr><tr>
+            <td>SU-edx 교육국제화 프로그램 참여 학생 비율</td>
+            <td class="num">25%</td>
+            <td class="num">1.50%</td>
+            <td class="num">0.80%</td>
+            <td class="num col-y24">0.38%</td>
+            <td class="num">1.12%</td>
+            <td class="num">7.50%</td>
+            <td class="num">8.50%</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            사회 가치창출 공유·협력 혁신 지수 실적(2025)
+            <span class="pts">
+              82.4점<span class="delta up">(+18.2점)</span>
+              <span class="prev">2024년 64.2점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>서비스러닝 교육 만족도</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">94.91 점</td>
+            <td class="num col-y25a">93 점</td>
+            <td><div class="formula-sys">(A + B) / 2</div><div class="formula-vars">A: 서비스러닝 교과목 이수자 만족도<br>B: 서비스러닝 비교과 프로그램 이수자 만족도</div></td>
+            <td>글로컬사회혁신원</td>
+            </tr><tr>
+            <td>대외협력 협약 체결 건수</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">6건</td>
+            <td class="num col-y25a">24건</td>
+            <td><div class="formula-sys">A + B</div><div class="formula-vars">A: 지역사회 발전 관련 협력체결 건 수<br>B: 대학 간 공유 협력 관련 협력체결 건 수</div></td>
+            <td>대외협력팀</td>
+            </tr><tr>
+            <td>평생교육 프로그램 참여자 수</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">6,892명</td>
+            <td class="num col-y25a">7,049명</td>
+            <td><div class="formula-sys">A + B</div><div class="formula-vars">A: 학년도별 평생교육 프로그램별 참여자 수 합계<br>B: 체육문화센터 등록 인원</div></td>
+            <td>평생교육원<br>체육문화센터</td>
+            </tr><tr>
+            <td>SU-edx 교육국제화 프로그램 참여 학생 비율</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">0.38%</td>
+            <td class="num col-y25a">0.52%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 단기 국제교류 참여학생 수<br>B: 재학생 수</div></td>
+            <td>국제처<br>학사지원팀</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 64.2점 → 82.4점(+18.2점)</p>
+        <p class="sub">- 서비스러닝 만족도 93점, 대외협력 협약 24건 — 목표 달성</p>
+        <p class="sub">- 평생교육 참여자 6,892명 → 7,049명(평생교육원 1,220 + 체육문화센터 5,829), 목표(11,084명) 대비 63.6%</p>
+        <p class="sub">- SU-edx 참여 0.38% → 0.52%(53/10,265명), 목표(0.78%) 대비 66.4%</p>
+    </div>
+  </section>
+    
+  <section class="area-section">
+    <div class="area-kicker">『SU-GLORY 플랜 2030』 종합성과관리지수 분석</div>
+    <h2>4. 「Ⅳ. 지속가능 경영」 영역</h2>
+    
+    <h3>■ 영역 요약</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:46%">성과관리종합지수</th>
+          <th style="width:18%">2024</th>
+          <th style="width:18%">2025</th>
+          <th style="width:18%">증감</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>적정 규모화 관리</td><td class="num">71.2</td><td class="num">69.6</td><td class="grade down">−1.6</td></tr><tr><td>재정 건전성 확보</td><td class="num">96.6</td><td class="num">100.0</td><td class="grade up">+3.4</td></tr><tr><td>데이터 기반 대학 경영체계 구축</td><td class="num">89.6</td><td class="num">98.0</td><td class="grade up">+8.4</td></tr><tr><td class="group-cell">영역 평균</td><td class="num">85.8</td><td class="num">89.2</td><td class="grade up">+3.4</td></tr>
+      </tbody>
+    </table>
+    
+  </section>
+            
+  <section class="index-section">
+    <header class="index-title"><span>4-1</span><h2>국내외 입학자원 확보 및 학생 유지 관리</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅳ. 구성원의 참여·소통으로 함께 성장하는 혁신 거버넌스 구현</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">1. 국내외 입학자원 확보 및 학생 유지 관리</td>
+          <td class="indicator-name">적정 규모화 관리 지수</td>
+        </tr>
+        <tr><td rowspan="2" class="link-label">실행과제</td><td class="link-plan">01 입학 마스터플랜 및 신입생 FYE</td><td class="indicator-name">신입생 교육 만족도 (50%)</td></tr><tr><td class="link-plan">02 외국인 유학생 유치 및 정착 지원</td><td class="indicator-name">외국인 유학생 수 (50%)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>신입생 교육 만족도</td>
+            <td class="num">50%</td>
+            <td class="num">65 점</td>
+            <td class="num">66.3 점</td>
+            <td class="num col-y24">66.89 점</td>
+            <td class="num">69 점</td>
+            <td class="num">71.8 점</td>
+            <td class="num">76 점</td>
+            </tr><tr>
+            <td>외국인 유학생 수</td>
+            <td class="num">50%</td>
+            <td class="num">1,100명</td>
+            <td class="num">1,300명</td>
+            <td class="num col-y24">608명</td>
+            <td class="num">1,500명</td>
+            <td class="num">1,800명</td>
+            <td class="num">2,000명</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            적정 규모화 관리 지수 실적(2025)
+            <span class="pts">
+              69.6점<span class="delta down">(−1.6점)</span>
+              <span class="prev">2024년 71.2점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>신입생 교육 만족도</td>
+            <td class="num">50%</td>
+            <td class="num col-y24">66.89 점</td>
+            <td class="num col-y25a">69.31 점</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 1학년 학생 수요자 교육만족도 종합점수</div></td>
+            <td>학생지원팀</td>
+            </tr><tr>
+            <td>외국인 유학생 수</td>
+            <td class="num">50%</td>
+            <td class="num col-y24">608명</td>
+            <td class="num col-y25a">550명</td>
+            <td><div class="formula-sys">A+B+C+D</div><div class="formula-vars">A: 외국인 유학생 수(학위과정·학부)<br>B: 외국인 유학생 수(교육과정 공동운영)<br>C: 외국인 유학생 수(연수과정)<br>D: 외국인 유학생 수(학위과정·대학원)</div></td>
+            <td>국제처<br>대학원 교학팀</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 71.2점 → 69.6점(−1.6점)</p>
+        <p class="sub">- 신입생 교육만족도 66.89점 → 69.31점, 목표(67.6점) 달성</p>
+        <p class="sub">- 외국인 유학생 608명 → 550명, 목표(1,400명) 대비 39.3%(학부 187, 연수 174, 대학원 189)</p>
+    </div>
+  </section>
+    
+  <section class="index-section">
+    <header class="index-title"><span>4-2</span><h2>재정 건전성 확보</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅳ. 구성원의 참여·소통으로 함께 성장하는 혁신 거버넌스 구현</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">2. 재정 건전성 확보</td>
+          <td class="indicator-name">재정 건전성 확보 지수</td>
+        </tr>
+        <tr><td rowspan="4" class="link-label">실행과제</td><td class="link-plan">01 재정수입 확충</td><td class="indicator-name">재정수입 확충 계획 이행률 (25%)</td></tr><tr><td class="link-plan">02 등록금 외 수입 확대</td><td class="indicator-name">등록금 외 수입(중장기) 목표 달성률 (25%)</td></tr><tr><td class="link-plan">03 기부금 수입 확대</td><td class="indicator-name">기부금 수입(중장기) 목표 달성률 (25%)</td></tr><tr><td class="link-plan">04 예산 집행 효율화</td><td class="indicator-name">예산 집행률 (25%)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>재정수입 확충 계획 이행률</td>
+            <td class="num">25%</td>
+            <td class="num">80%</td>
+            <td class="num">74%</td>
+            <td class="num col-y24">60%</td>
+            <td class="num">90%</td>
+            <td class="num">90%</td>
+            <td class="num">95%</td>
+            </tr><tr>
+            <td>등록금 외 수입(중장기) 목표 달성률</td>
+            <td class="num">25%</td>
+            <td class="num">78.65%</td>
+            <td class="num">77.45%</td>
+            <td class="num col-y24">81.15%</td>
+            <td class="num">77.50%</td>
+            <td class="num">77.50%</td>
+            <td class="num">95%</td>
+            </tr><tr>
+            <td>기부금 수입(중장기) 목표 달성률</td>
+            <td class="num">25%</td>
+            <td class="num">100%</td>
+            <td class="num">100%</td>
+            <td class="num col-y24">219.6%</td>
+            <td class="num">77.50%</td>
+            <td class="num">77.50%</td>
+            <td class="num">95%</td>
+            </tr><tr>
+            <td>예산 집행률</td>
+            <td class="num">25%</td>
+            <td class="num">95%</td>
+            <td class="num">95%</td>
+            <td class="num col-y24">100.7%</td>
+            <td class="num">95%</td>
+            <td class="num">95%</td>
+            <td class="num">95%</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            재정 건전성 확보 지수 실적(2025)
+            <span class="pts">
+              100.0점<span class="delta up">(+3.4점)</span>
+              <span class="prev">2024년 96.6점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>재정수입 확충 계획 이행률</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">60%</td>
+            <td class="num col-y25a">68%</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 재정수입 확충 계획 이행률</div></td>
+            <td>재무처</td>
+            </tr><tr>
+            <td>등록금 외 수입(중장기) 목표 달성률</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">81.15%</td>
+            <td class="num col-y25a">85%</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 등록금 외 수입(중장기) 목표 달성률</div></td>
+            <td>재무처</td>
+            </tr><tr>
+            <td>기부금 수입(중장기) 목표 달성률</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">219.6%</td>
+            <td class="num col-y25a">129.8%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 예산서 대비 결산내역<br>B: 법인일반회계 및 교비회계 기부금 중장기 목표 금액</div></td>
+            <td>대외협력팀</td>
+            </tr><tr>
+            <td>예산 집행률</td>
+            <td class="num">25%</td>
+            <td class="num col-y24">100.7%</td>
+            <td class="num col-y25a">103.8%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 조정예산<br>B: 집행금액</div></td>
+            <td>예산팀</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 96.6점 → 100.0점(+3.4점)</p>
+        <p class="sub">- 재정수입 확충 68%, 등록금 외 수입 85%, 예산 집행률 103.8% — 목표 달성</p>
+        <p class="sub">- 기부금 결산 29.09억 / 목표 22.42억(129.8%)</p>
+    </div>
+  </section>
+    
+  <section class="index-section">
+    <header class="index-title"><span>4-3</span><h2>행정관리 역량 강화</h2></header>
+
+    <h3>■ 중장기발전계획-성과지표 연계</h3>
+    <table class="link-table">
+      <thead>
+        <tr>
+          <th style="width:16%"></th>
+          <th style="width:46%">중장기발전계획</th>
+          <th style="width:38%">성과지표</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="link-label">4대 전략방향</td>
+          <td colspan="2">Ⅳ. 구성원의 참여·소통으로 함께 성장하는 혁신 거버넌스 구현</td>
+        </tr>
+        <tr>
+          <td class="link-label">12대 중점전략</td>
+          <td class="link-plan">3. 행정관리 역량 강화</td>
+          <td class="indicator-name">데이터 기반 대학 경영체계 구축 지수</td>
+        </tr>
+        <tr><td rowspan="5" class="link-label">실행과제</td><td class="link-plan">01 의사결정 참여</td><td class="indicator-name">교원·직원 1인당 대학 내 의사결정 활동 참여 건수 (20%)</td></tr><tr><td class="link-plan">02 캠퍼스 여건</td><td class="indicator-name">캠퍼스 시설 종합 만족도 (20%)</td></tr><tr><td class="link-plan">03 교직원 역량</td><td class="indicator-name">교직원 1인당 교육훈련 참여 건수 (20%)</td></tr><tr><td class="link-plan">04 정보화</td><td class="indicator-name">정보화 인프라 고도화 계획 이행률 (20%)</td></tr><tr><td class="link-plan">05 외부 수요자</td><td class="indicator-name">외부 수요자 만족도(산업체·학부모·지역사회) (20%)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 목표</h3>
+    <table class="sub-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:28%">하위 지표</th>
+          <th rowspan="2" style="width:8%">구성 비율</th>
+          <th colspan="3">과거 실적</th>
+          <th colspan="3">연차별 달성목표</th>
+        </tr>
+        <tr>
+          <th>2022</th><th>2023</th><th>2024</th>
+          <th>2025</th><th>’26~’27</th><th>’28~’30</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>교원·직원 1인당 대학 내 의사결정 활동 참여 건수</td>
+            <td class="num">20%</td>
+            <td class="num">1.16 건/인</td>
+            <td class="num">1.44 건/인</td>
+            <td class="num col-y24">1.54 건/인</td>
+            <td class="num">2 건/인</td>
+            <td class="num">3 건/인</td>
+            <td class="num">3.2 건/인</td>
+            </tr><tr>
+            <td>캠퍼스 시설 종합 만족도</td>
+            <td class="num">20%</td>
+            <td class="num">72.5 점</td>
+            <td class="num">68.2 점</td>
+            <td class="num col-y24">65.72 점</td>
+            <td class="num">75 점</td>
+            <td class="num">76 점</td>
+            <td class="num">77.5 점</td>
+            </tr><tr>
+            <td>교직원 1인당 교육훈련 참여 건수</td>
+            <td class="num">20%</td>
+            <td class="num">2.09 건/인</td>
+            <td class="num">2.44 건/인</td>
+            <td class="num col-y24">4.07 건/인</td>
+            <td class="num">2.89 건/인</td>
+            <td class="num">3.52 건/인</td>
+            <td class="num">4.47 건/인</td>
+            </tr><tr>
+            <td>정보화 인프라 고도화 계획 이행률</td>
+            <td class="num">20%</td>
+            <td class="num">90%</td>
+            <td class="num">95%</td>
+            <td class="num col-y24">95.65%</td>
+            <td class="num">90%</td>
+            <td class="num">90%</td>
+            <td class="num">95%</td>
+            </tr><tr>
+            <td>외부 수요자 만족도(산업체·학부모·지역사회)</td>
+            <td class="num">20%</td>
+            <td class="num">71.45 점</td>
+            <td class="num">73.55 점</td>
+            <td class="num col-y24">72.41 점</td>
+            <td class="num">74.5 점</td>
+            <td class="num">74.8 점</td>
+            <td class="num">75.3 점</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 실적</h3>
+    <table class="sub-table">
+      <thead>
+        <tr class="score-head">
+          <th colspan="6">
+            데이터 기반 대학 경영체계 구축 지수 실적(2025)
+            <span class="pts">
+              98.0점<span class="delta up">(+8.4점)</span>
+              <span class="prev">2024년 89.6점</span>
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="width:22%">하위 지표</th>
+          <th style="width:8%">구성 비율</th>
+          <th style="width:11%" class="col-y24">실적(2024)</th>
+          <th style="width:11%" class="col-y25a">실적(2025)</th>
+          <th style="width:32%">산출식</th>
+          <th style="width:16%">담당부서</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>교원·직원 1인당 대학 내 의사결정 활동 참여 건수</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">1.54 건/인</td>
+            <td class="num col-y25a">1.57 건/인</td>
+            <td><div class="formula-sys">A / (B + C)</div><div class="formula-vars">A: 대학 내 의사결정 관련 추진 활동별 연간 참여자 수 합계<br>B: 학년도별 교원 수<br>C: 학년도별 직원 수</div></td>
+            <td>기획처<br>총무인사팀</td>
+            </tr><tr>
+            <td>캠퍼스 시설 종합 만족도</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">65.72 점</td>
+            <td class="num col-y25a">75 점</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 교육수요자 만족도 조사 항목 중 캠퍼스 시설 여역 만족도 종합점수 (재학생, 교원, 직원, 학부모)</div></td>
+            <td>IR센터</td>
+            </tr><tr>
+            <td>교직원 1인당 교육훈련 참여 건수</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">4.07 건/인</td>
+            <td class="num col-y25a">5.94 건/인</td>
+            <td><div class="formula-sys">A / B</div><div class="formula-vars">A: 학년도별 교육훈련별 참여 교직원 수 합계<br>B: 교직원 수</div></td>
+            <td>총무인사팀</td>
+            </tr><tr>
+            <td>정보화 인프라 고도화 계획 이행률</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">95.65%</td>
+            <td class="num col-y25a">95.65%</td>
+            <td><div class="formula-sys">A / B × 100</div><div class="formula-vars">A: 정보화 인프라 고도화 활동 이행 건수<br>B: 정보화 인프라 고도화 계획 활동 건수</div></td>
+            <td>정보전산팀</td>
+            </tr><tr>
+            <td>외부 수요자 만족도(산업체·학부모·지역사회)</td>
+            <td class="num">20%</td>
+            <td class="num col-y24">72.41 점</td>
+            <td class="num col-y25a">74 점</td>
+            <td><div class="formula-sys">A</div><div class="formula-vars">A: 외부 수요자 만족도 조사 점수 (산업체, 학부모, 지역사회 등)</div></td>
+            <td>IR센터</td>
+            </tr>
+      </tbody>
+    </table>
+
+    <h3>■ 성과지표 분석</h3>
+    <div class="plan-narrative analysis">
+        <p>○ 지수 89.6점 → 98.0점(+8.4점)</p>
+        <p class="sub">- 캠퍼스 시설 만족도 65.72점 → 75점, 정보화 이행 95.7%, 외부 수요자 만족도 74점 — 목표 달성</p>
+        <p class="sub">- 의사결정 참여 1.57건/인(694명 / 교원 190+직원 252)</p>
+        <p class="sub">- 교직원 1인당 교육훈련 5.94건(1,502/253), 목표(6.59건) 대비 90.1%</p>
+    </div>
+  </section>
+    
+
+  
+  <section class="overall-section">
+    <h1 class="report-title">종합 분석</h1>
+
+    <h3>■ 영역별 추이</h3>
+    <div class="chart-box">
+      <svg viewBox="0 0 700 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Malgun Gothic, sans-serif"><rect x="48" y="10" width="11" height="11" fill="#9a9a9a"/><text x="64" y="20" font-size="11" fill="#333">2024</text><rect x="120" y="10" width="11" height="11" fill="#3d6b4f"/><text x="136" y="20" font-size="11" fill="#333">2025 상승</text><rect x="206" y="10" width="11" height="11" fill="#8b4540"/><text x="222" y="20" font-size="11" fill="#333">하락</text><line x1="48" y1="194" x2="684" y2="194" stroke="#555" stroke-width="1"/><line x1="48" y1="194.0" x2="684" y2="194.0" stroke="#eee" stroke-width="1"/><text x="42" y="198.0" font-size="10" text-anchor="end" fill="#666">0</text><line x1="48" y1="115.0" x2="684" y2="115.0" stroke="#eee" stroke-width="1"/><text x="42" y="119.0" font-size="10" text-anchor="end" fill="#666">50</text><line x1="48" y1="36.0" x2="684" y2="36.0" stroke="#eee" stroke-width="1"/><text x="42" y="40.0" font-size="10" text-anchor="end" fill="#666">100</text><rect x="52.0" y="76.8" width="55.3" height="117.2" fill="#9a9a9a"/><rect x="113.3" y="43.6" width="55.3" height="150.4" fill="#3d6b4f"/><text x="79.6" y="72.8" font-size="10" text-anchor="middle" fill="#555">74.2</text><text x="140.9" y="39.6" font-size="10" text-anchor="middle" fill="#222">95.2</text><text x="120.8" y="220" font-size="11" text-anchor="middle">Ⅰ. 고등교육 선도</text><rect x="215.5" y="44.7" width="55.3" height="149.3" fill="#9a9a9a"/><rect x="276.8" y="51.8" width="55.3" height="142.2" fill="#8b4540"/><text x="243.1" y="40.7" font-size="10" text-anchor="middle" fill="#555">94.5</text><text x="304.4" y="47.8" font-size="10" text-anchor="middle" fill="#222">90.0</text><text x="284.2" y="220" font-size="11" text-anchor="middle">Ⅱ. 학생 미래비전</text><rect x="379.0" y="63.2" width="55.3" height="130.8" fill="#9a9a9a"/><rect x="440.3" y="50.1" width="55.3" height="143.9" fill="#3d6b4f"/><text x="406.6" y="59.2" font-size="10" text-anchor="middle" fill="#555">82.8</text><text x="467.9" y="46.1" font-size="10" text-anchor="middle" fill="#222">91.1</text><text x="447.8" y="220" font-size="11" text-anchor="middle">Ⅲ. 사회 가치창출</text><rect x="542.5" y="58.4" width="55.3" height="135.6" fill="#9a9a9a"/><rect x="603.8" y="53.1" width="55.3" height="140.9" fill="#3d6b4f"/><text x="570.1" y="54.4" font-size="10" text-anchor="middle" fill="#555">85.8</text><text x="631.4" y="49.1" font-size="10" text-anchor="middle" fill="#222">89.2</text><text x="611.2" y="220" font-size="11" text-anchor="middle">Ⅳ. 지속가능 경영</text></svg>
+      <div class="chart-cap">[그림] 4대 전략방향 영역 평균</div>
+    </div>
+    <div class="plan-narrative analysis">
+      <p>○ 전체 평균 84.3점 → 91.4점(+7.1점). 12개 중 8개 상승, 2개 보합, 2개 하락</p>
+      <p class="sub">- 상승 폭 상위: 재정 건전성 +3.4점, 인재 성장 +3.5점, 연구역량 +6.9점</p>
+      <p class="sub">- 하락: 규모화 −1.6점, 사회기여 −16.9점</p>
+      <p>○ Ⅰ. 고등교육 선도 74.2점 → 95.2점(+21.0점), 최대 상승. 전년 취약 구간을 회복함</p>
+      <p class="sub">- 스마트 교육방법 만점: 콘텐츠 90차시 → 874차시</p>
+      <p class="sub">- 교과혁신: 혁신형 전공 교과 4.0% → 27.7%, 학사제도 참여율 27.38% → 44.82%</p>
+      <p class="sub">- 융합형 교과(0.13%)는 중장기 ’25 목표(0.3%) 대비 취약</p>
+      <p>○ Ⅱ. 학생 미래비전 94.5점 → 90.0점(−4.5점), 유일한 영역 하락</p>
+      <p class="sub">- 성과관리 100점, 인재 성장 98.1점은 유지</p>
+      <p class="sub">- 사회기여 88.8 → 71.9점. MVP 인증 6명/1,249명(0.48%), 목표 1.89% 대비 25.4%</p>
+      <p class="sub">- 진로 프로그램 개편 22.3%는 2025 목표(17.3%) 달성, 구성지표 목표(36%) 대비 62.1%</p>
+      <p>○ Ⅲ. 사회 가치창출 82.8점 → 91.1점(+8.3점). 연구 만점과 공유·협력이 영역 상승을 견인함</p>
+      <p class="sub">- 연구 93.1점 → 100점. 국제논문 0.29편, 연구역량 이행 6/6, 융합연구 13건 목표 달성. 대학원 혁신 20건(목표 22건 대비 90.9%)</p>
+      <p class="sub">- 산학협력 91.1점 → 91.0점 보합. 산학연계 13.46%·산업체 만족도 76점 목표 상회, 가족회사 465/516건(90.1%)</p>
+      <p class="sub">- 공유·협력 64.2점 → 82.4점(+18.2점). 서비스러닝 93점·협약 24건 달성, 평생교육 7,049/11,084명(63.6%), SU-edx 0.52%/0.78%(66.4%) 미달</p>
+      <p>○ Ⅳ. 지속가능 경영 85.8점 → 89.2점(+3.4점)</p>
+      <p class="sub">- 재정 100점, 경영체계 98.0점. 규모화 71.2 → 69.6점(유학생 550/1,400명)이 하방 요인</p>
+    </div>
+
+    <h3>■ 향후 환류사항</h3>
+    <table class="reflux-table">
+      <thead>
+        <tr>
+          <th style="width:6%">연번</th>
+          <th style="width:18%">과제</th>
+          <th style="width:32%">현황</th>
+          <th style="width:28%">환류 방향</th>
+          <th style="width:16%">담당</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="num">1</td>
+          <td>삼육 MVP 인증 확대</td>
+          <td>0.48%(6/1,249명), 목표 1.89% 대비 25.4%. 사회기여 지수 하락의 핵심 요인</td>
+          <td>인증 요건·이수 경로 정비, 비교과·전공 연계 강화</td>
+          <td>비교과통합센터</td>
+        </tr>
+        <tr>
+          <td class="num">2</td>
+          <td>외국인 유학생 유치</td>
+          <td>550명(학부 187, 연수 174, 대학원 189), 목표 1,400명 대비 39.3%. 규모화 지수 최저</td>
+          <td>학부·대학원·연수 유치 목표 재설정 및 실행계획 수립</td>
+          <td>국제처, 대학원</td>
+        </tr>
+        <tr>
+          <td class="num">3</td>
+          <td>평생교육 참여자 확대</td>
+          <td>7,049명(평생교육원 1,220 + 체육문화센터 5,829), 목표 11,084명 대비 63.6%</td>
+          <td>A+B 집계 범위 고정, 과정 모집·홍보 강화</td>
+          <td>평생교육원, 체육문화센터</td>
+        </tr>
+        <tr>
+          <td class="num">4</td>
+          <td>SU-edx 참여 제고</td>
+          <td>0.52%(53/10,265명), 목표 0.78% 대비 66.4%</td>
+          <td>단기 국제교류 프로그램 참여 확대</td>
+          <td>국제처</td>
+        </tr>
+        <tr>
+          <td class="num">5</td>
+          <td>진로·취창업 목표 정합</td>
+          <td>프로그램 개편 22.3%. 2025 목표 17.3%는 달성, 구성지표 목표 36% 대비 62.1%</td>
+          <td>지수 산정 목표와 연도 목표 일치, 사회기여 지수 회복 점검</td>
+          <td>취업진로지원센터, 스타트업지원센터, 기획처</td>
+        </tr>
+        <tr>
+          <td class="num">6</td>
+          <td>구성지표 목표 정합</td>
+          <td>전임교원 152.5 vs 80.5, 대학원 혁신 18 vs 22, 학업생활 만족도 76 vs 71.5</td>
+          <td>지수 산정용 목표와 부서 2025 목표를 동일 기준으로 정리</td>
+          <td>기획처, 해당 부서</td>
+        </tr>
+        <tr>
+          <td class="num">7</td>
+          <td>융합형 교과 개발</td>
+          <td>0.13%, 중장기 ’25 목표 0.3% 대비 취약</td>
+          <td>전공·교양 융합교과 개발 확대</td>
+          <td>학사지원팀, 교양교육원</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="plan-narrative analysis">
+      <p>○ 상기 환류사항은 2026학년도 실행계획·성과지표 목표 조정에 반영한다.</p>
+      <p class="sub">- 달성률 70% 미만 지표(MVP 인증, 유학생, 평생교육, SU-edx)는 담당 부서 실행계획과 연계하여 분기 점검한다.</p>
+      <p class="sub">- 구성지표 목표와 연도 목표 불일치는 지수 산정 기준을 단일화한 뒤 차기 연차평가에 적용한다.</p>
+      <p class="sub">- 교육혁신 상승분(콘텐츠·혁신형 전공·학사제도)은 유지 관리하고, 융합형 교과는 중장기 ’25 목표(0.3%) 달성을 재추진한다.</p>
+    </div>
+  </section>
+    
+</body>
+</html>
