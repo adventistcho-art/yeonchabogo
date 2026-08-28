@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Embed merged IR + submission data into index.html and briefing.html."""
+"""Embed merged IR + submission data into dashboard.html and briefing.html."""
 import json
 import os
 import shutil
@@ -18,7 +18,7 @@ MARKER_START = '<script id="report-data" type="application/json">'
 MARKER_END = '</script>'
 
 EMBED_TARGETS = (
-    ROOT / "index.html",
+    ROOT / "dashboard.html",
     ROOT / "briefing.html",
 )
 
@@ -32,12 +32,18 @@ def embed_json(html_path: Path, merged: dict) -> None:
     html = html_path.read_text(encoding="utf-8")
     if MARKER_START not in html:
         raise SystemExit(f"Marker not found in {html_path}")
+    if MARKER_END not in html:
+        raise SystemExit(f"Closing marker not found in {html_path} (file may be truncated)")
 
     payload = sanitize_embed_payload(merged)
     start = html.index(MARKER_START) + len(MARKER_START)
     end = html.index(MARKER_END, start)
     embedded = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
-    html_path.write_text(html[:start] + embedded + html[end:], encoding="utf-8")
+    embedded = embedded.replace("</", "<\\/")
+    new_html = html[:start] + embedded + html[end:]
+    tmp_path = html_path.with_suffix(html_path.suffix + ".tmp")
+    tmp_path.write_text(new_html, encoding="utf-8")
+    tmp_path.replace(html_path)
 
 
 def sanitize_embed_payload(report: dict) -> dict:

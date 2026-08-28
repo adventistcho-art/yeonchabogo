@@ -1,14 +1,16 @@
 # 2025 연차보고 통합 대시보드 (yeonchabogo)
 
-IR 성과 대시보드 + 그룹웨어 공문 제출 현황을 **하나의 `index.html`** 에서 봅니다.
+IR 성과 대시보드 + 그룹웨어 공문 제출 현황은 **원천데이터**에서 봅니다. 사이트 첫 화면은 연차평가 보고서입니다.
 
 ## 폴더
 
 ```
 yeonchabogo/
-├── index.html          ← 통합 대시보드 (관리용, 빌드 후 데이터 embed)
+├── index.html          ← 연차평가 보고서 (PDF / HTML / 원천데이터)
+├── dashboard.html      ← 부서별 제출·평가 취합 (관리용)
 ├── briefing.html       ← 부서별 브리핑 (총장·팀장 미팅용)
 ├── assets/
+│   ├── home.css
 │   ├── dashboard.css
 │   ├── dashboard.js
 │   ├── briefing.css
@@ -60,7 +62,8 @@ python build_dashboard.py
 
 ## 3. 확인
 
-- **관리용**: `index.html` — 공문 제출·비고·전체 표
+- **보고서**: `index.html` — PDF · HTML · 원천데이터
+- **관리용**: `dashboard.html` — 공문 제출·비고·전체 표
 - **브리핑용**: `briefing.html` — 부서 선택 → KPI·그래프·문서
 
 ## 4. (관리용) 사업 HTML·PDF
@@ -89,7 +92,7 @@ python scrape_ir.py
 
 ## 부서별 연차평가 합본 보고서
 
-`index.html`에 embed된 데이터를 기준으로 참고 양식과 유사한 A4 합본 PDF를 생성합니다.
+`dashboard.html`에 embed된 데이터를 기준으로 참고 양식과 유사한 A4 합본 PDF를 생성합니다.
 
 ```powershell
 cd "C:\Users\SYU\Documents\커서도전\yeonchabogo"
@@ -97,10 +100,9 @@ python scripts\build_annual_evaluation_report.py
 python scripts\validate_annual_evaluation_report.py
 ```
 
-결과물은 `reports/`에 생성됩니다. GitHub Pages 합본:
+결과물은 `reports/`에 생성됩니다. GitHub Pages:
 
-- https://adventistcho-art.github.io/yeonchabogo/reports/
-- https://adventistcho-art.github.io/yeonchabogo/reports/2025학년도_연차평가_보고서.pdf
+- https://adventistcho-art.github.io/yeonchabogo/
 
 `master`에 푸시하면 Pages가 갱신됩니다.
 

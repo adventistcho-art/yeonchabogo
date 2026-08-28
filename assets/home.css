@@ -1,0 +1,97 @@
+* { box-sizing: border-box; }
+body {
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background: #f3f4f6;
+  color: #111;
+}
+.home {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px 24px 72px;
+}
+.home-kicker {
+  margin: 0 0 10px;
+  font-size: 13px;
+  letter-spacing: .16em;
+  color: #6b7280;
+}
+.home h1 {
+  margin: 0 0 10px;
+  font-size: 32px;
+  letter-spacing: -.03em;
+  line-height: 1.3;
+}
+.home-sub {
+  margin: 0 0 36px;
+  color: #4b5563;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.home-col {
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px 22px 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  border: 1px solid #e5e7eb;
+}
+.home-col h2 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  letter-spacing: .04em;
+  color: #1f2937;
+  border-bottom: 2px solid #111;
+  padding-bottom: 8px;
+}
+.home-col ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.home-col li { margin: 0 0 8px; }
+.home-col a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #111;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.home-col a:hover {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+.home-col .primary a {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px 14px;
+}
+.home-col .primary a:hover {
+  background: #1e40af;
+  color: #fff;
+}
+.home-col .note {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  font-weight: 400;
+  opacity: .85;
+}
+@media (max-width: 800px) {
+  .home { padding: 28px 16px 48px; }
+  .home h1 { font-size: 24px; }
+  .home-grid { grid-template-columns: 1fr; }
+}
