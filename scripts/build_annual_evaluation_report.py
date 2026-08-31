@@ -440,6 +440,25 @@ def normalize_departments(
             for project in projects
             if parse_number(project.get("budget")) is not None
         ]
+        type_overrides = (current_overrides.get(name) or {}).get("projectTypes") or {}
+        if type_overrides:
+            for project in projects:
+                project_name = project.get("name") or ""
+                new_type = type_overrides.get(project_name)
+                if new_type is None:
+                    new_type = next(
+                        (
+                            value
+                            for key, value in type_overrides.items()
+                            if key and key in project_name
+                        ),
+                        None,
+                    )
+                if not new_type:
+                    continue
+                project["mgmtType"] = new_type
+                if new_type != "성과관리사업":
+                    project["projectExecRate"] = None
 
         adjusted_budget = performance.get("adjustedBudget")
         if adjusted_budget is None:
@@ -500,7 +519,8 @@ def normalize_departments(
             budget_grade = override.get("budgetGrade", budget_grade)
             project_grade = override.get("projectGrade", project_grade)
             total_grade = override.get("totalGrade", total_grade)
-            project_not_applicable = override.get("projectGrade") == "해당없음"
+            if "projectGrade" in override:
+                project_not_applicable = override.get("projectGrade") == "해당없음"
 
         budget_score = parse_number(budget_exec_rate)
         project_score = parse_number(project_exec_rate)
@@ -630,6 +650,7 @@ def make_audit(report: dict, departments: list[dict]) -> dict:
             "교육미디어지원팀의 2025 예산집행률은 시설관리팀 IR 평가 의견의 99.82%를 적용했습니다.",
             "교육미디어지원팀의 덮어쓰기 전 확정 실적은 annual_evaluation_overrides.json에서 복원했습니다.",
             "노원어린이영어교실의 사업이행률 79.56%는 결과보고서 목표·실적으로 재산정했습니다.",
+            "총무인사팀 교직원복지 지원(직원근무복)은 항례적사업으로 재분류했습니다.",
             "부서 표기명은 보고서용 별칭을 적용하되 원천 부서명은 audit에 보존했습니다.",
         ],
     }
