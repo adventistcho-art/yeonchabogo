@@ -1,0 +1,17 @@
+{
+  "교육미디어지원팀": {
+    "adjustedBudget": 377220000,
+    "budgetExecRate": 99.82,
+    "projectExecRate": null,
+    "budgetGrade": "A+",
+    "projectGrade": "해당없음",
+    "totalGrade": "A+",
+    "source": "git index.html a2e527e4 — 시설관리팀 별칭 실적이 suffix 복원으로 덮이기 전 확정 embed"
+  },
+  "노원어린이영어교실": {
+    "projectExecRate": 79.56,
+    "projectGrade": "B+",
+    "totalGrade": "A",
+    "source": "결과보고서 목표·실적(참여자수 53.42/92, 만족도 96/95)으로 이행률 재산정. IR fuflRate는 미저장 0%"
+  }
+}
