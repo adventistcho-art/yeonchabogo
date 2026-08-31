@@ -27,7 +27,7 @@ CURRENT_BUDGET_EXEC_PATH = ROOT / "data" / "budget_exec_2025.json"
 DEFAULT_OUTPUT_DIR = ROOT / "reports"
 REPORT_MARKER = '<script id="report-data" type="application/json">'
 # 자료 미제출·해당없음 부서는 발간 합본에서 빼 둔다.
-EXCLUDED_DEPTS = {"예산팀"}
+EXCLUDED_DEPTS = {"예산팀", "구매팀"}
 PLAN_TEXT_OWNER_HINTS = {
     "게스트하우스 운영 활성화": "부속실",
 }

@@ -16,7 +16,7 @@ DISPLAY_NAMES = {
     "인성교육원": "리더십센터",
     "부속실": "부속팀",
 }
-EXCLUDED_DEPTS = {"예산팀"}
+EXCLUDED_DEPTS = {"예산팀", "구매팀"}
 
 
 def parse_args() -> argparse.Namespace:
@@ -260,14 +260,18 @@ def main() -> None:
         "요약표에서 기획처·사무처 행 순서 또는 병합 범위가 잘못됨",
         failures,
     )
-    check(
-        'data-dept="예산팀"' not in html_text
-        and 'data-toc-dept="예산팀"' not in html_text
-        and not re.search(r'class="dept-cell">예산팀<', html_text)
-        and not re.search(r"<strong>기획처</strong><span>[^<]*예산팀", html_text),
-        "예산팀이 부서연차평가 보고서에 남아 있음",
-        failures,
-    )
+    for dept_name, parent in (("예산팀", "기획처"), ("구매팀", "재무처")):
+        check(
+            f'data-dept="{dept_name}"' not in html_text
+            and f'data-toc-dept="{dept_name}"' not in html_text
+            and not re.search(rf'class="dept-cell">{re.escape(dept_name)}<', html_text)
+            and not re.search(
+                rf"<strong>{re.escape(parent)}</strong><span>[^<]*{re.escape(dept_name)}",
+                html_text,
+            ),
+            f"{dept_name}이 부서연차평가 보고서에 남아 있음",
+            failures,
+        )
     expected_group_members = {
         "기획처": ["IR센터", "대학혁신지원사업단"],
         "교육혁신원": ["SUPREME센터"],
