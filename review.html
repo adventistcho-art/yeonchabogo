@@ -36,24 +36,32 @@
     </section>
 
     <aside class="form-pane" id="formPane" aria-label="서면의견">
-      <form id="reviewForm" novalidate>
-        <p class="form-lead">왼쪽 보고서를 보면서 작성하십시오. <strong>임시저장</strong> 후 <strong>수정</strong>할 수 있고, <strong>제출</strong>하면 네 칸이 기획처 메일로 한 번에 전달됩니다.</p>
-
+      <section id="gateBox">
+        <p class="form-lead">위원 성명을 입력하고 들어가십시오. 다른 위원의 임시저장은 보이지 않습니다.</p>
         <label>
           <span>위원 성명</span>
-          <input type="text" name="name" id="fieldName" autocomplete="name" required>
+          <input type="text" id="gateName" autocomplete="name">
         </label>
+        <p class="form-status" id="gateStatus" role="status"></p>
+        <button type="button" id="enterBtn" class="primary-btn">들어가기</button>
+        <p class="form-note">다음에 들어올 때도 같은 이름을 넣으면 임시저장 내용이 열립니다. 제출하면 이 화면에서는 다시 볼 수 없습니다.</p>
+      </section>
+
+      <form id="reviewForm" class="hidden" novalidate>
+        <div class="who-bar">
+          <p>작성 중: <strong id="whoName"></strong></p>
+          <button type="button" id="switchBtn">다른 위원</button>
+        </div>
+        <p class="form-lead">왼쪽 보고서를 보면서 작성하십시오.</p>
 
         <label>
           <span>잘된 점</span>
           <textarea name="good" id="fieldGood" required></textarea>
         </label>
-
         <label>
           <span>미흡하거나 보완할 점</span>
           <textarea name="weak" id="fieldWeak" required></textarea>
         </label>
-
         <label>
           <span>제도·산식·환류에 대한 제안</span>
           <textarea name="suggest" id="fieldSuggest" required></textarea>
@@ -67,8 +75,14 @@
           <button type="button" id="editBtn">수정</button>
           <button type="submit" id="submitBtn">제출</button>
         </div>
-        <p class="form-note" id="formNote">제출 시 성명·잘된 점·보완할 점·제안이 메일 한 통으로 기획처에 갑니다.</p>
+        <p class="form-note">제출하면 세 칸이 기획처 메일로 한 번에 전달되고, 이 화면의 임시저장은 삭제됩니다.</p>
       </form>
+
+      <section id="byeBox" class="hidden">
+        <h2>제출이 완료되었습니다</h2>
+        <p id="byeText">이 내용은 더 이상 이 화면에서 볼 수 없습니다. 기획처 메일로 전달되었습니다.</p>
+        <button type="button" id="byeSwitch" class="primary-btn">다른 위원으로</button>
+      </section>
     </aside>
   </div>
 

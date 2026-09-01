@@ -117,20 +117,20 @@ html, body {
   color: #4b5563;
 }
 
-#reviewForm label {
+.form-pane label {
   display: block;
   margin: 0 0 14px;
 }
 
-#reviewForm label span {
+.form-pane label span {
   display: block;
   margin-bottom: 6px;
   font-size: 13px;
   font-weight: 700;
 }
 
-#reviewForm input[type="text"],
-#reviewForm textarea {
+.form-pane input[type="text"],
+.form-pane textarea {
   width: 100%;
   border: 1px solid #d1d5db;
   border-radius: 8px;
@@ -140,11 +140,62 @@ html, body {
   background: #f9fafb;
 }
 
-#reviewForm input[type="text"]:focus,
-#reviewForm textarea:focus {
+.form-pane input[type="text"]:focus,
+.form-pane textarea:focus {
   outline: 2px solid #93c5fd;
   border-color: #2563eb;
   background: #fff;
+}
+
+.who-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+
+.who-bar p {
+  margin: 0;
+  font-size: 13px;
+}
+
+#switchBtn {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#byeBox h2 {
+  margin: 8px 0 10px;
+  font-size: 20px;
+}
+
+#byeBox p {
+  margin: 0 0 18px;
+  color: #4b5563;
+  line-height: 1.55;
+}
+
+.primary-btn {
+  width: 100%;
+  height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: #1d4ed8;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 #reviewForm textarea {
