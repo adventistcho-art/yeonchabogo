@@ -37,7 +37,7 @@
 
     <aside class="form-pane" id="formPane" aria-label="서면의견">
       <form id="reviewForm" novalidate>
-        <p class="form-lead">왼쪽 보고서를 보면서 아래 네 칸만 작성한 뒤 제출해 주십시오.</p>
+        <p class="form-lead">왼쪽 보고서를 보면서 작성하십시오. <strong>임시저장</strong> 후 <strong>수정</strong>할 수 있고, <strong>제출</strong>하면 네 칸이 기획처 메일로 한 번에 전달됩니다.</p>
 
         <label>
           <span>위원 성명</span>
@@ -62,15 +62,13 @@
         <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
 
         <p class="form-status" id="formStatus" role="status"></p>
-        <button type="submit" id="submitBtn">제출</button>
-        <p class="form-note">제출 내용은 기획처로 전달됩니다. 작성 중인 글은 이 브라우저에 임시 저장됩니다.</p>
+        <div class="btn-row">
+          <button type="button" id="saveBtn">임시저장</button>
+          <button type="button" id="editBtn">수정</button>
+          <button type="submit" id="submitBtn">제출</button>
+        </div>
+        <p class="form-note" id="formNote">제출 시 성명·잘된 점·보완할 점·제안이 메일 한 통으로 기획처에 갑니다.</p>
       </form>
-
-      <div class="done hidden" id="doneBox">
-        <h2>제출되었습니다</h2>
-        <p>서면의견을 접수했습니다. 보고서를 이어서 보시거나 창을 닫으셔도 됩니다.</p>
-        <button type="button" id="writeAgain">다른 의견 더 쓰기</button>
-      </div>
     </aside>
   </div>
 

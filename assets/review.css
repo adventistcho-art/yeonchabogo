@@ -153,6 +153,13 @@ html, body {
   line-height: 1.5;
 }
 
+#reviewForm.is-locked input[type="text"],
+#reviewForm.is-locked textarea {
+  background: #eef2f7;
+  color: #111;
+  cursor: default;
+}
+
 .hp {
   position: absolute;
   left: -9999px;
@@ -161,23 +168,41 @@ html, body {
   opacity: 0;
 }
 
-#submitBtn,
-#writeAgain {
-  width: 100%;
+.btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.btn-row button {
   height: 44px;
   border: 0;
   border-radius: 8px;
-  background: #1d4ed8;
-  color: #fff;
   font: inherit;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
 }
 
-#submitBtn:disabled {
-  opacity: .6;
-  cursor: wait;
+#saveBtn {
+  background: #e5e7eb;
+  color: #111;
+}
+
+#editBtn {
+  background: #fff;
+  color: #1d4ed8;
+  border: 1px solid #1d4ed8;
+}
+
+#submitBtn {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.btn-row button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
 }
 
 .form-status {
@@ -194,17 +219,6 @@ html, body {
   font-size: 12px;
   line-height: 1.5;
   color: #6b7280;
-}
-
-.done h2 {
-  margin: 8px 0 10px;
-  font-size: 20px;
-}
-
-.done p {
-  margin: 0 0 18px;
-  color: #4b5563;
-  line-height: 1.55;
 }
 
 .hidden { display: none !important; }

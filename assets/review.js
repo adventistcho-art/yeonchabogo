@@ -1,9 +1,12 @@
 const SUBMIT_EMAIL = "adventistcho@syu.ac.kr";
 const DRAFT_KEY = "yeonchabogo-review-2025";
+const SAVED_KEY = "yeonchabogo-review-2025-saved";
+const SENT_KEY = "yeonchabogo-review-2025-sent";
 
 const form = document.getElementById("reviewForm");
-const doneBox = document.getElementById("doneBox");
 const statusEl = document.getElementById("formStatus");
+const saveBtn = document.getElementById("saveBtn");
+const editBtn = document.getElementById("editBtn");
 const submitBtn = document.getElementById("submitBtn");
 const jumpSelect = document.getElementById("jumpSelect");
 const reportFrame = document.getElementById("reportFrame");
@@ -16,6 +19,24 @@ const fields = {
   weak: document.getElementById("fieldWeak"),
   suggest: document.getElementById("fieldSuggest"),
 };
+
+let mode = "edit"; // edit | saved | sent
+
+function nowStamp() {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).formatToParts(now);
+  const pick = (type) => parts.find((part) => part.type === type)?.value || "";
+  return `${pick("year")}-${pick("month")}-${pick("day")} ${pick("hour")}:${pick("minute")}:${pick("second")}`;
+}
 
 function setStatus(message, ok) {
   statusEl.textContent = message || "";
@@ -31,21 +52,58 @@ function readValues() {
   };
 }
 
-function saveDraft() {
-  localStorage.setItem(DRAFT_KEY, JSON.stringify(readValues()));
+function fillValues(values) {
+  Object.keys(fields).forEach((key) => {
+    fields[key].value = values?.[key] || "";
+  });
 }
 
-function restoreDraft() {
+function writeJson(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function readJson(key) {
   try {
-    const raw = localStorage.getItem(DRAFT_KEY);
-    if (!raw) return;
-    const draft = JSON.parse(raw);
-    Object.keys(fields).forEach((key) => {
-      if (typeof draft[key] === "string") fields[key].value = draft[key];
-    });
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
   } catch (_err) {
-    /* ignore broken drafts */
+    return null;
   }
+}
+
+function autosave() {
+  writeJson(DRAFT_KEY, { ...readValues(), savedAt: nowStamp() });
+}
+
+function setMode(next) {
+  mode = next;
+  const locked = next !== "edit";
+  Object.values(fields).forEach((el) => {
+    el.readOnly = locked;
+  });
+  form.classList.toggle("is-locked", locked);
+  saveBtn.disabled = locked;
+  editBtn.disabled = next === "edit";
+  submitBtn.disabled = next === "sent";
+}
+
+function formatEmailBody(values) {
+  return [
+    "2025학년도 연차평가 서면심의",
+    "제출시각: " + nowStamp(),
+    "",
+    "■ 위원 성명",
+    values.name,
+    "",
+    "■ 잘된 점",
+    values.good,
+    "",
+    "■ 미흡하거나 보완할 점",
+    values.weak,
+    "",
+    "■ 제도·산식·환류에 대한 제안",
+    values.suggest,
+  ].join("\n");
 }
 
 function reportDoc() {
@@ -59,22 +117,15 @@ function reportDoc() {
 function fillJumpOptions() {
   const doc = reportDoc();
   if (!doc) return;
-  const extras = [];
   doc.querySelectorAll(".department-section").forEach((section) => {
     const key = section.getAttribute("data-dept") || "";
     const title = (section.querySelector(".department-title h2")?.textContent || "")
       .replace(/\s*연차보고서\s*$/, "")
       .trim();
     if (!key) return;
-    extras.push({
-      value: `[data-dept="${key}"]`,
-      label: title || key,
-    });
-  });
-  extras.forEach((item) => {
     const option = document.createElement("option");
-    option.value = item.value;
-    option.textContent = item.label;
+    option.value = `[data-dept="${key}"]`;
+    option.textContent = title || key;
     jumpSelect.appendChild(option);
   });
 }
@@ -91,30 +142,14 @@ function jumpTo(selector) {
   win.scrollTo(0, Math.max(0, top));
 }
 
-function mailtoFallback(values) {
-  const body = [
-    `위원 성명: ${values.name}`,
-    "",
-    "[잘된 점]",
-    values.good,
-    "",
-    "[미흡하거나 보완할 점]",
-    values.weak,
-    "",
-    "[제도·산식·환류에 대한 제안]",
-    values.suggest,
-  ].join("\n");
-  const href =
-    "mailto:" +
-    encodeURIComponent(SUBMIT_EMAIL) +
-    "?subject=" +
-    encodeURIComponent("[연차평가 서면심의] " + values.name) +
-    "&body=" +
-    encodeURIComponent(body);
-  window.location.href = href;
+function nextUrl() {
+  const url = new URL("review.html", location.href);
+  url.searchParams.set("sent", "1");
+  return url.toString();
 }
 
-async function submitReview(values) {
+async function submitByAjax(values) {
+  const body = formatEmailBody(values);
   const response = await fetch("https://formsubmit.co/ajax/" + SUBMIT_EMAIL, {
     method: "POST",
     headers: {
@@ -122,13 +157,16 @@ async function submitReview(values) {
       Accept: "application/json",
     },
     body: JSON.stringify({
+      _subject: "[연차평가 서면심의] " + values.name,
+      _template: "box",
+      _captcha: "false",
       name: values.name,
+      message: body,
+      "위원 성명": values.name,
       "잘된 점": values.good,
       "미흡하거나 보완할 점": values.weak,
       "제도·산식·환류에 대한 제안": values.suggest,
-      _subject: "[연차평가 서면심의] " + values.name,
-      _template: "table",
-      _captcha: "false",
+      "서면의견 전체": body,
     }),
   });
   const payload = await response.json().catch(() => ({}));
@@ -138,50 +176,87 @@ async function submitReview(values) {
   return payload;
 }
 
-function showDone() {
-  form.classList.add("hidden");
-  doneBox.classList.remove("hidden");
-  formPane.classList.add("open");
+function submitByPost(values) {
+  const body = formatEmailBody(values);
+  const postForm = document.createElement("form");
+  postForm.method = "POST";
+  postForm.action = "https://formsubmit.co/" + SUBMIT_EMAIL;
+  postForm.style.display = "none";
+  const data = {
+    _subject: "[연차평가 서면심의] " + values.name,
+    _template: "box",
+    _captcha: "false",
+    _next: nextUrl(),
+    name: values.name,
+    message: body,
+    "위원 성명": values.name,
+    "잘된 점": values.good,
+    "미흡하거나 보완할 점": values.weak,
+    "제도·산식·환류에 대한 제안": values.suggest,
+    "서면의견 전체": body,
+  };
+  Object.entries(data).forEach(([key, value]) => {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = key;
+    input.value = value;
+    postForm.appendChild(input);
+  });
+  document.body.appendChild(postForm);
+  postForm.submit();
 }
 
-function showForm() {
-  doneBox.classList.add("hidden");
-  form.classList.remove("hidden");
+function markSent(values) {
+  writeJson(SENT_KEY, { ...values, sentAt: nowStamp() });
+  writeJson(SAVED_KEY, { ...values, savedAt: nowStamp() });
+  writeJson(DRAFT_KEY, { ...values, savedAt: nowStamp() });
+  setMode("sent");
+  setStatus("제출되었습니다. 네 칸이 메일 한 통으로 기획처에 전달됩니다. 고치려면 수정을 누르십시오.", true);
 }
 
-form.addEventListener("input", saveDraft);
+saveBtn.addEventListener("click", () => {
+  const values = { ...readValues(), savedAt: nowStamp() };
+  writeJson(SAVED_KEY, values);
+  writeJson(DRAFT_KEY, values);
+  setMode("saved");
+  setStatus("임시저장했습니다. 고치려면 수정, 보내려면 제출을 누르십시오. (" + values.savedAt + ")", true);
+});
+
+editBtn.addEventListener("click", () => {
+  const saved = readJson(SAVED_KEY) || readJson(SENT_KEY) || readJson(DRAFT_KEY);
+  if (saved) fillValues(saved);
+  setMode("edit");
+  setStatus("수정할 수 있습니다. 고친 뒤 임시저장 또는 제출하십시오.", true);
+  fields.name.focus();
+});
+
+form.addEventListener("input", () => {
+  if (mode === "edit") autosave();
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const honeypot = form.querySelector("[name='_gotcha']");
-  if (honeypot && honeypot.value) {
-    showDone();
-    return;
-  }
+  if (honeypot && honeypot.value) return;
   const values = readValues();
   if (!values.name || !values.good || !values.weak || !values.suggest) {
-    setStatus("네 칸을 모두 작성해 주십시오.");
+    setStatus("제출하려면 네 칸을 모두 작성해 주십시오.");
+    setMode("edit");
     return;
   }
   submitBtn.disabled = true;
-  setStatus("제출하는 중입니다…", true);
+  setStatus("제출하는 중입니다. 네 칸을 메일 한 통으로 보냅니다…", true);
   try {
-    await submitReview(values);
-    localStorage.removeItem(DRAFT_KEY);
-    form.reset();
-    setStatus("");
-    showDone();
-  } catch (err) {
-    setStatus("바로 접수가 되지 않아 메일 작성창을 엽니다. 보내기만 눌러 주시면 됩니다.");
-    mailtoFallback(values);
+    await submitByAjax(values);
+    markSent(values);
+  } catch (_err) {
+    writeJson(SENT_KEY, { ...values, sentAt: nowStamp() });
+    writeJson(SAVED_KEY, { ...values, savedAt: nowStamp() });
+    setStatus("메일 전송 화면으로 연결합니다. 네 칸 전체가 한 통에 들어갑니다.");
+    submitByPost(values);
   } finally {
-    submitBtn.disabled = false;
+    submitBtn.disabled = mode === "sent";
   }
-});
-
-document.getElementById("writeAgain").addEventListener("click", () => {
-  showForm();
-  fields.name.focus();
 });
 
 formToggle.addEventListener("click", () => {
@@ -193,4 +268,28 @@ jumpSelect.addEventListener("change", () => {
 });
 
 reportFrame.addEventListener("load", fillJumpOptions);
-restoreDraft();
+
+(function init() {
+  const sentFlag = new URLSearchParams(location.search).get("sent") === "1";
+  const sent = readJson(SENT_KEY);
+  const saved = readJson(SAVED_KEY);
+  const draft = readJson(DRAFT_KEY);
+  if (sentFlag && sent) {
+    fillValues(sent);
+    markSent(sent);
+    return;
+  }
+  if (saved) {
+    fillValues(saved);
+    setMode("saved");
+    setStatus("임시저장본이 있습니다. 수정 또는 제출하십시오. (" + (saved.savedAt || "") + ")", true);
+    return;
+  }
+  if (draft) {
+    fillValues(draft);
+    setMode("edit");
+  } else {
+    setMode("edit");
+    editBtn.disabled = true;
+  }
+})();
