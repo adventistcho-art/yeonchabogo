@@ -29,6 +29,29 @@ body {
   font-size: 15px;
   line-height: 1.6;
 }
+.home-review {
+  display: block;
+  margin: 0 0 28px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: #1d4ed8;
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+.home-review:hover {
+  background: #1e40af;
+  color: #fff;
+}
+.home-review .note {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  opacity: .9;
+}
 .home-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2025학년도 연차평가 서면심의</title>
+  <link rel="stylesheet" href="assets/review.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="bar-copy">
+      <p class="kicker">삼육대학교 기획처</p>
+      <h1>2025학년도 연차평가 서면심의</h1>
+    </div>
+    <div class="bar-actions">
+      <label class="jump">
+        <span>보고서로 이동</span>
+        <select id="jumpSelect">
+          <option value="#vol-midterm">중장기발전계획 연차평가</option>
+          <option value="#vol-dept">부서별 연차평가</option>
+        </select>
+      </label>
+      <a class="bar-link" href="reports/2025학년도_연차평가_보고서.pdf" target="_blank" rel="noopener">PDF</a>
+      <a class="bar-link ghost" href="index.html">처음으로</a>
+      <button type="button" class="bar-link form-toggle" id="formToggle">의견 작성</button>
+    </div>
+  </header>
+
+  <div class="split">
+    <section class="report-pane" aria-label="연차평가 보고서">
+      <iframe
+        id="reportFrame"
+        title="2025학년도 연차평가 보고서"
+        src="reports/2025학년도_연차평가_보고서.html"
+      ></iframe>
+    </section>
+
+    <aside class="form-pane" id="formPane" aria-label="서면의견">
+      <form id="reviewForm" novalidate>
+        <p class="form-lead">왼쪽 보고서를 보면서 아래 네 칸만 작성한 뒤 제출해 주십시오.</p>
+
+        <label>
+          <span>위원 성명</span>
+          <input type="text" name="name" id="fieldName" autocomplete="name" required>
+        </label>
+
+        <label>
+          <span>잘된 점</span>
+          <textarea name="good" id="fieldGood" required></textarea>
+        </label>
+
+        <label>
+          <span>미흡하거나 보완할 점</span>
+          <textarea name="weak" id="fieldWeak" required></textarea>
+        </label>
+
+        <label>
+          <span>제도·산식·환류에 대한 제안</span>
+          <textarea name="suggest" id="fieldSuggest" required></textarea>
+        </label>
+
+        <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <p class="form-status" id="formStatus" role="status"></p>
+        <button type="submit" id="submitBtn">제출</button>
+        <p class="form-note">제출 내용은 기획처로 전달됩니다. 작성 중인 글은 이 브라우저에 임시 저장됩니다.</p>
+      </form>
+
+      <div class="done hidden" id="doneBox">
+        <h2>제출되었습니다</h2>
+        <p>서면의견을 접수했습니다. 보고서를 이어서 보시거나 창을 닫으셔도 됩니다.</p>
+        <button type="button" id="writeAgain">다른 의견 더 쓰기</button>
+      </div>
+    </aside>
+  </div>
+
+  <script src="assets/review.js"></script>
+</body>
+</html>
