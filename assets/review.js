@@ -7,6 +7,8 @@ const OLD_KEYS = [
   "yeonchabogo-review-2025-saved",
   "yeonchabogo-review-2025-sent",
 ];
+const EDIT_UNTIL = new Date("2026-09-18T23:59:59+09:00");
+const DEADLINE_LABEL = "2026. 9. 18.(금) 23:59";
 
 const gateBox = document.getElementById("gateBox");
 const byeBox = document.getElementById("byeBox");
@@ -49,6 +51,19 @@ function nowStamp() {
 
 function normalizeName(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
+}
+
+function isPeriodOpen() {
+  return Date.now() <= EDIT_UNTIL.getTime();
+}
+
+function periodHint() {
+  return "평가기간: " + DEADLINE_LABEL + "까지. 제출 후에도 이 시간까지는 수정할 수 있습니다.";
+}
+
+function isSubmitted(name) {
+  const store = readStore();
+  return Boolean(store.submitted[name] || store.drafts[name]?.submitted);
 }
 
 function emptyStore() {
@@ -109,19 +124,22 @@ function showOnly(which) {
 
 function setMode(next) {
   mode = next;
-  const locked = next !== "edit";
+  const closed = next === "closed" || !isPeriodOpen();
+  const locked = next !== "edit" || closed;
   Object.values(fields).forEach((el) => {
     el.readOnly = locked;
   });
   form.classList.toggle("is-locked", locked);
-  saveBtn.disabled = locked;
-  editBtn.disabled = next === "edit";
-  submitBtn.disabled = false;
+  saveBtn.disabled = locked || closed;
+  editBtn.disabled = next === "edit" || closed;
+  submitBtn.disabled = closed;
+  submitBtn.textContent = isSubmitted(currentName) ? "다시 제출" : "제출";
 }
 
-function formatEmailBody(values) {
+function formatEmailBody(values, revision) {
   return [
     "2025학년도 연차평가 서면심의",
+    revision ? "구분: 수정 제출" : "구분: 최초 제출",
     "제출시각: " + nowStamp(),
     "",
     "■ 위원 성명",
@@ -141,7 +159,9 @@ function formatEmailBody(values) {
 function saveDraft(locked) {
   if (!currentName) return;
   const store = readStore();
+  const prev = store.drafts[currentName] || {};
   store.drafts[currentName] = {
+    ...prev,
     ...readValues(),
     savedAt: nowStamp(),
     mode: locked ? "saved" : "edit",
@@ -149,16 +169,23 @@ function saveDraft(locked) {
   writeStore(store);
 }
 
-function deleteDraft(name) {
-  const store = readStore();
-  delete store.drafts[name];
-  writeStore(store);
-}
-
 function markSubmitted(name) {
   const store = readStore();
-  delete store.drafts[name];
-  store.submitted[name] = { submittedAt: nowStamp() };
+  const prev = store.drafts[name] || {};
+  const values = currentName === name ? readValues() : prev;
+  const count = (prev.submitCount || 0) + 1;
+  const stamp = nowStamp();
+  store.drafts[name] = {
+    ...prev,
+    ...values,
+    name,
+    savedAt: stamp,
+    mode: "saved",
+    submitted: true,
+    submittedAt: stamp,
+    submitCount: count,
+  };
+  store.submitted[name] = { submittedAt: stamp, submitCount: count };
   writeStore(store);
 }
 
@@ -172,31 +199,47 @@ function openGate() {
   gateName.focus();
 }
 
-function showBye(name, already) {
+function showBye(message) {
   currentName = "";
   sessionStorage.removeItem(WHO_KEY);
   clearForm();
-  byeText.textContent = already
-    ? (name || "해당 위원") + " 님은 이미 제출하셨습니다. 이 화면에서는 내용을 다시 볼 수 없습니다."
-    : (name || "위원") + " 님의 제출이 완료되었습니다. 이 내용은 더 이상 이 화면에서 볼 수 없습니다.";
+  byeText.textContent = message;
   showOnly("bye");
 }
 
 function openMember(name) {
   const store = readStore();
-  if (store.submitted[name]) {
-    showBye(name, true);
+  const draft = store.drafts[name];
+  const submitted = Boolean(store.submitted[name] || draft?.submitted);
+
+  if (!isPeriodOpen()) {
+    if (draft && (draft.good || draft.weak || draft.suggest)) {
+      currentName = name;
+      sessionStorage.setItem(WHO_KEY, name);
+      whoName.textContent = name;
+      fillValues(draft);
+      showOnly("form");
+      setMode("closed");
+      setFormStatus("평가기간이 종료되어 더 이상 수정할 수 없습니다. (" + DEADLINE_LABEL + ")", false);
+      return;
+    }
+    showBye("평가기간이 " + DEADLINE_LABEL + "에 종료되어 작성·수정할 수 없습니다.");
     return;
   }
+
   currentName = name;
   sessionStorage.setItem(WHO_KEY, name);
   whoName.textContent = name;
-  const draft = store.drafts[name];
   showOnly("form");
   if (draft) {
     fillValues(draft);
-    if (draft.mode === "saved") {
-      setMode("saved");
+    setMode("saved");
+    if (submitted) {
+      setFormStatus(
+        "제출한 내용입니다. " + DEADLINE_LABEL + "까지 수정한 뒤 다시 제출할 수 있습니다.",
+        true
+      );
+    } else if (draft.mode === "saved") {
       setFormStatus("임시저장본을 불러왔습니다. 수정 또는 제출하십시오. (" + (draft.savedAt || "") + ")", true);
     } else {
       setMode("edit");
@@ -206,7 +249,7 @@ function openMember(name) {
   }
   fillValues({});
   setMode("edit");
-  setFormStatus("새 서면의견입니다. 작성 후 임시저장 또는 제출하십시오.", true);
+  setFormStatus("새 서면의견입니다. " + DEADLINE_LABEL + "까지 작성·수정할 수 있습니다.", true);
   fields.good.focus();
 }
 
@@ -217,8 +260,10 @@ function nextUrl(name) {
   return url.toString();
 }
 
-async function submitByAjax(values) {
-  const body = formatEmailBody(values);
+async function submitByAjax(values, revision) {
+  const body = formatEmailBody(values, revision);
+  const subject =
+    "[연차평가 서면심의] " + values.name + (revision ? " (수정 제출)" : "");
   const response = await fetch("https://formsubmit.co/ajax/" + SUBMIT_EMAIL, {
     method: "POST",
     headers: {
@@ -226,7 +271,7 @@ async function submitByAjax(values) {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      _subject: "[연차평가 서면심의] " + values.name,
+      _subject: subject,
       _template: "box",
       _captcha: "false",
       name: values.name,
@@ -245,15 +290,17 @@ async function submitByAjax(values) {
   return payload;
 }
 
-function submitByPost(values) {
+function submitByPost(values, revision) {
   sessionStorage.setItem(PENDING_KEY, values.name);
-  const body = formatEmailBody(values);
+  const body = formatEmailBody(values, revision);
+  const subject =
+    "[연차평가 서면심의] " + values.name + (revision ? " (수정 제출)" : "");
   const postForm = document.createElement("form");
   postForm.method = "POST";
   postForm.action = "https://formsubmit.co/" + SUBMIT_EMAIL;
   postForm.style.display = "none";
   const data = {
-    _subject: "[연차평가 서면심의] " + values.name,
+    _subject: subject,
     _template: "box",
     _captcha: "false",
     _next: nextUrl(values.name),
@@ -332,16 +379,18 @@ document.getElementById("switchBtn").addEventListener("click", openGate);
 document.getElementById("byeSwitch").addEventListener("click", openGate);
 
 saveBtn.addEventListener("click", () => {
+  if (!isPeriodOpen()) return;
   saveDraft(true);
   setMode("saved");
   setFormStatus("임시저장했습니다. 다음에 " + currentName + "으로 들어가면 이 내용이 열립니다.", true);
 });
 
 editBtn.addEventListener("click", () => {
+  if (!isPeriodOpen()) return;
   const draft = readStore().drafts[currentName];
   if (draft) fillValues(draft);
   setMode("edit");
-  setFormStatus("수정할 수 있습니다.", true);
+  setFormStatus("수정할 수 있습니다. 고친 뒤 임시저장하거나 다시 제출하십시오.", true);
   fields.good.focus();
 });
 
@@ -351,6 +400,10 @@ form.addEventListener("input", () => {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!isPeriodOpen()) {
+    setFormStatus("평가기간이 종료되어 제출할 수 없습니다.");
+    return;
+  }
   const honeypot = form.querySelector("[name='_gotcha']");
   if (honeypot && honeypot.value) return;
   const values = readValues();
@@ -359,18 +412,24 @@ form.addEventListener("submit", async (event) => {
     setMode("edit");
     return;
   }
+  const revision = isSubmitted(values.name);
   submitBtn.disabled = true;
   setFormStatus("제출하는 중입니다. 세 칸을 메일 한 통으로 보냅니다…", true);
   try {
-    await submitByAjax(values);
+    await submitByAjax(values, revision);
     markSubmitted(values.name);
-    showBye(values.name, false);
+    setMode("saved");
+    setFormStatus(
+      "제출했습니다. " + DEADLINE_LABEL + "까지 같은 이름으로 들어와 수정한 뒤 다시 제출할 수 있습니다.",
+      true
+    );
   } catch (_err) {
+    saveDraft(true);
     sessionStorage.setItem(PENDING_KEY, values.name);
     setFormStatus("메일 전송 화면으로 연결합니다.");
-    submitByPost(values);
+    submitByPost(values, revision);
   } finally {
-    submitBtn.disabled = false;
+    submitBtn.disabled = !isPeriodOpen();
   }
 });
 
@@ -386,12 +445,21 @@ reportFrame.addEventListener("load", fillJumpOptions);
 
 (function init() {
   OLD_KEYS.forEach((key) => localStorage.removeItem(key));
+  const gateNote = document.getElementById("gateNote");
+  const formNote = document.getElementById("formNote");
+  if (gateNote) gateNote.textContent = periodHint() + " 다른 위원 내용은 보이지 않습니다.";
+  if (formNote) {
+    formNote.textContent =
+      "제출하면 기획처 메일로 전달됩니다. " + DEADLINE_LABEL + "까지 다시 들어와 수정한 뒤 다시 제출할 수 있습니다.";
+  }
   const params = new URLSearchParams(location.search);
   const sentWho = normalizeName(params.get("who") || sessionStorage.getItem(PENDING_KEY) || "");
   if (params.get("sent") === "1" && sentWho) {
-    markSubmitted(sentWho);
-    sessionStorage.removeItem(PENDING_KEY);
-    showBye(sentWho, false);
+    if (sessionStorage.getItem(PENDING_KEY)) {
+      markSubmitted(sentWho);
+      sessionStorage.removeItem(PENDING_KEY);
+    }
+    openMember(sentWho);
     return;
   }
   const sessionWho = normalizeName(sessionStorage.getItem(WHO_KEY) || "");
