@@ -2,6 +2,9 @@ const SUBMIT_EMAIL = "adventistcho@syu.ac.kr";
 const STORE_KEY = "yeonchabogo-review-2025-members";
 const WHO_KEY = "yeonchabogo-review-2025-who";
 const PENDING_KEY = "yeonchabogo-review-2025-pending";
+const REMOTE_NS = "syu-yeonchabogo-review-2025-p8m3";
+const REMOTE_KEY = "d7686eb9fc8f932cc7ac8ae6a5d4b99644c043cfe18314cc3fd9269c3becaed7";
+const REMOTE_BASE = "https://mantledb.sh/v2/" + REMOTE_NS + "/drafts/";
 const OLD_KEYS = [
   "yeonchabogo-review-2025",
   "yeonchabogo-review-2025-saved",
@@ -33,6 +36,7 @@ const fields = {
 
 let currentName = "";
 let mode = "edit";
+let remoteTimer = 0;
 
 function nowStamp() {
   const parts = new Intl.DateTimeFormat("sv-SE", {
@@ -58,7 +62,79 @@ function isPeriodOpen() {
 }
 
 function periodHint() {
-  return "평가기간: " + DEADLINE_LABEL + "까지. 제출 후에도 이 시간까지는 수정할 수 있습니다.";
+  return "평가기간: " + DEADLINE_LABEL + "까지. 임시저장하면 어느 컴퓨터에서든 같은 이름으로 이어서 작성할 수 있습니다.";
+}
+
+function hasText(draft) {
+  return Boolean(draft && (draft.good || draft.weak || draft.suggest));
+}
+
+function isNewer(left, right) {
+  return String(left?.savedAt || "") >= String(right?.savedAt || "");
+}
+
+function mergeDraft(local, remote) {
+  if (!local) return remote || null;
+  if (!remote) return local;
+  return isNewer(remote, local) ? remote : local;
+}
+
+async function nameKey(name) {
+  const bytes = new TextEncoder().encode("yeonchabogo-review-2025|" + name);
+  const buf = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function fetchRemoteDraft(name) {
+  const key = await nameKey(name);
+  const response = await fetch(REMOTE_BASE + key, {
+    headers: { Accept: "application/json", "X-Mantle-Key": REMOTE_KEY },
+  });
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error("remote-get");
+  const data = await response.json();
+  if (!data || typeof data !== "object") return null;
+  return data;
+}
+
+async function pushRemoteDraft(name, draft) {
+  const record = draft || readStore().drafts[name];
+  if (!record) return;
+  const key = await nameKey(name);
+  const response = await fetch(REMOTE_BASE + key, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Mantle-Key": REMOTE_KEY,
+    },
+    body: JSON.stringify({
+      name,
+      good: record.good || "",
+      weak: record.weak || "",
+      suggest: record.suggest || "",
+      savedAt: record.savedAt || nowStamp(),
+      mode: record.mode || "saved",
+      submitted: Boolean(record.submitted),
+      submittedAt: record.submittedAt || "",
+      submitCount: record.submitCount || 0,
+    }),
+  });
+  if (!response.ok) throw new Error("remote-put");
+}
+
+function upsertLocalDraft(name, draft) {
+  const store = readStore();
+  store.drafts[name] = { ...store.drafts[name], ...draft, name };
+  if (draft?.submitted) {
+    store.submitted[name] = {
+      submittedAt: draft.submittedAt || nowStamp(),
+      submitCount: draft.submitCount || 1,
+    };
+  }
+  writeStore(store);
 }
 
 function isSubmitted(name) {
@@ -157,16 +233,26 @@ function formatEmailBody(values, revision) {
 }
 
 function saveDraft(locked) {
-  if (!currentName) return;
+  if (!currentName) return null;
   const store = readStore();
   const prev = store.drafts[currentName] || {};
-  store.drafts[currentName] = {
+  const next = {
     ...prev,
     ...readValues(),
     savedAt: nowStamp(),
     mode: locked ? "saved" : "edit",
   };
+  store.drafts[currentName] = next;
   writeStore(store);
+  return next;
+}
+
+function scheduleRemoteSave() {
+  if (!currentName || !isPeriodOpen()) return;
+  window.clearTimeout(remoteTimer);
+  remoteTimer = window.setTimeout(() => {
+    pushRemoteDraft(currentName).catch(() => {});
+  }, 800);
 }
 
 function markSubmitted(name) {
@@ -187,6 +273,7 @@ function markSubmitted(name) {
   };
   store.submitted[name] = { submittedAt: stamp, submitCount: count };
   writeStore(store);
+  pushRemoteDraft(name, store.drafts[name]).catch(() => {});
 }
 
 function openGate() {
@@ -207,13 +294,29 @@ function showBye(message) {
   showOnly("bye");
 }
 
-function openMember(name) {
-  const store = readStore();
-  const draft = store.drafts[name];
-  const submitted = Boolean(store.submitted[name] || draft?.submitted);
+async function openMember(name) {
+  const local = readStore().drafts[name] || null;
+  setGateStatus("임시저장을 불러오는 중입니다…");
+  let remote = null;
+  let remoteError = false;
+  try {
+    remote = await fetchRemoteDraft(name);
+  } catch (_err) {
+    remoteError = true;
+  }
+
+  const draft = mergeDraft(local, remote);
+  if (draft) {
+    upsertLocalDraft(name, draft);
+    if (!remote || !isNewer(remote, draft)) {
+      pushRemoteDraft(name, draft).catch(() => {});
+    }
+  }
+
+  const submitted = Boolean(readStore().submitted[name] || draft?.submitted);
 
   if (!isPeriodOpen()) {
-    if (draft && (draft.good || draft.weak || draft.suggest)) {
+    if (hasText(draft)) {
       currentName = name;
       sessionStorage.setItem(WHO_KEY, name);
       whoName.textContent = name;
@@ -231,7 +334,7 @@ function openMember(name) {
   sessionStorage.setItem(WHO_KEY, name);
   whoName.textContent = name;
   showOnly("form");
-  if (draft) {
+  if (draft && hasText(draft)) {
     fillValues(draft);
     setMode("saved");
     if (submitted) {
@@ -239,17 +342,27 @@ function openMember(name) {
         "제출한 내용입니다. " + DEADLINE_LABEL + "까지 수정한 뒤 다시 제출할 수 있습니다.",
         true
       );
-    } else if (draft.mode === "saved") {
-      setFormStatus("임시저장본을 불러왔습니다. 수정 또는 제출하십시오. (" + (draft.savedAt || "") + ")", true);
     } else {
-      setMode("edit");
-      setFormStatus("이어서 작성할 수 있습니다.", true);
+      setFormStatus(
+        "임시저장본을 불러왔습니다. 어느 컴퓨터에서든 이어서 작성할 수 있습니다. (" +
+          (draft.savedAt || "") +
+          ")",
+        true
+      );
+    }
+    if (remoteError) {
+      setFormStatus("이 컴퓨터의 임시저장을 열었습니다. 다른 PC 동기화는 잠시 후 다시 시도해 주십시오.", true);
     }
     return;
   }
   fillValues({});
   setMode("edit");
-  setFormStatus("새 서면의견입니다. " + DEADLINE_LABEL + "까지 작성·수정할 수 있습니다.", true);
+  setFormStatus(
+    remoteError
+      ? "새 서면심의입니다. 지금은 이 컴퓨터에만 저장됩니다."
+      : "새 서면심의입니다. " + DEADLINE_LABEL + "까지 어느 컴퓨터에서든 이어서 작성할 수 있습니다.",
+    true
+  );
   fields.good.focus();
 }
 
@@ -359,13 +472,19 @@ function jumpTo(selector) {
   win.scrollTo(0, Math.max(0, top));
 }
 
-document.getElementById("enterBtn").addEventListener("click", () => {
+document.getElementById("enterBtn").addEventListener("click", async () => {
   const name = normalizeName(gateName.value);
   if (!name) {
     setGateStatus("위원 성명을 입력해 주십시오.");
     return;
   }
-  openMember(name);
+  const enterBtn = document.getElementById("enterBtn");
+  enterBtn.disabled = true;
+  try {
+    await openMember(name);
+  } finally {
+    enterBtn.disabled = false;
+  }
 });
 
 gateName.addEventListener("keydown", (event) => {
@@ -378,11 +497,20 @@ gateName.addEventListener("keydown", (event) => {
 document.getElementById("switchBtn").addEventListener("click", openGate);
 document.getElementById("byeSwitch").addEventListener("click", openGate);
 
-saveBtn.addEventListener("click", () => {
+saveBtn.addEventListener("click", async () => {
   if (!isPeriodOpen()) return;
   saveDraft(true);
   setMode("saved");
-  setFormStatus("임시저장했습니다. 다음에 " + currentName + "으로 들어가면 이 내용이 열립니다.", true);
+  setFormStatus("임시저장하는 중입니다…", true);
+  try {
+    await pushRemoteDraft(currentName);
+    setFormStatus(
+      "임시저장했습니다. 다른 컴퓨터에서도 " + currentName + "으로 들어가면 이어서 작성할 수 있습니다.",
+      true
+    );
+  } catch (_err) {
+    setFormStatus("이 컴퓨터에는 저장했습니다. 다른 PC 동기화는 잠시 후 다시 임시저장해 주십시오.");
+  }
 });
 
 editBtn.addEventListener("click", () => {
@@ -395,7 +523,10 @@ editBtn.addEventListener("click", () => {
 });
 
 form.addEventListener("input", () => {
-  if (mode === "edit" && currentName) saveDraft(false);
+  if (mode === "edit" && currentName) {
+    saveDraft(false);
+    scheduleRemoteSave();
+  }
 });
 
 form.addEventListener("submit", async (event) => {
@@ -420,7 +551,7 @@ form.addEventListener("submit", async (event) => {
     markSubmitted(values.name);
     setMode("saved");
     setFormStatus(
-      "제출했습니다. " + DEADLINE_LABEL + "까지 같은 이름으로 들어와 수정한 뒤 다시 제출할 수 있습니다.",
+      "제출했습니다. " + DEADLINE_LABEL + "까지 어느 컴퓨터에서든 같은 이름으로 들어와 수정한 뒤 다시 제출할 수 있습니다.",
       true
     );
   } catch (_err) {
@@ -450,7 +581,9 @@ reportFrame.addEventListener("load", fillJumpOptions);
   if (gateNote) gateNote.textContent = periodHint() + " 다른 위원 내용은 보이지 않습니다.";
   if (formNote) {
     formNote.textContent =
-      "제출하면 기획처 메일로 전달됩니다. " + DEADLINE_LABEL + "까지 다시 들어와 수정한 뒤 다시 제출할 수 있습니다.";
+      "제출하면 기획처 메일로 전달됩니다. 임시저장은 어느 컴퓨터에서든 같은 이름으로 이어서 작성할 수 있습니다. " +
+      DEADLINE_LABEL +
+      "까지 수정한 뒤 다시 제출할 수 있습니다.";
   }
   const params = new URLSearchParams(location.search);
   const sentWho = normalizeName(params.get("who") || sessionStorage.getItem(PENDING_KEY) || "");
