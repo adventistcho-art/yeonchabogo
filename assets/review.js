@@ -10,8 +10,8 @@ const OLD_KEYS = [
   "yeonchabogo-review-2025-saved",
   "yeonchabogo-review-2025-sent",
 ];
-const EDIT_UNTIL = new Date("2026-09-18T23:59:59+09:00");
-const DEADLINE_LABEL = "2026. 9. 18.(금) 23:59";
+const EDIT_UNTIL = new Date("2026-09-21T23:59:59+09:00");
+const DEADLINE_LABEL = "2026. 9. 21.(월) 23:59";
 
 const gateBox = document.getElementById("gateBox");
 const byeBox = document.getElementById("byeBox");
