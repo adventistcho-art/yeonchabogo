@@ -153,6 +153,26 @@ def review_field_html(value: str) -> str:
     return "".join(chunks) or '<span class="empty-note">해당 없음</span>'
 
 
+REVIEW_SUMMARY_HTML = """
+    <section class="review-summary">
+    <h3>심의 종합</h3>
+    <p class="review-lead">발전계획평가소위원회는 2025학년도 연차평가 합본 보고서를 서면심의한 결과, 위원 의견을 다음과 같이 종합한다. 이어지는 위원별 심의내용은 각 위원이 작성한 원문이다.</p>
+    <div class="review-box">
+      <h4>우수사항</h4>
+      <p>중장기발전계획과 부서별 실적을 한 권으로 묶어 전년 대비 변화, 취약지표, 담당 부서와 개선 방향을 제시한 점은 성과관리·환류의 기반을 마련한 것으로 평가된다. 전체 성과관리종합지수는 84.3점에서 91.4점으로 상승하였고, 재정 건전성 확보와 데이터 기반 경영체계 지수도 개선되었다. 부서 보고서가 성과지표·실적 중심으로 작성되어 객관성이 높아졌으며, 미달성 과제의 원인과 환류를 명시한 점, 국제화 분야 원인 분석과 모집경로별 등록 기여도를 다음 해 예산에 반영하려는 방향도 긍정적으로 평가된다.</p>
+    </div>
+    <div class="review-box">
+      <h4>미흡사항</h4>
+      <p>산출 중심 지표가 많아 학생 성장 등 성과 분석이 부족하고, 전략·과제·지표 간 연계가 약하며 목표·산식·표기 오류와 높은 달성률의 목표 적정성 검토가 필요하다. 외국인 유학생은 목표 대비 달성률이 낮고 정착 성과 지표가 부족하며, MVP 인재 사회기여 역량 지수는 전년 대비 하락하였다. 항례사업의 성과분석 누락, 성과 근거 없는 예산 증액 요청, 예산집행률을 성과 기준으로 삼는 문제, 전년도 개선과제 이행 확인 항목 부재도 보완 과제로 제기되었다.</p>
+    </div>
+    <div class="review-box">
+      <h4>제언</h4>
+      <p>투입–활동–산출–성과 체계로 대학 전략과 부서평가를 연계하고, 개선과제별 책임자·기한·예산·지표를 정해 분기별로 점검할 필요가 있다. 정성지표를 보완하고 산식·목표를 재검토하며, 항례사업도 간단한 성과 확인을 거쳐 다음 해 예산과 연결하고, 국제화는 유치 이후 등록·적응·진로까지, 정체성 사업은 학생 성장으로 성과를 확인할 것을 제언한다.</p>
+    </div>
+    </section>
+"""
+
+
 def render_review_volume(members: list[dict]) -> str:
     if not members:
         return ""
@@ -169,20 +189,19 @@ def render_review_volume(members: list[dict]) -> str:
         m for m in members
         if m.get("good") or m.get("weak") or m.get("suggest")
     ]
-    collected = []
-    for label, key in REVIEW_FIELDS:
-        items = []
-        for member in written:
-            body = (member.get(key) or "").strip()
-            if not body:
-                continue
-            items.append(
-                f"<div class=\"review-box\"><h4>{html.escape(member['name'])}</h4>"
-                f"{review_field_html(body)}</div>"
-            )
-        extra = " review-pack review-pack-tight" if key == "suggest" else ""
-        collected.append(
-            f'<section class="review-group{extra}"><h3>{label}</h3>' + "".join(items) + "</section>"
+    blocks = []
+    for member in written:
+        fields = "".join(
+            f'<div class="review-box"><h4>{label}</h4>{review_field_html(member.get(key) or "")}</div>'
+            for label, key in REVIEW_FIELDS
+        )
+        blocks.append(
+            f"""<section class="member-block">
+      <div class="member-head">
+        <h3>{html.escape(member['name'])} {html.escape(member.get('title') or '위원')}</h3>
+      </div>
+      {fields}
+    </section>"""
         )
     return f"""
     <section class="cover">
@@ -190,7 +209,7 @@ def render_review_volume(members: list[dict]) -> str:
       <h1>발전계획평가소위원회<br>서면심의</h1>
       <div class="subtitle">2025학년도 연차평가 합본 보고서에 대한 서면심의</div>
     </section>
-    <section class="review-front print-keep">
+    <section class="review-open">
     <h3>2025학년도 연차평가 개요</h3>
     <p class="review-lead">개요: 2025학년도 중장기발전계획 성과평가를 위해 성과관리종합지수 12건과 부서별로 2025학년도 사업계획서에 따른 실적과 환류내용을 기반으로 발전계획평가소위에 2025학년도 연차보고서를 제출하였으며 9월 10일부터 21일까지 발전계획평가소위에서 심의하였음.</p>
     <h3>발전계획평가소위원회 명단</h3>
@@ -198,9 +217,12 @@ def render_review_volume(members: list[dict]) -> str:
       <thead><tr><th>성명</th><th>구분</th><th>담당 영역</th></tr></thead>
       <tbody>{''.join(rows)}</tbody>
     </table>
+    {REVIEW_SUMMARY_HTML}
     </section>
-    <h3>심의 종합</h3>
-    {''.join(collected)}
+    <section class="review-members">
+    <h3>위원별 심의내용</h3>
+    {''.join(blocks)}
+    </section>
 """
 
 
@@ -417,6 +439,15 @@ COMBINED_CSS = """
     .report-toolbar a:hover { background: #333; }
     #vol-review .review-lead { margin: 0 0 5mm; line-height: 1.65; }
     #vol-review .review-front { margin: 0 0 2mm; }
+    #vol-review .review-open h3 { margin: 3.5mm 0 2mm; }
+    #vol-review .review-open .review-meta { margin-bottom: 2.5mm; }
+    #vol-review .review-open .review-lead { margin-bottom: 2.5mm; }
+    #vol-review .review-open .review-meta th,
+    #vol-review .review-open .review-meta td { padding: 1.2mm 1.6mm; }
+    #vol-review .review-summary .review-box {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
     #vol-review .review-meta { width: 100%; border-collapse: collapse; margin: 0 0 6mm; }
     #vol-review .review-meta th, #vol-review .review-meta td {
       border: .25mm solid #bbb; padding: 1.6mm 2mm; text-align: center; vertical-align: middle;
@@ -449,6 +480,26 @@ COMBINED_CSS = """
     #vol-review .review-box.print-flow { break-inside: auto; page-break-inside: auto; }
     #vol-review .review-box.print-flow h4 { break-after: avoid; page-break-after: avoid; }
     #vol-review .review-box.print-flow li { break-inside: avoid; page-break-inside: avoid; }
+    #vol-review .review-summary {
+      margin-top: 3mm;
+    }
+    #vol-review .review-summary .review-box {
+      padding: calc(2.2mm + var(--sum-pad, 0px)) 3mm;
+      margin-bottom: calc(2mm + var(--sum-gap, 0px));
+      line-height: 1.55;
+    }
+    #vol-review .review-summary .review-box p { margin: 0 0 2mm; }
+    #vol-review .review-summary h3 { margin-bottom: calc(3mm + var(--sum-gap, 0px)); }
+    #vol-review .review-members {
+      break-before: page;
+      page-break-before: always;
+    }
+    #vol-review .member-block { margin: 0 0 6mm; }
+    #vol-review .member-head {
+      margin: 5mm 0 2mm; padding-bottom: 1.4mm; border-bottom: .35mm solid #111;
+      break-after: avoid; page-break-after: avoid;
+    }
+    #vol-review .member-head h3 { margin: 0; font-size: 12.5pt; }
     #vol-review .review-group { margin: 0 0 2mm; }
     #vol-review .review-pack { line-height: 1.4; }
     #vol-review .review-pack .review-box {
@@ -586,12 +637,34 @@ PREPARE_PRINT_JS = r"""
     document.body.dataset.printSplit = "1";
     var pagePx = 267 * 96 / 25.4;
     document.querySelectorAll("#vol-review .review-box").forEach(function (box) {
+      if (box.closest(".review-summary")) return;
       if (box.getBoundingClientRect().height > pagePx * 0.9) {
         box.classList.add("print-flow");
       } else {
         box.classList.add("print-keep");
       }
     });
+    (function fillReviewSummary() {
+      var el = document.querySelector("#vol-review .review-summary");
+      if (!el) return;
+      var h0 = el.getBoundingClientRect().height;
+      var spare = pagePx - 28 - h0;
+      if (spare < 24) return;
+      var gap = Math.min(Math.max(spare / 10, 2), 14);
+      var pad = Math.min(Math.max(spare / 14, 1.5), 10);
+      el.style.setProperty("--sum-gap", gap + "px");
+      el.style.setProperty("--sum-pad", pad + "px");
+      void el.offsetHeight;
+      var n = 0;
+      while (el.getBoundingClientRect().height > pagePx - 20 && n < 6) {
+        gap *= 0.7;
+        pad *= 0.7;
+        el.style.setProperty("--sum-gap", gap + "px");
+        el.style.setProperty("--sum-pad", pad + "px");
+        void el.offsetHeight;
+        n++;
+      }
+    })();
     (function packReviewOrphans() {
       var origin = document.getElementById("vol-review");
       if (!origin) return;
