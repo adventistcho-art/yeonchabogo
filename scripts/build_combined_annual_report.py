@@ -180,7 +180,10 @@ def render_review_volume(members: list[dict]) -> str:
                 f"<div class=\"review-box\"><h4>{html.escape(member['name'])}</h4>"
                 f"{review_field_html(body)}</div>"
             )
-        collected.append(f"<h3>{label}</h3>" + "".join(items))
+        extra = " review-pack review-pack-tight" if key == "suggest" else ""
+        collected.append(
+            f'<section class="review-group{extra}"><h3>{label}</h3>' + "".join(items) + "</section>"
+        )
     return f"""
     <section class="cover">
       <div class="year">2025학년도</div>
@@ -446,6 +449,19 @@ COMBINED_CSS = """
     #vol-review .review-box.print-flow { break-inside: auto; page-break-inside: auto; }
     #vol-review .review-box.print-flow h4 { break-after: avoid; page-break-after: avoid; }
     #vol-review .review-box.print-flow li { break-inside: avoid; page-break-inside: avoid; }
+    #vol-review .review-group { margin: 0 0 2mm; }
+    #vol-review .review-pack { line-height: 1.4; }
+    #vol-review .review-pack .review-box {
+      margin-bottom: 1.5mm;
+      padding: 1.5mm 2.4mm;
+    }
+    #vol-review .review-pack .review-box h4 { margin-bottom: .8mm; }
+    #vol-review .review-pack .review-box li { margin-bottom: .8mm; }
+    #vol-review .review-pack-tight { line-height: 1.36; }
+    #vol-review .review-pack-tight .review-box {
+      margin-bottom: 1.1mm;
+      padding: 1.2mm 2.2mm;
+    }
     #vol-review .review-box {
       margin: 0 0 3mm; padding: 2.4mm 3mm; border: .25mm solid #ccc; background: #fafafa;
     }
@@ -576,6 +592,29 @@ PREPARE_PRINT_JS = r"""
         box.classList.add("print-keep");
       }
     });
+    (function packReviewOrphans() {
+      var origin = document.getElementById("vol-review");
+      if (!origin) return;
+      var originTop = origin.getBoundingClientRect().top;
+      function overflows(el) {
+        var top = el.getBoundingClientRect().top - originTop;
+        var pos = ((top % pagePx) + pagePx) % pagePx;
+        return pos + el.getBoundingClientRect().height > pagePx - 12;
+      }
+      document.querySelectorAll("#vol-review .review-group").forEach(function (group) {
+        var boxes = group.querySelectorAll(".review-box");
+        if (!boxes.length) return;
+        var last = boxes[boxes.length - 1];
+        if (last.getBoundingClientRect().height > pagePx * 0.35) return;
+        if (!overflows(last)) return;
+        group.classList.add("review-pack");
+        void group.offsetHeight;
+        if (overflows(last)) {
+          group.classList.add("review-pack-tight");
+          void group.offsetHeight;
+        }
+      });
+    })();
     document.querySelectorAll("#vol-midterm .index-section").forEach(function (sec) {
       var prev = sec.previousElementSibling;
       var followsArea = prev && prev.classList.contains("area-section");
