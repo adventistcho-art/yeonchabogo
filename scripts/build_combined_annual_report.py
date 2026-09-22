@@ -201,6 +201,7 @@ def render_review_volume(members: list[dict]) -> str:
       <h1>발전계획평가소위원회<br>서면심의</h1>
       <div class="subtitle">2025학년도 연차평가 합본 보고서에 대한 서면심의</div>
     </section>
+    <section class="review-front print-keep">
     <h3>2025학년도 연차평가 개요</h3>
     <p class="review-lead">개요: 2025학년도 중장기발전계획 성과평가를 위해 성과관리종합지수 12건과 부서별로 2025학년도 사업계획서에 따른 실적과 환류내용을 기반으로 발전계획평가소위에 2025학년도 연차보고서를 제출하였으며 9월 10일부터 21일까지 발전계획평가소위에서 심의하였음.</p>
     <h3>발전계획평가소위원회 명단</h3>
@@ -208,6 +209,7 @@ def render_review_volume(members: list[dict]) -> str:
       <thead><tr><th>성명</th><th>구분</th><th>담당 영역</th></tr></thead>
       <tbody>{''.join(rows)}</tbody>
     </table>
+    </section>
     <h3>심의 종합</h3>
     {''.join(collected)}
     <h3>위원별 서면심의</h3>
@@ -416,7 +418,18 @@ COMBINED_CSS = """
     #vol-review {
       break-before: page; page-break-before: always;
     }
+    .report-toolbar {
+      position: fixed; top: 14px; right: 14px; z-index: 40;
+      display: flex; gap: 8px;
+    }
+    .report-toolbar a {
+      display: inline-block; background: #111; color: #fff; text-decoration: none;
+      padding: 8px 14px; font-size: 12px; line-height: 1.2; border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.18);
+    }
+    .report-toolbar a:hover { background: #333; }
     #vol-review .review-lead { margin: 0 0 5mm; line-height: 1.65; }
+    #vol-review .review-front { margin: 0 0 2mm; }
     #vol-review .review-meta { width: 100%; border-collapse: collapse; margin: 0 0 6mm; }
     #vol-review .review-meta th, #vol-review .review-meta td {
       border: .25mm solid #bbb; padding: 1.6mm 2mm; text-align: center; vertical-align: middle;
@@ -426,9 +439,34 @@ COMBINED_CSS = """
     #vol-review .review-meta td:nth-child(1) { width: 22%; }
     #vol-review .review-meta th:nth-child(2),
     #vol-review .review-meta td:nth-child(2) { width: 18%; }
+    #vol-review table {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    #vol-review h3 {
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+    #vol-review h3 + .review-lead,
+    #vol-review h3 + table,
+    #vol-review h3 + .review-box {
+      break-before: avoid;
+      page-break-before: avoid;
+    }
+    #vol-review .print-keep,
+    #vol-review .review-front,
+    #vol-review .review-box.print-keep,
+    #vol-review .member-block.print-keep {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    #vol-review .review-box.print-flow { break-inside: auto; page-break-inside: auto; }
+    #vol-review .review-box.print-flow h4 { break-after: avoid; page-break-after: avoid; }
+    #vol-review .review-box.print-flow li { break-inside: avoid; page-break-inside: avoid; }
     #vol-review .member-block { margin: 0 0 6mm; }
     #vol-review .member-head {
       margin: 5mm 0 2mm; padding-bottom: 1.4mm; border-bottom: .35mm solid #111;
+      break-after: avoid; page-break-after: avoid;
     }
     #vol-review .member-head h3 { margin: 0; font-size: 12.5pt; }
     #vol-review .review-box {
@@ -472,7 +510,10 @@ COMBINED_CSS = """
       }
     }
     @media print {
-      .front-cover, .volume-toc, .colophon { border: 0; margin: 0; padding: 0; }
+      .report-toolbar { display: none !important; }
+      .front-cover, .volume-toc, .volume, .colophon {
+        border: 0; margin: 0; padding: 0;
+      }
     }
 """
 
@@ -551,6 +592,18 @@ PREPARE_PRINT_JS = r"""
     if (document.body.dataset.printSplit === "1") return;
     document.body.dataset.printSplit = "1";
     var pagePx = 267 * 96 / 25.4;
+    document.querySelectorAll("#vol-review .review-box").forEach(function (box) {
+      if (box.getBoundingClientRect().height > pagePx * 0.9) {
+        box.classList.add("print-flow");
+      } else {
+        box.classList.add("print-keep");
+      }
+    });
+    document.querySelectorAll("#vol-review .member-block").forEach(function (block) {
+      if (block.getBoundingClientRect().height <= pagePx * 0.9) {
+        block.classList.add("print-keep");
+      }
+    });
     document.querySelectorAll("#vol-midterm .index-section").forEach(function (sec) {
       var prev = sec.previousElementSibling;
       var followsArea = prev && prev.classList.contains("area-section");
@@ -632,7 +685,7 @@ PREPARE_PRINT_JS = r"""
     });
     var tables = Array.prototype.slice.call(document.querySelectorAll("table"));
     tables.forEach(function (table) {
-      if (table.closest(".front-cover, .colophon, .volume-toc, .cover, .department-divider")) return;
+      if (table.closest(".front-cover, .colophon, .volume-toc, .cover, .department-divider, #vol-review")) return;
       if (table.closest(".keep-index, .index-section")) return;
       if (table.classList.contains("colophon-meta")) return;
       var thead = table.tHead;
@@ -755,7 +808,14 @@ PREPARE_PRINT_JS = r"""
 """
 
 
-def build_html(mid_style: str, mid_body: str, dept_style: str, dept_body: str, review_body: str = "") -> str:
+def build_html(
+    mid_style: str,
+    mid_body: str,
+    dept_style: str,
+    dept_body: str,
+    review_body: str = "",
+    pdf_href: str = "",
+) -> str:
     review_toc = ""
     review_article = ""
     if review_body:
@@ -777,6 +837,13 @@ def build_html(mid_style: str, mid_body: str, dept_style: str, dept_body: str, r
         if review_body
         else "본 보고서는 삼육대학교 『SU-GLORY 플랜 2030』 중장기발전계획 연차평가와 부서별 연차평가 결과를 수록함."
     )
+    toolbar = ""
+    if pdf_href:
+        toolbar = (
+            '<div class="report-toolbar">'
+            f'<a href="{html.escape(pdf_href)}" download="2025학년도_연차평가_보고서.pdf">PDF 다운로드</a>'
+            "</div>\n"
+        )
     return f"""<!doctype html>
 <html lang="ko">
 <head>
@@ -790,7 +857,7 @@ def build_html(mid_style: str, mid_body: str, dept_style: str, dept_body: str, r
   {PREPARE_PRINT_JS}
 </head>
 <body>
-  <section class="front-cover">
+  {toolbar}<section class="front-cover">
     <div class="univ">삼육대학교</div>
     <div class="year">2025학년도</div>
     <h1>연차평가 보고서</h1>
@@ -903,15 +970,23 @@ def main() -> None:
     mid_style, mid_body = extract_parts(MIDTERM_HTML.read_text(encoding="utf-8"))
     dept_style, dept_body = extract_parts(DEPT_HTML.read_text(encoding="utf-8"))
     review_body = render_review_volume(load_reviews())
-    html_doc = build_html(mid_style, mid_body, dept_style, dept_body, review_body)
     out_html = args.out or OUT_HTML
+    out_pdf = out_html.with_suffix(".pdf") if args.out else OUT_PDF
+    html_doc = build_html(
+        mid_style,
+        mid_body,
+        dept_style,
+        dept_body,
+        review_body,
+        pdf_href=out_pdf.name if args.out else "",
+    )
     out_html.parent.mkdir(parents=True, exist_ok=True)
     out_html.write_text(html_doc, encoding="utf-8")
     print(f"HTML: {out_html} ({out_html.stat().st_size:,} bytes)")
 
     if args.html_only:
         return
-    written = print_pdf(out_html, OUT_PDF)
+    written = print_pdf(out_html, out_pdf)
     print(f"PDF: {written} ({written.stat().st_size:,} bytes)")
 
 
