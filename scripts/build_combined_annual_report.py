@@ -169,6 +169,20 @@ def render_review_volume(members: list[dict]) -> str:
         m for m in members
         if m.get("good") or m.get("weak") or m.get("suggest")
     ]
+    blocks = []
+    for member in written:
+        fields = "".join(
+            f'<div class="review-box"><h4>{label}</h4>{review_field_html(member.get(key) or "")}</div>'
+            for label, key in REVIEW_FIELDS
+        )
+        blocks.append(
+            f"""<section class="member-block">
+      <div class="member-head">
+        <h3>{html.escape(member['name'])} {html.escape(member.get('title') or '위원')}</h3>
+      </div>
+      {fields}
+    </section>"""
+        )
     collected = []
     for label, key in REVIEW_FIELDS:
         items = []
@@ -196,6 +210,8 @@ def render_review_volume(members: list[dict]) -> str:
     </table>
     <h3>심의 종합</h3>
     {''.join(collected)}
+    <h3>위원별 서면심의</h3>
+    {''.join(blocks)}
 """
 
 
@@ -410,6 +426,11 @@ COMBINED_CSS = """
     #vol-review .review-meta td:nth-child(1) { width: 22%; }
     #vol-review .review-meta th:nth-child(2),
     #vol-review .review-meta td:nth-child(2) { width: 18%; }
+    #vol-review .member-block { margin: 0 0 6mm; }
+    #vol-review .member-head {
+      margin: 5mm 0 2mm; padding-bottom: 1.4mm; border-bottom: .35mm solid #111;
+    }
+    #vol-review .member-head h3 { margin: 0; font-size: 12.5pt; }
     #vol-review .review-box {
       margin: 0 0 3mm; padding: 2.4mm 3mm; border: .25mm solid #ccc; background: #fafafa;
     }
