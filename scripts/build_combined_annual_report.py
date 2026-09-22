@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import html
+import json
 import re
 from datetime import datetime
 from pathlib import Path
@@ -11,22 +13,209 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "reports"
 MIDTERM_HTML = REPORTS / "2025학년도_중장기발전계획_연차평가_보고서.html"
 DEPT_HTML = REPORTS / "2025학년도_부서연차평가_보고서_합본.html"
+REVIEW_JSON = ROOT / "data" / "committee_reviews_2025.json"
 OUT_HTML = REPORTS / "2025학년도_연차평가_보고서.html"
 OUT_PDF = REPORTS / "2025학년도_연차평가_보고서.pdf"
 
 ISSUED = "2026. 08. 27."
 ISSUED_KO = "2026년 8월 27일"
+REVIEW_ISSUED = "2026. 09. 21."
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="2025학년도 연차평가 보고서 합본 생성")
     parser.add_argument("--html-only", action="store_true", help="PDF를 만들지 않고 HTML만 생성")
+    parser.add_argument("--out", type=Path, help="HTML 출력 경로")
     return parser.parse_args()
 
 
-def extract_parts(html: str) -> tuple[str, str]:
-    style_m = re.search(r"<style>(.*?)</style>", html, re.S)
-    body_m = re.search(r"<body[^>]*>(.*)</body>", html, re.S)
+def load_reviews() -> list[dict]:
+    if not REVIEW_JSON.exists():
+        return []
+    payload = json.loads(REVIEW_JSON.read_text(encoding="utf-8"))
+    return payload.get("members") or []
+
+
+REVIEW_FIELDS = (
+    ("우수사항", "good"),
+    ("미흡사항", "weak"),
+    ("제언", "suggest"),
+)
+
+# 1. / 2. 목록. 3.3 같은 절 번호, 2-2 같은 면 번호는 목록으로 보지 않음.
+_NUM_MARK = re.compile(r"^(?P<num>\d+)\.(?!\d+(?!-))[ \t]*")
+_BULLET_MARK = re.compile(r"^[ \t]*(?:[▪•●○·][ \t]*|-[ \t]+)")
+_INLINE_NUM = re.compile(
+    r"(?<=[.。가-힣a-zA-Z)])[ \t]+(?=\d+\.(?!\d+(?!-))[ \t]*[가-힣A-Za-z'\"「(])"
+)
+
+
+def _split_inline_numbers(text: str) -> str:
+    text = text.replace("\r\n", "\n").replace("\r", "\n").strip()
+    return _INLINE_NUM.sub("\n", text)
+
+
+def _escape_breaks(text: str) -> str:
+    return "<br>".join(html.escape(part) for part in text.split("\n") if part.strip() or part == "")
+
+
+def review_field_html(value: str) -> str:
+    raw = (value or "").strip()
+    if not raw:
+        return '<span class="empty-note">해당 없음</span>'
+    lines = _split_inline_numbers(raw).split("\n")
+    chunks: list[str] = []
+    i = 0
+
+    def next_nonempty(start: int) -> str:
+        for line in lines[start:]:
+            if line.strip():
+                return line.strip()
+        return ""
+
+    while i < len(lines):
+        stripped = lines[i].strip()
+        if not stripped:
+            i += 1
+            continue
+        if _NUM_MARK.match(stripped):
+            items: list[dict] = []
+            while i < len(lines):
+                cur = lines[i].strip()
+                if not cur:
+                    if items and next_nonempty(i + 1):
+                        i += 1
+                        continue
+                    break
+                numbered = _NUM_MARK.match(cur)
+                if numbered:
+                    items.append(
+                        {
+                            "text": _NUM_MARK.sub("", cur, count=1).strip(),
+                            "subs": [],
+                        }
+                    )
+                    i += 1
+                    continue
+                if items and _BULLET_MARK.match(cur):
+                    items[-1]["subs"].append(_BULLET_MARK.sub("", cur, count=1).strip())
+                    i += 1
+                    continue
+                if items:
+                    items[-1]["text"] += "\n" + cur
+                    i += 1
+                    continue
+                break
+            lis = []
+            for item in items:
+                body = f"<p>{_escape_breaks(item['text'])}</p>"
+                if item["subs"]:
+                    body += "<ul>" + "".join(
+                        f"<li>{html.escape(sub)}</li>" for sub in item["subs"]
+                    ) + "</ul>"
+                lis.append(f"<li>{body}</li>")
+            chunks.append(f"<ol>{''.join(lis)}</ol>")
+            continue
+        if _BULLET_MARK.match(stripped):
+            bullets: list[str] = []
+            while i < len(lines):
+                cur = lines[i].strip()
+                if not cur:
+                    nxt = next_nonempty(i + 1)
+                    if bullets and _BULLET_MARK.match(nxt):
+                        i += 1
+                        continue
+                    break
+                if _BULLET_MARK.match(cur):
+                    bullets.append(_BULLET_MARK.sub("", cur, count=1).strip())
+                    i += 1
+                    continue
+                if bullets and not _NUM_MARK.match(cur):
+                    bullets[-1] += "\n" + cur
+                    i += 1
+                    continue
+                break
+            chunks.append(
+                "<ul>" + "".join(f"<li>{_escape_breaks(item)}</li>" for item in bullets) + "</ul>"
+            )
+            continue
+        para: list[str] = [stripped]
+        i += 1
+        while i < len(lines):
+            cur = lines[i].strip()
+            if not cur:
+                break
+            if _NUM_MARK.match(cur) or _BULLET_MARK.match(cur):
+                break
+            para.append(cur)
+            i += 1
+        chunks.append(f"<p>{'<br>'.join(html.escape(p) for p in para)}</p>")
+    return "".join(chunks) or '<span class="empty-note">해당 없음</span>'
+
+
+def render_review_volume(members: list[dict]) -> str:
+    if not members:
+        return ""
+    rows = []
+    for member in members:
+        rows.append(
+            "<tr>"
+            f"<td>{html.escape(member['name'])}</td>"
+            f"<td>{html.escape(member.get('title') or '위원')}</td>"
+            f"<td>{html.escape(member.get('area') or '')}</td>"
+            "</tr>"
+        )
+    written = [
+        m for m in members
+        if m.get("good") or m.get("weak") or m.get("suggest")
+    ]
+    blocks = []
+    for member in written:
+        fields = "".join(
+            f'<div class="review-box"><h4>{label}</h4>{review_field_html(member.get(key) or "")}</div>'
+            for label, key in REVIEW_FIELDS
+        )
+        blocks.append(
+            f"""<section class="member-block">
+      <div class="member-head">
+        <h3>{html.escape(member['name'])} {html.escape(member.get('title') or '위원')}</h3>
+      </div>
+      {fields}
+    </section>"""
+        )
+    collected = []
+    for label, key in REVIEW_FIELDS:
+        items = []
+        for member in written:
+            body = (member.get(key) or "").strip()
+            if not body:
+                continue
+            items.append(
+                f"<div class=\"review-box\"><h4>{html.escape(member['name'])}</h4>"
+                f"{review_field_html(body)}</div>"
+            )
+        collected.append(f"<h3>{label}</h3>" + "".join(items))
+    return f"""
+    <section class="cover">
+      <div class="year">2025학년도</div>
+      <h1>발전계획평가소위원회<br>서면심의</h1>
+      <div class="subtitle">2025학년도 연차평가 합본 보고서에 대한 서면심의</div>
+    </section>
+    <h3>발전계획평가소위원회 명단</h3>
+    <table class="review-meta">
+      <thead><tr><th>성명</th><th>구분</th><th>담당 영역</th></tr></thead>
+      <tbody>{''.join(rows)}</tbody>
+    </table>
+    <h3>심의 종합</h3>
+    {''.join(collected)}
+    <h3>위원별 서면심의</h3>
+    {''.join(blocks)}
+"""
+
+
+def extract_parts(html_text: str) -> tuple[str, str]:
+    style_m = re.search(r"<style>(.*?)</style>", html_text, re.S)
+    body_m = re.search(r"<body[^>]*>(.*)</body>", html_text, re.S)
     style = style_m.group(1) if style_m else ""
     body = body_m.group(1).strip() if body_m else ""
     style = re.sub(r"@page\s*\{[^}]*\}", "", style)
@@ -222,6 +411,42 @@ COMBINED_CSS = """
     .volume-toc .vol-no { font-size: 10pt; color: #555; letter-spacing: .08em; }
     .volume-toc strong { display: block; margin-top: 1.5mm; font-size: 14pt; }
     .volume-toc span { display: block; margin-top: 1.5mm; color: #444; font-size: 9pt; }
+    #vol-review {
+      break-before: page; page-break-before: always;
+    }
+    #vol-review .review-lead { margin: 0 0 5mm; line-height: 1.65; }
+    #vol-review .review-meta { width: 100%; border-collapse: collapse; margin: 0 0 6mm; }
+    #vol-review .review-meta th, #vol-review .review-meta td {
+      border: .25mm solid #bbb; padding: 1.6mm 2mm; text-align: center; vertical-align: middle;
+    }
+    #vol-review .review-meta th { background: #f3f4f6; font-weight: 700; }
+    #vol-review .review-meta th:nth-child(1),
+    #vol-review .review-meta td:nth-child(1) { width: 22%; }
+    #vol-review .review-meta th:nth-child(2),
+    #vol-review .review-meta td:nth-child(2) { width: 18%; }
+    #vol-review .member-block { margin: 0 0 6mm; }
+    #vol-review .member-head {
+      margin: 5mm 0 2mm; padding-bottom: 1.4mm; border-bottom: .35mm solid #111;
+    }
+    #vol-review .member-head h3 { margin: 0; font-size: 12.5pt; }
+    #vol-review .review-box {
+      margin: 0 0 3mm; padding: 2.4mm 3mm; border: .25mm solid #ccc; background: #fafafa;
+    }
+    #vol-review .review-box h4 { margin: 0 0 1.4mm; font-size: 10pt; }
+    #vol-review .review-box p { margin: 0 0 1.2mm; }
+    #vol-review .review-box p:last-child { margin-bottom: 0; }
+    #vol-review .review-box ol { margin: 0; padding-left: 5.5mm; }
+    #vol-review .review-box ul { margin: 1mm 0 0; padding-left: 0; list-style: none; }
+    #vol-review .review-box li { margin: 0 0 1.4mm; }
+    #vol-review .review-box li:last-child { margin-bottom: 0; }
+    #vol-review .review-box li > p { margin: 0; }
+    #vol-review .review-box ul > li { padding-left: 5mm; position: relative; }
+    #vol-review .review-box ul > li::before {
+      content: "○";
+      position: absolute; left: 0; top: 0;
+    }
+    #vol-review .empty-note { color: #666; }
+    #vol-midterm { break-before: page; page-break-before: always; }
     #vol-dept { break-before: page; page-break-before: always; }
     .colophon {
       break-before: page; page-break-before: always;
@@ -528,7 +753,28 @@ PREPARE_PRINT_JS = r"""
 """
 
 
-def build_html(mid_style: str, mid_body: str, dept_style: str, dept_body: str) -> str:
+def build_html(mid_style: str, mid_body: str, dept_style: str, dept_body: str, review_body: str = "") -> str:
+    review_toc = ""
+    review_article = ""
+    if review_body:
+        review_toc = """
+      <li>
+        <div class="vol-no">권두</div>
+        <strong>발전계획평가소위원회 서면심의</strong>
+        <span>2025학년도 연차평가 합본 보고서에 대한 서면심의</span>
+      </li>"""
+        review_article = f"""
+  <article id="vol-review" class="volume">
+{review_body}
+  </article>
+"""
+    parts = "발전계획평가소위원회 서면심의<br>중장기발전계획 연차평가<br>부서별 연차평가" if review_body else "중장기발전계획 연차평가<br>부서별 연차평가"
+    date_line = f"실적편 {ISSUED}<br>서면심의 {REVIEW_ISSUED}" if review_body else ISSUED
+    colophon_note = (
+        "본 보고서는 삼육대학교 『SU-GLORY 플랜 2030』 중장기발전계획 연차평가와 부서별 연차평가 결과, 발전계획평가소위원회 서면심의를 수록함."
+        if review_body
+        else "본 보고서는 삼육대학교 『SU-GLORY 플랜 2030』 중장기발전계획 연차평가와 부서별 연차평가 결과를 수록함."
+    )
     return f"""<!doctype html>
 <html lang="ko">
 <head>
@@ -546,14 +792,14 @@ def build_html(mid_style: str, mid_body: str, dept_style: str, dept_body: str) -
     <div class="univ">삼육대학교</div>
     <div class="year">2025학년도</div>
     <h1>연차평가 보고서</h1>
-    <div class="parts">중장기발전계획 연차평가<br>부서별 연차평가</div>
-    <div class="date">{ISSUED}</div>
+    <div class="parts">{parts}</div>
+    <div class="date">{date_line}</div>
     <div class="office">기획처</div>
   </section>
 
   <section class="volume-toc">
     <h1 class="report-title">목차</h1>
-    <ol>
+    <ol>{review_toc}
       <li>
         <div class="vol-no">제1편</div>
         <strong>중장기발전계획 연차평가 보고서</strong>
@@ -567,6 +813,7 @@ def build_html(mid_style: str, mid_body: str, dept_style: str, dept_body: str) -
     </ol>
   </section>
 
+{review_article}
   <article id="vol-midterm" class="volume">
 {mid_body}
   </article>
@@ -589,7 +836,7 @@ def build_html(mid_style: str, mid_body: str, dept_style: str, dept_body: str) -
         <tr><th>구 분</th><td>비매품</td></tr>
       </tbody>
     </table>
-    <p class="colophon-note">본 보고서는 삼육대학교 『SU-GLORY 플랜 2030』 중장기발전계획 연차평가와 부서별 연차평가 결과를 수록함.</p>
+    <p class="colophon-note">{colophon_note}</p>
   </section>
 </body>
 </html>
@@ -653,13 +900,16 @@ def main() -> None:
 
     mid_style, mid_body = extract_parts(MIDTERM_HTML.read_text(encoding="utf-8"))
     dept_style, dept_body = extract_parts(DEPT_HTML.read_text(encoding="utf-8"))
-    html = build_html(mid_style, mid_body, dept_style, dept_body)
-    OUT_HTML.write_text(html, encoding="utf-8")
-    print(f"HTML: {OUT_HTML} ({OUT_HTML.stat().st_size:,} bytes)")
+    review_body = render_review_volume(load_reviews())
+    html_doc = build_html(mid_style, mid_body, dept_style, dept_body, review_body)
+    out_html = args.out or OUT_HTML
+    out_html.parent.mkdir(parents=True, exist_ok=True)
+    out_html.write_text(html_doc, encoding="utf-8")
+    print(f"HTML: {out_html} ({out_html.stat().st_size:,} bytes)")
 
     if args.html_only:
         return
-    written = print_pdf(OUT_HTML, OUT_PDF)
+    written = print_pdf(out_html, OUT_PDF)
     print(f"PDF: {written} ({written.stat().st_size:,} bytes)")
 
 
