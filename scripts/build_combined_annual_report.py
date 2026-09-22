@@ -169,20 +169,6 @@ def render_review_volume(members: list[dict]) -> str:
         m for m in members
         if m.get("good") or m.get("weak") or m.get("suggest")
     ]
-    blocks = []
-    for member in written:
-        fields = "".join(
-            f'<div class="review-box"><h4>{label}</h4>{review_field_html(member.get(key) or "")}</div>'
-            for label, key in REVIEW_FIELDS
-        )
-        blocks.append(
-            f"""<section class="member-block">
-      <div class="member-head">
-        <h3>{html.escape(member['name'])} {html.escape(member.get('title') or '위원')}</h3>
-      </div>
-      {fields}
-    </section>"""
-        )
     collected = []
     for label, key in REVIEW_FIELDS:
         items = []
@@ -212,8 +198,6 @@ def render_review_volume(members: list[dict]) -> str:
     </section>
     <h3>심의 종합</h3>
     {''.join(collected)}
-    <h3>위원별 서면심의</h3>
-    {''.join(blocks)}
 """
 
 
@@ -455,20 +439,13 @@ COMBINED_CSS = """
     }
     #vol-review .print-keep,
     #vol-review .review-front,
-    #vol-review .review-box.print-keep,
-    #vol-review .member-block.print-keep {
+    #vol-review .review-box.print-keep {
       break-inside: avoid;
       page-break-inside: avoid;
     }
     #vol-review .review-box.print-flow { break-inside: auto; page-break-inside: auto; }
     #vol-review .review-box.print-flow h4 { break-after: avoid; page-break-after: avoid; }
     #vol-review .review-box.print-flow li { break-inside: avoid; page-break-inside: avoid; }
-    #vol-review .member-block { margin: 0 0 6mm; }
-    #vol-review .member-head {
-      margin: 5mm 0 2mm; padding-bottom: 1.4mm; border-bottom: .35mm solid #111;
-      break-after: avoid; page-break-after: avoid;
-    }
-    #vol-review .member-head h3 { margin: 0; font-size: 12.5pt; }
     #vol-review .review-box {
       margin: 0 0 3mm; padding: 2.4mm 3mm; border: .25mm solid #ccc; background: #fafafa;
     }
@@ -597,11 +574,6 @@ PREPARE_PRINT_JS = r"""
         box.classList.add("print-flow");
       } else {
         box.classList.add("print-keep");
-      }
-    });
-    document.querySelectorAll("#vol-review .member-block").forEach(function (block) {
-      if (block.getBoundingClientRect().height <= pagePx * 0.9) {
-        block.classList.add("print-keep");
       }
     });
     document.querySelectorAll("#vol-midterm .index-section").forEach(function (sec) {
