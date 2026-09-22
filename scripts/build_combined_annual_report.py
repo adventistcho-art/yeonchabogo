@@ -169,20 +169,6 @@ def render_review_volume(members: list[dict]) -> str:
         m for m in members
         if m.get("good") or m.get("weak") or m.get("suggest")
     ]
-    blocks = []
-    for member in written:
-        fields = "".join(
-            f'<div class="review-box"><h4>{label}</h4>{review_field_html(member.get(key) or "")}</div>'
-            for label, key in REVIEW_FIELDS
-        )
-        blocks.append(
-            f"""<section class="member-block">
-      <div class="member-head">
-        <h3>{html.escape(member['name'])} {html.escape(member.get('title') or '위원')}</h3>
-      </div>
-      {fields}
-    </section>"""
-        )
     collected = []
     for label, key in REVIEW_FIELDS:
         items = []
@@ -201,6 +187,8 @@ def render_review_volume(members: list[dict]) -> str:
       <h1>발전계획평가소위원회<br>서면심의</h1>
       <div class="subtitle">2025학년도 연차평가 합본 보고서에 대한 서면심의</div>
     </section>
+    <h3>2025학년도 연차평가 개요</h3>
+    <p class="review-lead">개요: 2025학년도 중장기발전계획 성과평가를 위해 성과관리종합지수 12건과 부서별로 2025학년도 사업계획서에 따른 실적과 환류내용을 기반으로 발전계획평가소위에 2025학년도 연차보고서를 제출하였으며 9월 10일부터 21일까지 발전계획평가소위에서 심의하였음.</p>
     <h3>발전계획평가소위원회 명단</h3>
     <table class="review-meta">
       <thead><tr><th>성명</th><th>구분</th><th>담당 영역</th></tr></thead>
@@ -208,8 +196,6 @@ def render_review_volume(members: list[dict]) -> str:
     </table>
     <h3>심의 종합</h3>
     {''.join(collected)}
-    <h3>위원별 서면심의</h3>
-    {''.join(blocks)}
 """
 
 
@@ -424,11 +410,6 @@ COMBINED_CSS = """
     #vol-review .review-meta td:nth-child(1) { width: 22%; }
     #vol-review .review-meta th:nth-child(2),
     #vol-review .review-meta td:nth-child(2) { width: 18%; }
-    #vol-review .member-block { margin: 0 0 6mm; }
-    #vol-review .member-head {
-      margin: 5mm 0 2mm; padding-bottom: 1.4mm; border-bottom: .35mm solid #111;
-    }
-    #vol-review .member-head h3 { margin: 0; font-size: 12.5pt; }
     #vol-review .review-box {
       margin: 0 0 3mm; padding: 2.4mm 3mm; border: .25mm solid #ccc; background: #fafafa;
     }
